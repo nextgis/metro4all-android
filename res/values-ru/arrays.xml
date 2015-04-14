@@ -22,24 +22,27 @@
 <resources>
 	<string-array name="navi_type">
 	    <item>All</item>
-		<item>Коляска</item>
-		<item>Тележка</item>
+		<item>Disabled</item>
+		<item>Luggage</item>
 	</string-array>
 	<string-array name="navi_type_val">
 	    <item>1</item>
 		<item>2</item>
 		<item>3</item>
 	</string-array>
-    <string-array name="locales">
+	
+	<string-array name="locales">
         <item>English</item>
         <item>Беларуская</item>
         <item>Polski</item>
         <item>Русский</item>
-    </string-array>
-    <string-array name="locales_val">
+        <item>Українська</item>
+	</string-array>	
+	<string-array name="locales_val">
         <item>en</item>
         <item>be</item>
         <item>pl</item>
         <item>ru</item>
-	</string-array>		
+        <item>uk</item>
+	</string-array>
 </resources>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Metro4All</string>
+    <string name="sHomepage">http://nextgis.org</string>
+    <string name="sDetailpage">http://metro4all.org</string>
+
+    <string name="acknowledgements_caption">Лицензії</string>
+
+    <string name="about_app">Цей додаток розраховує маршрут по метро і показує перешкоди, які зустрінуться Вам на шляху. \n\nДетальніше:</string>
+    <string name="ga_text">Цей додаток збирає і обробляє дані про використання програми з допомогою Google Analytics. Дані знеособлені, суворо конфіденційні і використовуються в цілях поліпшення швидкодії програми. Цей параметр можна відключити в налаштуваннях програми.</string>
+
+    <string name="sSettings">Налаштування</string>
+	<string name="sAbout">Про додаток</string>
+	<string name="sNetworkGetErr">Помилка отримання даних</string>
+	<string name="sNetworkUnreachErr">Немає підключення до мережі</string>
+    <string name="sDownLoading">Завантажується:</string>
+    <string name="sSearching">Пошук &#8230;</string>
+    <string name="sZipExtractionProcess">Розпакування &#8230;</string>
+	<string name="sNetworkInvalidData">Помилка в даних</string>
+	<string name="sFileNotFound">Файл не знайдено</string>
+	<string name="sCannotReadFile">Не можу прочитати файл</string>
+	<string name="sCannotGetPath">Не знайдено шлях</string>
+	<string name="sInvalidCSVData">Некоректні дані в csv, неправильне число полів. Файл: </string>
+	<string name="sNoOrEmptyData">Відсутні дані для побудови маршрутів. Оновіть дані</string>
+    <string name="sNoImage">Немає зображення або воно пошкоджено. Оновіть дані.</string>
+
+    <string name="sLocationFail">Неможливо визначити місце розташування</string>
+    <string name="sLocationDisabled">Визначення місця розташування вимкнено</string>
+    <string name="sLocationDisabledMsg">Програма не може визначити, де ви знаходитесь. Увімкніть опцію \"Моє місце розташування\".</string>
+    <string name="sLocationAccuracy">Точність розташування</string>
+    <string name="sLocationInaccuracy">Ви можете підвищити точність позиціонування, увімкнувши такі функції:</string>
+    <string name="sLocationStart">Визначення місця розташування…</string>
+    <string name="sLocationGPS">GPS</string>
+    <string name="sLocationNetwork">По Wi-Fi та координатам мережі</string>
+    <string name="sLocationNoCitySelected">Не обрано місто</string>
+
+	<string name="sSelectDataToDownload">Виберіть місто для завантаження:</string>
+	<string name="sUpdateAvaliable">Є оновлення даних</string>
+	<string name="sDownload">Завантажити</string>
+	<string name="sDelete">Видалити</string>
+	<string name="sYes">Так</string>
+	<string name="sNo">Ні</string>
+	<string name="sOk">Ok</string>
+	<string name="sCancel">Скасувати</string>
+	<string name="sQuestion">Оновити всі дані</string>
+	<string name="sAreYouSure">Впевнені?</string>
+	<string name="sSearch">Прокласти маршрут</string>
+	<string name="sFromStation">Звідки</string>
+	<string name="sToStation">Куди</string>
+	<string name="sRoute">Варіант</string>
+	<string name="sSchema">%1$s ст. %2$s</string>
+    <string name="sLayout">Схема</string>
+    <string name="sLegend">Умовні позначення</string>
+    <string name="sLocate">Визначити місце розташування</string>
+    <string name="sMap">Карта</string>
+	<string name="sStationName">Станція</string>
+	<string name="sEntranceName">Вхід</string>
+	<string name="sExitName">Вихід</string>
+    <string name="sStationPortalName">Станція: %1$s\n%2$s%3$s</string>
+    <string name="sNearestStation">Найближча станція %1$s</string>
+    <string name="sInPortalMapTitle">Входи ст. %1$s</string>
+    <string name="sOutPortalMapTitle">Виходи ст. %1$s</string>
+	<string name="sNotSet">Не обрано</string>
+	<string name="sSelFromStation">Оберіть станцію</string>
+	<string name="sSelToStation">Оберіть станцію</string>
+	<string name="sBarriersExist">Перешкоди…</string>
+	<string name="sBarriersConflict">Є конфлікти з вашими параметрами</string>
+	<string name="sMaxWCWidth">Мін. ширина проходу</string>
+	<string name="sStairsCount">Усього сходинок</string>
+	<string name="sStairsEconomy">Можна заощадити сходинки (за рахунок ліфтів, пандусів, рейок)</string>
+	<string name="sStairsLeft">Залишається подолати сходинок</string>
+	<string name="sStairsWORails">З них без рейок і пандусів</string>
+	<string name="sLift">Ліфтів</string>
+	<string name="sEscalator">Ескалаторів</string>
+	<string name="sLiftEconomy">Ліфт економить сходинок</string>
+	<string name="sCM">см</string>
+	<string name="sKB">Кб</string>
+	<string name="sMB">Мб</string>
+	<string name="sMinRailWidth">Мін. відстань між колесами</string>
+	<string name="sMaxRailWidth">Макс. відстань між колесами</string>
+	<string name="sRailWidth">Відстань між колесами</string>
+	<string name="sMaxAngle">Макс. кут нахилу</string>
+	<string name="sDownloadData">Завантажити дані по маршрутах?</string>
+	<string name="sDeleteData">Видалити дані по маршрутах?</string>
+	<string name="sConflictNotes">Входи, які конфліктують з вашими обмеженнями, помічені червоним</string>
+	<string name="sLimits">Мої обмеження</string>
+	<string name="sLimitsSet">Встановити мої обмеження</string>
+	<string name="sLimitsHave">Мої обмеження</string>
+	<string name="sSummary">Зведення по маршруту</string>
+	<string name="sSummaryClick">Детальніше…</string>
+    <string name="sNoPortals">Біля станції зараз немає працюючих входів або виходів.</string>
+    <string name="sToolTipPortalFromLayout">Обери %1$s через миткод</string>
+    <string name="sToolTipPopupMapLayout">Швидкий перехід до Карти і Схеми</string>
+		<!-- tabs -->
+	<string name="sSelAlphabeticalTab">А&#8230;Я</string>
+	<string name="sSelLinesTab">Линії</string>
+	<string name="sSelRecentTab">Нещодавні</string>
+	<!-- dialogs -->
+	<string name="sPrefTitle">Налаштування</string>
+	<string name="sPrefCatMain">Основні</string>
+	<string name="sPrefCatData">Дані</string>
+    <string name="sPrefCatOther">Інше</string>
+	<string name="sPrefNaviType">Тип навігації</string>
+	<string name="sPrefNaviTypeSummary">Тип навігації впливає на маршрут</string>
+	<string name="sPrefNaviTypeTitle">Обрати тип навігації</string>
+	<string name="sPrefWheelBaseSize">Ширина колісної бази</string>
+	<string name="sPrefWheelBaseSizeSummary">Відстань між колесами (см)</string>
+	<string name="sPrefWheelBaseSizeTitle">Введіть відстань між колесами (см)</string>
+	<string name="sPrefCarriageSize">Ширина коляски</string>
+	<string name="sPrefCarriageSizeSummary">Максимальна ширина коляски (см)</string>
+	<string name="sPrefCarriageSizeTitle">Введіть ширину коляски (см)</string>
+	<string name="sPrefDataPath">Завантажити дані за посиланням</string>
+	<string name="sPrefDataPathSummary">Посилання для завантаження даних маршрутизації</string>
+	<string name="sPrefDataPathTitle">Ввести посилання для завантаження даних</string>
+	<string name="sPrefUpdDataSummary">Натисніть, щоб оновити дані</string>
+	<string name="sPrefUpdDataTitle">Оновити дані</string>
+	<string name="sPrefChangeCityBasesBtn">Змінити</string>
+	<string name="sPrefChangeCityBasesTitle">Додати/Видалити місто</string>
+	<string name="sPrefChangeCityBasesSummary">Натисніть, щоб вибрати міста, які треба завантажити</string>
+    <string name="sPrefLegend">Умовні позначення</string>
+    <string name="sPrefLegendSummary">Умовні позначення схеми станції</string>
+    <string name="sPrefCity">Поточне місто</string>
+	<string name="sPrefCitySummary">Виберіть місто</string>
+	<string name="sPrefCityTitle">Виберіть місто зі списку</string>
+	<string name="sPrefCityLoc">Мова назв</string>
+	<string name="sPrefCityLocSummary">Вибір мови назв</string>
+	<string name="sPrefCityLocTitle">Оберіть мову назв</string>
+	<string name="stationFilterHintText">Введіть частину назви станції</string>
+    <string name="sPrefGA">Включити Google Analytics</string>
+    <string name="sPrefGASum">Збирає дані для поліпшення продуктивності програми</string>
+    <string name="sLimitationsInfo">Увімкнений режим обмежень дозволяє побачити додаткову інформацію про перешкоди на маршруті і схемах станцій.</string>
+    <string name="sLimitationsHelp">Офіційна допомога</string>
+    <string name="sLimitationsHelpDialog">Служба допомоги міста %s</string>
+    <string name="sLimitationsPhone">Телефон:</string>
+    <string name="sLimitationsService">Час обслуговування: %s</string>
+    <string name="sLimitationsWork">Час чергування: %s</string>
+    <string name="sLimitationsRequest">Подача заявки за %s</string>
+    <string name="sLimitationsSource">Джерело: %s</string>
+    <string name="sLimitationsHelpNoInfo">Для цього міста поки немає інформації</string>
+
+    <string name="sTimeUnitHour">год.</string>
+    <string name="sTimeUnitMinute">хв.</string>
+
+	<string name="switch_on">Увімк</string>
+	<string name="switch_off">Вимк</string>
+</resources>
