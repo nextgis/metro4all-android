@@ -4,7 +4,7 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -25,14 +25,15 @@
 
         <item name="editTextColor">@android:color/black</item>
         <item name="android:spinnerItemStyle">@style/Theme.Application.Spinner</item>
-        <!--<item name="android:spinnerDropDownItemStyle">@style/Widget.AppCompat.Light.DropDownItem.Spinner</item>-->
-        <item name="android:spinnerDropDownItemStyle">@style/Theme.Application.Spinner.DropDown</item>
+        <item name="android:spinnerDropDownItemStyle">@style/Widget.AppCompat.Light.DropDownItem.Spinner</item>
+        <!--<item name="android:spinnerDropDownItemStyle">@style/Theme.Application.Spinner.DropDown</item>-->
     </style>
 
     <style name="Theme.Application" parent="AppTheme">
         <item name="android:textColor">@android:color/black</item>
-        <!--<item name="android:textColorPrimary">@android:color/white</item>-->
+        <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorSecondary">@android:color/black</item>
+        <item name="colorControlNormal">@color/metro_material_dark</item>
     </style>
 
     <style name="Theme.Application.Spinner" parent="@style/Widget.AppCompat.DropDownItem.Spinner">
@@ -41,10 +42,10 @@
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Widget.ActionBar.Title</item>
     </style>
 
-    <style name="Theme.Application.Spinner.DropDown" parent="@style/Widget.AppCompat.Light.DropDownItem.Spinner">
-        <item name="android:textColor">@android:color/black</item>
-        <item name="android:background">@android:color/white</item>
-    </style>
+    <!--<style name="Theme.Application.Spinner.DropDown" parent="@style/Widget.AppCompat.Light.DropDownItem.Spinner">-->
+        <!--<item name="android:textColor">@android:color/black</item>-->
+        <!--<item name="android:background">@android:color/white</item>-->
+    <!--</style>-->
 
     <style name="Theme.Settings" parent="@style/AppTheme">
         <item name="android:windowNoTitle">true</item>
