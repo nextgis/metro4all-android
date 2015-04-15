@@ -172,7 +172,7 @@ public class MainActivity extends ActionBarActivity {
 
         boolean disableGA = prefs.getBoolean(PreferencesActivity.KEY_PREF_GA, true);
         ((Analytics) getApplication()).reload(disableGA);
-//        GoogleAnalytics.getInstance(this).setDryRun(true);
+        GoogleAnalytics.getInstance(this).setDryRun(true);
 	}
 
     protected void CreateHandler(){
