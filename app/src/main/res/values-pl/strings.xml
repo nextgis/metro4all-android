@@ -138,6 +138,9 @@
     <string name="sLimitationsRequest">Zapytaj o wsparcie %s z góry</string>
     <string name="sLimitationsSource">Źródło: %s</string>
     <string name="sLimitationsHelpNoInfo">Jeszcze nie mamy informacji</string>
+    <string name="sNaviTypeAll">All</string>
+    <string name="sNaviTypeDisabled">Disabled</string>
+    <string name="sNaviTypeLuggage">Luggage</string>
 
     <string name="sTimeUnitHour">h.</string>
     <string name="sTimeUnitMinute">min.</string>

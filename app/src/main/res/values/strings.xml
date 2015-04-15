@@ -139,6 +139,9 @@
     <string name="sLimitationsRequest">Request assistance %s in advance</string>
     <string name="sLimitationsSource">Source: %s</string>
     <string name="sLimitationsHelpNoInfo">There is no info yet</string>
+    <string name="sNaviTypeAll">All</string>
+    <string name="sNaviTypeDisabled">Disabled</string>
+    <string name="sNaviTypeLuggage">Luggage</string>
 
     <string name="sTimeUnitHour">h.</string>
     <string name="sTimeUnitMinute">min.</string>

@@ -138,6 +138,9 @@
     <string name="sLimitationsRequest">Падача заяўкі за %s</string>
     <string name="sLimitationsSource">Крыніца: %s</string>
     <string name="sLimitationsHelpNoInfo">Для гэтага горада пакуль няма інфармацыі</string>
+    <string name="sNaviTypeAll">All</string>
+    <string name="sNaviTypeDisabled">Disabled</string>
+    <string name="sNaviTypeLuggage">Luggage</string>
 
     <string name="sTimeUnitHour">г.</string>
     <string name="sTimeUnitMinute">хв.</string>
