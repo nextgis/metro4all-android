@@ -61,7 +61,7 @@ public class StationMapView extends MapView {
     protected void onWindowVisibilityChanged(int visibility) {
         if (visibility == VISIBLE) {
             Context mContext = getContext();
-            boolean isNotNetwork = !MetaDownloader.IsNetworkAvailible(mContext);
+            boolean isNotNetwork = !MetaDownloader.IsNetworkAvailable(mContext);
 
             if (isNotNetwork)
                 Toast.makeText(mContext, mContext.getString(R.string.sNetworkUnreachErr),

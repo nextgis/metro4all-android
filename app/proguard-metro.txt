@@ -1,0 +1,14 @@
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-dontskipnonpubliclibraryclassmembers
+-verbose
+
+-dontoptimize
+-dontpreverify
+
+-dontwarn com.caverock.androidsvg.**
+-dontwarn com.osmdroid.contributor.**
+
+-printseeds seeds.txt
+-printusage unused.txt
+-printmapping mapping.txt

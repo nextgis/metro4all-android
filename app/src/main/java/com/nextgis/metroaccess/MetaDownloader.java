@@ -82,7 +82,7 @@ public class MetaDownloader extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... urls) {
-        if(IsNetworkAvailible(moContext))
+        if(IsNetworkAvailable(moContext))
         {    	
 	        try {
 	        	String sURL = urls[0];
@@ -97,10 +97,11 @@ public class MetaDownloader extends AsyncTask<String, Void, Void> {
 	            // Set the default socket timeout (SO_TIMEOUT) 
 	            // in milliseconds which is the timeout for waiting for data.
 	            int timeoutSocket = 3000;
-	            HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);         
+	            HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 
-	            HttpClient Client = new DefaultHttpClient(httpParameters);
-	            HttpResponse response = Client.execute(moHTTPGet);
+	            final HttpClient Client = new DefaultHttpClient(httpParameters);
+	            final HttpResponse response = Client.execute(moHTTPGet);
+
 	            if(response == null)
 	            	return null;
 	            HttpEntity entity = response.getEntity();
@@ -186,7 +187,7 @@ public class MetaDownloader extends AsyncTask<String, Void, Void> {
 		this.cancel(true);
 	}
 	
-	static boolean IsNetworkAvailible(Context c)
+	static boolean IsNetworkAvailable(Context c)
 	{
 		ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
 		TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);  
