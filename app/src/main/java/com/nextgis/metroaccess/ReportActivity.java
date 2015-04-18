@@ -66,6 +66,11 @@ public class ReportActivity extends ActionBarActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, keys);
         spStations.setAdapter(adapter);
         spStations.setSelection(selected);
+
+        Spinner spCategories = (Spinner) findViewById(R.id.sp_category);
+        ArrayAdapter<CharSequence> categories = ArrayAdapter.createFromResource(this,
+                R.array.report_categories, R.layout.support_simple_spinner_dropdown_item);
+        spCategories.setAdapter(categories);
     }
 
     @Override

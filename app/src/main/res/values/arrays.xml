@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Project:  Metro4All
   ~ Purpose:  Routing in subway.
   ~ Author:   Bishop (aka Baryshnikov Dmitriy), polimax@mail.ru
@@ -21,29 +20,35 @@
   -->
 
 <resources>
-	<string-array name="navi_type">
-	    <item>@string/sNaviTypeAll</item>
-		<item>@string/sNaviTypeDisabled</item>
-		<item>@string/sNaviTypeLuggage</item>
-	</string-array>
-	<string-array name="navi_type_val">
-	    <item>1</item>
-		<item>2</item>
-		<item>3</item>
-	</string-array>
-	
-	<string-array name="locales">
+    <string-array name="navi_type">
+        <item>@string/sNaviTypeAll</item>
+        <item>@string/sNaviTypeDisabled</item>
+        <item>@string/sNaviTypeLuggage</item>
+    </string-array>
+    <string-array name="navi_type_val">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="locales">
         <item>English</item>
         <item>Беларуская</item>
         <item>Polski</item>
         <item>Русский</item>
         <item>Українська</item>
-	</string-array>	
-	<string-array name="locales_val">
+    </string-array>
+    <string-array name="locales_val">
         <item>en</item>
         <item>be</item>
         <item>pl</item>
         <item>ru</item>
         <item>uk</item>
-	</string-array>
+    </string-array>
+
+    <string-array name="report_categories">
+        <item>Information</item>
+        <item>Error</item>
+        <item>Mobility requirement</item>
+    </string-array>
 </resources>
