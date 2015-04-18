@@ -356,6 +356,11 @@ public class MainActivity extends ActionBarActivity {
             ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAIN, Analytics.LIMITATIONS, Analytics.MENU);
             onSettings(true);
             return true;
+        case R.id.btn_report:
+            Intent intentReport = new Intent(this, ReportActivity.class);
+            intentReport.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intentReport);
+            return true;
         case R.id.btn_about:
             ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAIN, Analytics.MENU_ABOUT, Analytics.MENU);
             Intent intentAbout = new Intent(this, AboutActivity.class);

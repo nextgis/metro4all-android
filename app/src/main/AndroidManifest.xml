@@ -72,6 +72,9 @@
         <activity
             android:name="com.nextgis.metroaccess.StationMapActivity"
             android:label="@string/sMap"/>
+        <activity
+            android:name="com.nextgis.metroaccess.ReportActivity"
+            android:label="@string/sReportMenu"/>
     </application>
 
 </manifest>

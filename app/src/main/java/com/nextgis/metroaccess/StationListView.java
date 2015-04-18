@@ -410,6 +410,11 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
                 startActivity(new Intent(this, LimitationsActivity.class));
 //                startActivityForResult(new Intent(this, LimitationsActivity.class), PREF_RESULT);
                 return true;
+            case R.id.btn_report:
+                Intent intentReport = new Intent(this, ReportActivity.class);
+                intentReport.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intentReport);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -39,9 +39,14 @@
         android:orderInCategory="2"
         app:showAsAction="never"/>
     <item
+        android:id="@+id/btn_report"
+        android:title="@string/sReportMenu"
+        android:orderInCategory="3"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/btn_about"
         android:title="@string/sAbout"
-        android:orderInCategory="3"
+        android:orderInCategory="4"
         app:showAsAction="never"/>
 
 </menu>

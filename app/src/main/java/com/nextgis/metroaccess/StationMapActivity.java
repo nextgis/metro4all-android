@@ -42,6 +42,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -67,7 +69,6 @@ import static com.nextgis.metroaccess.Constants.BUNDLE_STATIONID_KEY;
 import static com.nextgis.metroaccess.Constants.PARAM_ACTIVITY_FOR_RESULT;
 import static com.nextgis.metroaccess.Constants.PARAM_PORTAL_DIRECTION;
 import static com.nextgis.metroaccess.Constants.PARAM_ROOT_ACTIVITY;
-import static com.nextgis.metroaccess.Constants.PREF_RESULT;
 import static com.nextgis.metroaccess.Constants.SUBSCREEN_PORTAL_RESULT;
 import static com.nextgis.metroaccess.MainActivity.isProviderDisabled;
 import static com.nextgis.metroaccess.MainActivity.showLocationInfoDialog;
@@ -160,7 +161,20 @@ public class StationMapActivity extends ActionBarActivity {
 
         InitMap();
 
-        setContentView(mMapView);
+        setContentView(R.layout.activity_map);
+        ((FrameLayout) findViewById(R.id.fl_map_container)).addView(mMapView);
+
+        // TODO super
+        TextView tvReport = (TextView) findViewById(R.id.tv_report);
+        tvReport.setPaintFlags(tvReport.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        tvReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentReport = new Intent(getApplicationContext(), ReportActivity.class);
+                intentReport.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intentReport);
+            }
+        });
 
         mMapView.postDelayed(new Runnable() {   // there is no callback on map loaded
             @Override

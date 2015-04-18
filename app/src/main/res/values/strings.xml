@@ -143,6 +143,13 @@
     <string name="sNaviTypeDisabled">Disabled</string>
     <string name="sNaviTypeLuggage">Luggage</string>
 
+    <string name="sReportView">Error?</string>
+    <string name="sReportMenu">Report error</string>
+    <string name="sReportCategory">Category</string>
+    <string name="sReportBody">Your text</string>
+    <string name="sReportEmail">Email</string>
+    <string name="sReportSend">Send</string>
+
     <string name="sTimeUnitHour">h.</string>
     <string name="sTimeUnitMinute">min.</string>
 

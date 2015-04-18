@@ -27,5 +27,10 @@
         android:title="@string/sLimits"
         android:orderInCategory="1"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/btn_report"
+        android:title="@string/sReportMenu"
+        android:orderInCategory="3"
+        app:showAsAction="never"/>
 
 </menu>
