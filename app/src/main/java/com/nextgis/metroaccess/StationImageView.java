@@ -106,6 +106,8 @@ public class StationImageView extends ActionBarActivity {
             public void onClick(View view) {
                 Intent intentReport = new Intent(getApplicationContext(), ReportActivity.class);
                 intentReport.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                int id = bundle == null ? -1 : bundle.getInt(BUNDLE_STATIONID_KEY, -1);
+                intentReport.putExtra(BUNDLE_STATIONID_KEY, id);
                 startActivity(intentReport);
             }
         });

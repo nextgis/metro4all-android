@@ -24,13 +24,48 @@ package com.nextgis.metroaccess;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
+import com.nextgis.metroaccess.data.StationItem;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.nextgis.metroaccess.Constants.BUNDLE_STATIONID_KEY;
 
 public class ReportActivity extends ActionBarActivity {
+    private Map<String, Integer> mStations;
+    private int mStationId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Bundle extras = getIntent().getExtras();
+        mStationId = extras == null ? -1 : extras.getInt(BUNDLE_STATIONID_KEY, -1);
+        mStations = new HashMap<>();
+        mStations.put(getString(R.string.sNotSet), -1);
+        int selected = -1, i = 1;
+
+        Map<Integer, StationItem> stations = Analytics.getGraph().GetStations();
+        for (Map.Entry<Integer, StationItem> station : stations.entrySet()) {
+            mStations.put(station.getValue().GetName(), station.getKey());
+            i++;
+
+            if (mStationId == station.getKey())
+                selected = i;
+        }
+
+        Spinner spStations = (Spinner) findViewById(R.id.sp_station);
+        List<String> keys = new ArrayList<>(mStations.keySet());
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, keys);
+        spStations.setAdapter(adapter);
+        spStations.setSelection(selected);
     }
 
     @Override
