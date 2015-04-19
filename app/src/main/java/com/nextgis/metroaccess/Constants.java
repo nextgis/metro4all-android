@@ -47,6 +47,8 @@ public interface Constants {
     final static String BUNDLE_PORTALID_KEY = "portalid";
     final static String BUNDLE_METAMAP_KEY = "metamap";
     final static String BUNDLE_CITY_CHANGED = "city_changed";
+    final static String BUNDLE_IMG_X = "coord_x";
+    final static String BUNDLE_IMG_Y = "coord_y";
 
     public final static int DEPARTURE_RESULT = 1;
     public final static int ARRIVAL_RESULT = 2;

@@ -150,7 +150,7 @@
     <string name="sReportEmail">Email</string>
     <string name="sReportSend">Send</string>
     <string name="sReportDefineArea">Define area at layout</string>
-    <string name="sReportDefineAreaTooltip">Tap to select discussed point</string>
+    <string name="sReportDefineAreaTooltip">Tap to select discussed area</string>
 
     <string name="sTimeUnitHour">h.</string>
     <string name="sTimeUnitMinute">min.</string>

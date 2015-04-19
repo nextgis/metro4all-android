@@ -65,6 +65,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 
+import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_X;
+import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_Y;
 import static com.nextgis.metroaccess.Constants.BUNDLE_PATH_KEY;
 import static com.nextgis.metroaccess.Constants.BUNDLE_PORTALID_KEY;
 import static com.nextgis.metroaccess.Constants.BUNDLE_STATIONID_KEY;
@@ -90,8 +92,14 @@ public class StationImageView extends ActionBarActivity {
     private boolean mIsPortalIn = false;
     private String mHintScreenName;
     private boolean mIsLimitations;
-    boolean mIsDefineArea = false;
-    boolean mIsAreaDefined = false;
+
+    private boolean mIsDefineArea = false;
+    private boolean mIsAreaDefined = false;
+    private int mImgWidth, mImgHeight;
+    private int mImgX, mImgY;
+    private int mSideGapX, mSideGapY;
+    private float mRatio;
+    private Rect mBounds;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -217,22 +225,29 @@ public class StationImageView extends ActionBarActivity {
         });
 
         if (mIsDefineArea) {
+            showReportingHint();
+
             mWebView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     final int action = motionEvent.getAction();
+                    float x = motionEvent.getX();
+                    float y = motionEvent.getY();
+
                     switch (action & MotionEvent.ACTION_MASK) {
                         case MotionEvent.ACTION_MOVE:
                         case MotionEvent.ACTION_DOWN:
-                            Rect bounds = new Rect(0, 0, mWebView.getWidth(), mWebView.getHeight());
-
-                            if (bounds.contains((int) motionEvent.getX(), (int) motionEvent.getY())) {
-                                mWebView.defineArea(motionEvent.getX(), motionEvent.getY());
+                            if (mBounds.contains((int) x, (int) y)) {
+                                mWebView.defineArea(x, y);
                                 mWebView.invalidate();
+                                mImgX = (int) (x / mRatio - mSideGapX);
+                                mImgY = (int) (y / mRatio - mSideGapY);
                             }
                             break;
                         case MotionEvent.ACTION_UP:
-                            saveScreenshot();
+                            if (mBounds.contains((int) x, (int) y)) {
+                                saveScreenshot();
+                            }
                             break;
                     }
 
@@ -256,6 +271,18 @@ public class StationImageView extends ActionBarActivity {
         final Intent outIntent = new Intent();
 
         try {
+            if (mImgX > mImgWidth)
+                mImgX = mImgWidth;
+
+            if (mImgY > mImgHeight)
+                mImgY = mImgHeight;
+
+            if (mImgX < 0)
+                mImgX = 0;
+
+            if (mImgY < 0)
+                mImgY = 0;
+
             if (result != null) {
                 result = new File(result, "screen.jpg");
                 fos = new FileOutputStream(result);
@@ -266,6 +293,8 @@ public class StationImageView extends ActionBarActivity {
                 }
 
                 outIntent.putExtra(BUNDLE_PATH_KEY, result.getAbsolutePath());
+                outIntent.putExtra(BUNDLE_IMG_X, mImgX);
+                outIntent.putExtra(BUNDLE_IMG_Y, mImgY);
                 resultCode = RESULT_OK;
             }
         } catch (Exception ignored) { }
@@ -292,6 +321,21 @@ public class StationImageView extends ActionBarActivity {
         if (was != mIsLimitations) {
             loadImage();    // TODO progress dialog > like onCreate
         }
+    }
+
+    private void showReportingHint() {
+        final ToolTipRelativeLayout toolTipOverlay = (ToolTipRelativeLayout) findViewById(R.id.ttPortals);
+        toolTipOverlay.setVisibility(View.VISIBLE);
+        final ToolTip toolTip = new ToolTip()
+                .withText(getString(R.string.sReportDefineAreaTooltip))
+                .withColor(getResources().getColor(R.color.metro_color_main))
+                .withAnimationType(ToolTip.AnimationType.FROM_MASTER_VIEW);
+
+        if (Build.VERSION.SDK_INT <= 10)
+            toolTip.withAnimationType(ToolTip.AnimationType.NONE);
+
+        ToolTipView hint = toolTipOverlay.showToolTipForView(toolTip, mWebView);
+        hint.setPadding(0, hint.getHeight(), 0, 0);
     }
 
     private void showHint() {
@@ -370,23 +414,46 @@ public class StationImageView extends ActionBarActivity {
         byte[] byteArray = baos.toByteArray();
         String imageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
         String fix;
+        String defineAreaFade = mIsDefineArea ? " bgcolor='#A6A6A6'" : "";
+
+        double deviceRatio = 1.0 * mWebView.getHeight() / mWebView.getWidth();
+        double imageRatio = 1.0 * overlaidImage.getHeight() / overlaidImage.getWidth();
+        boolean isHorizontalScale = deviceRatio > imageRatio;
 
         if (Build.VERSION.SDK_INT > 10) {   // fix for old webkit versions
             fix = "max-width:100%;max-height:100%;'";
-
-            double deviceRatio = 1.0 * mWebView.getHeight() / mWebView.getWidth();
-            double imageRatio = 1.0 * overlaidImage.getHeight() / overlaidImage.getWidth();
-            fix += deviceRatio > imageRatio ? "width='100%' height='auto'" : "width='auto' height='100%'";
+            fix += isHorizontalScale ? "width='100%' height='auto'" : "width='auto' height='100%'";
         } else
             fix = "'";
 
         // background-color: rgba(255, 255, 255, 0.01); alpha channel is a fix for showing image on some webkit versions
-        String sCmd = "<html><center><img style='background-color:rgba(255,255,255,0.01);position:absolute;margin:auto;top:0;left:0;right:0;bottom:0;" + fix +
-                " src='data:image/png;base64," + imageBase64 + "'></center></html>";
+        String sCmd = "<html><body"+defineAreaFade+"><center><img style='background-color:rgba(255,255,255,0.01);position:absolute;margin:auto;top:0;left:0;right:0;bottom:0;" + fix +
+                " src='data:image/png;base64," + imageBase64 + "'></center></body></html>";
 //        String sCmd = "<html><center><img style='background-color:rgba(255,255,255,0.01);position:absolute;margin:auto;top:0;left:0;right:0;bottom:0;" +
 //                "max-width:100%;max-height:100%;' " + fix + " src='data:image/png;base64," + imageBase64 + "'></center></html>";
 
         mWebView.loadData(sCmd, "text/html", "utf-8");
+
+        mImgWidth = overlaidImage.getWidth();
+        mImgHeight = overlaidImage.getHeight();
+
+        int left = 0, top = 0;
+        int right = mWebView.getWidth();
+        int bottom = mWebView.getHeight();
+
+        if (isHorizontalScale) {
+            mRatio = 1f * right / mImgWidth;
+            mSideGapY = (int) ((bottom - mImgHeight * mRatio) / 2);
+            top = mSideGapY;
+            bottom -= mSideGapY;
+        } else {
+            mRatio = 1f * bottom / mImgHeight;
+            mSideGapX = (int) ((right - mImgWidth * mRatio) / 2);
+            left = mSideGapX;
+            right -= mSideGapX;
+        }
+
+        mBounds = new Rect(left, top, right, bottom);
 
         return true;
     }
