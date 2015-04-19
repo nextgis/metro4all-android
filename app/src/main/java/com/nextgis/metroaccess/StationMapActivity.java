@@ -172,8 +172,7 @@ public class StationMapActivity extends ActionBarActivity {
             public void onClick(View view) {
                 Intent intentReport = new Intent(getApplicationContext(), ReportActivity.class);
                 intentReport.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                int id = bundle == null ? -1 : bundle.getInt(BUNDLE_STATIONID_KEY, -1);
-                intentReport.putExtra(BUNDLE_STATIONID_KEY, id);
+                intentReport.putExtra(BUNDLE_STATIONID_KEY, bundle.getInt(BUNDLE_STATIONID_KEY, -1));
                 startActivity(intentReport);
             }
         });

@@ -28,8 +28,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -40,6 +42,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -59,12 +62,15 @@ import com.nhaarman.supertooltips.ToolTipView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
+import static com.nextgis.metroaccess.Constants.BUNDLE_PATH_KEY;
 import static com.nextgis.metroaccess.Constants.BUNDLE_PORTALID_KEY;
 import static com.nextgis.metroaccess.Constants.BUNDLE_STATIONID_KEY;
 import static com.nextgis.metroaccess.Constants.KEY_PREF_TOOLTIPS;
 import static com.nextgis.metroaccess.Constants.PARAM_ACTIVITY_FOR_RESULT;
+import static com.nextgis.metroaccess.Constants.PARAM_DEFINE_AREA;
 import static com.nextgis.metroaccess.Constants.PARAM_PORTAL_DIRECTION;
 import static com.nextgis.metroaccess.Constants.PARAM_ROOT_ACTIVITY;
 import static com.nextgis.metroaccess.Constants.PARAM_SCHEME_PATH;
@@ -72,7 +78,7 @@ import static com.nextgis.metroaccess.Constants.SUBSCREEN_PORTAL_RESULT;
 import static com.nextgis.metroaccess.MainActivity.tintIcons;
 
 public class StationImageView extends ActionBarActivity {
-    private WebView mWebView;
+    private LayoutWebView mWebView;
     private Bundle bundle;
 
     private String msPath;
@@ -84,6 +90,8 @@ public class StationImageView extends ActionBarActivity {
     private boolean mIsPortalIn = false;
     private String mHintScreenName;
     private boolean mIsLimitations;
+    boolean mIsDefineArea = false;
+    boolean mIsAreaDefined = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,42 +107,22 @@ public class StationImageView extends ActionBarActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        TextView tvReport = (TextView) findViewById(R.id.tv_report);
-        tvReport.setPaintFlags(tvReport.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        tvReport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intentReport = new Intent(getApplicationContext(), ReportActivity.class);
-                intentReport.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                int id = bundle == null ? -1 : bundle.getInt(BUNDLE_STATIONID_KEY, -1);
-                intentReport.putExtra(BUNDLE_STATIONID_KEY, id);
-                startActivity(intentReport);
-            }
-        });
-
-        // load view
-        mWebView = (WebView) findViewById(R.id.webView);
-        // (*) this line make uses of the Zoom control
-        mWebView.getSettings().setBuiltInZoomControls(true);
-//        mWebView.getSettings().setJavaScriptEnabled(true);
-
-        mWebView.getSettings().setLoadWithOverviewMode(true);
-        mWebView.getSettings().setUseWideViewPort(true);
-
-        bundle = getIntent().getExtras();
+        bundle = getIntent().getExtras();   // TODO null bundle fix / MapActivity too
         if (bundle != null) {
+            mIsDefineArea = bundle.getBoolean(PARAM_DEFINE_AREA, false);
             // PARAM_ROOT_ACTIVITY - determine is it called from StationMapActivity or StationExpandableListAdapter
             mIsRootActivity = bundle.getBoolean(PARAM_ROOT_ACTIVITY);
             isCrossReference = bundle.containsKey(PARAM_ROOT_ACTIVITY); // if PARAM_ROOT_ACTIVITY not contains, it called from another
             msPath = bundle.getString(PARAM_SCHEME_PATH);
             mIsPortalIn = bundle.getBoolean(PARAM_PORTAL_DIRECTION, true);
 
-            StationItem station = MainActivity.GetGraph().GetStation(bundle.getInt(BUNDLE_STATIONID_KEY, 0));
+            StationItem station = MainActivity.GetGraph().GetStation(bundle.getInt(BUNDLE_STATIONID_KEY, 0)); // TODO global
             String title = station == null ? getString(R.string.sFileNotFound) :
                     String.format(getString(R.string.sSchema), getString(R.string.sLayout), station.GetName());
             setTitle(title);
 
-            if (station != null && station.GetPortalsCount() > 0 && bundle.getBoolean(PARAM_ACTIVITY_FOR_RESULT, true)) {
+            if (station != null && station.GetPortalsCount() > 0 && !mIsDefineArea &&
+                    bundle.getBoolean(PARAM_ACTIVITY_FOR_RESULT, true)) {
                 RVPortalAdapter adapter = new RVPortalAdapter(station.GetPortals(mIsPortalIn));
                 rvPortals.setAdapter(adapter);
                 rvPortals.setHasFixedSize(true);
@@ -157,6 +145,28 @@ public class StationImageView extends ActionBarActivity {
         }
 
         mIsLimitations = LimitationsActivity.hasLimitations(this);
+
+        TextView tvReport = (TextView) findViewById(R.id.tv_report);
+        tvReport.setVisibility(mIsDefineArea || isForLegend ? View.GONE : View.VISIBLE);
+        tvReport.setPaintFlags(tvReport.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        tvReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentReport = new Intent(getApplicationContext(), ReportActivity.class);
+                intentReport.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intentReport.putExtra(BUNDLE_STATIONID_KEY, bundle.getInt(BUNDLE_STATIONID_KEY, -1));
+                startActivity(intentReport);
+            }
+        });
+
+        // load view
+        mWebView = (LayoutWebView) findViewById(R.id.webView);
+        // (*) this line make uses of the Zoom control
+        mWebView.getSettings().setBuiltInZoomControls(!mIsDefineArea);
+//        mWebView.getSettings().setJavaScriptEnabled(true);
+
+        mWebView.getSettings().setLoadWithOverviewMode(true);
+        mWebView.getSettings().setUseWideViewPort(true);
 
         mWebView.post(new Runnable() {
             @Override
@@ -194,6 +204,82 @@ public class StationImageView extends ActionBarActivity {
                 });
             }
         });
+
+        mWebView.setOnLongClickListener(new View.OnLongClickListener() {
+//        mWebView.setOnClickListener(new View.OnClickListener() {
+            @Override
+//            public void onClick(View view) {
+            public boolean onLongClick(View view) {
+//                saveScreenshot();
+
+                return false;
+            }
+        });
+
+        if (mIsDefineArea) {
+            mWebView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    final int action = motionEvent.getAction();
+                    switch (action & MotionEvent.ACTION_MASK) {
+                        case MotionEvent.ACTION_MOVE:
+                        case MotionEvent.ACTION_DOWN:
+                            Rect bounds = new Rect(0, 0, mWebView.getWidth(), mWebView.getHeight());
+
+                            if (bounds.contains((int) motionEvent.getX(), (int) motionEvent.getY())) {
+                                mWebView.defineArea(motionEvent.getX(), motionEvent.getY());
+                                mWebView.invalidate();
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            saveScreenshot();
+                            break;
+                    }
+
+                    return false;
+                }
+            });
+        }
+    }
+
+    private void saveScreenshot() {
+        if (mIsAreaDefined)   // TODO back pressed
+            return;
+
+        Bitmap b = Bitmap.createBitmap(mWebView.getWidth(), mWebView.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        mWebView.draw(c);
+
+        FileOutputStream fos;
+        File result = getExternalFilesDir(null);
+        int resultCode = RESULT_CANCELED;
+        final Intent outIntent = new Intent();
+
+        try {
+            if (result != null) {
+                result = new File(result, "screen.jpg");
+                fos = new FileOutputStream(result);
+
+                if (getExternalFilesDir(null) != null) {
+                    b.compress(Bitmap.CompressFormat.JPEG, 25, fos);
+                    fos.close();
+                }
+
+                outIntent.putExtra(BUNDLE_PATH_KEY, result.getAbsolutePath());
+                resultCode = RESULT_OK;
+            }
+        } catch (Exception ignored) { }
+
+        mIsAreaDefined = true;
+
+        final int finalResultCode = resultCode;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setResult(finalResultCode, outIntent);
+                finish();
+            }
+        }, 500);
     }
 
     @Override
@@ -315,7 +401,7 @@ public class StationImageView extends ActionBarActivity {
         MenuInflater infl = getMenuInflater();
         infl.inflate(R.menu.menu_station_layout, menu);
         menu.findItem(R.id.btn_legend).setEnabled(!isForLegend).setVisible(!isForLegend);
-        menu.findItem(R.id.btn_map).setEnabled(!isForLegend && isCrossReference).setVisible(!isForLegend && isCrossReference);
+        menu.findItem(R.id.btn_map).setEnabled(!isForLegend && isCrossReference).setVisible(!isForLegend && isCrossReference && !mIsDefineArea);
         tintIcons(menu, this);
         return true;
     }

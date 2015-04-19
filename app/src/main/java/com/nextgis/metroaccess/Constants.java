@@ -52,12 +52,14 @@ public interface Constants {
     public final static int ARRIVAL_RESULT = 2;
     public final static int PREF_RESULT = 3;
     public final static int SUBSCREEN_PORTAL_RESULT = 4;
+    public final static int DEFINE_AREA_RESULT = 5;
     public final static int MAX_RECENT_ITEMS = 10;
 
     public final static String PARAM_PORTAL_DIRECTION = "PORTAL_DIRECTION";
     public final static String PARAM_SCHEME_PATH = "image_path";
     public final static String PARAM_ROOT_ACTIVITY = "root_activity";
     public final static String PARAM_ACTIVITY_FOR_RESULT = "NEED_RESULT";
+    public final static String PARAM_DEFINE_AREA = "define_area";
 
     public static final String KEY_PREF_RECENT_DEP_STATIONS = "recent_dep_stations";
     public static final String KEY_PREF_RECENT_ARR_STATIONS = "recent_arr_stations";
