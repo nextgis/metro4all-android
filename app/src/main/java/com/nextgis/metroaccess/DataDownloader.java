@@ -217,7 +217,7 @@ public class DataDownloader extends AsyncTask<String, Integer, String> {
 	        		}
 					//oJSONRoot.put("name_" + Locale.getDefault().getLanguage(), m_oItem.GetLocaleName());
 					oJSONRoot.put("ver", m_oItem.GetVersion());
-					oJSONRoot.put("directed", m_oItem.GetDirected());            
+		            oJSONRoot.put("directed", m_oItem.GetDirected());
 	            
 		            String sJSON = oJSONRoot.toString();
 		            File file = new File(msPath, MainActivity.GetMetaFileName());

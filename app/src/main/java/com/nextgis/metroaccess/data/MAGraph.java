@@ -82,6 +82,7 @@ public class MAGraph {
 
 	protected String m_sCurrentCity;
 	protected String m_sCurrentCityName;
+	protected int m_sCurrentCityVersion;
 
 	protected boolean m_bIsValid;
 	protected String m_sErr;
@@ -582,10 +583,10 @@ public class MAGraph {
 							continue;
 						}
 
-						int nVer = oJSON.getInt("ver");
+						m_sCurrentCityVersion = oJSON.getInt("ver");
 						boolean bDirected = oJSON.getBoolean("directed");
 
-			        	GraphDataItem Item = new GraphDataItem(nVer, sName, sLocaleNames, inFile.getName(), 0, bDirected, m_oContext.getString(R.string.sKB), m_oContext.getString(R.string.sMB));
+			        	GraphDataItem Item = new GraphDataItem(m_sCurrentCityVersion, sName, sLocaleNames, inFile.getName(), 0, bDirected, m_oContext.getString(R.string.sKB), m_oContext.getString(R.string.sMB));
 
 			        	m_moRouteMetadata.put(inFile.getName(), Item);
 
@@ -652,6 +653,10 @@ public class MAGraph {
 	
 	public String GetCurrentCity(){
 		return m_sCurrentCity;
+	}
+
+	public int GetCurrentCityDataVersion(){
+		return m_sCurrentCityVersion;
 	}
 
 	public void SetCurrentCity(String sCurrentCity){

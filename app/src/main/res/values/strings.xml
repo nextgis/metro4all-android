@@ -151,6 +151,8 @@
     <string name="sReportSend">Send</string>
     <string name="sReportDefineArea">Define area at layout</string>
     <string name="sReportDefineAreaTooltip">Tap to select discussed area</string>
+    <string name="sReportTextNotNull">Please enter text message</string>
+    <string name="sReportCityNotNull">Please load and select at least one city</string>
 
     <string name="sTimeUnitHour">h.</string>
     <string name="sTimeUnitMinute">min.</string>
