@@ -21,26 +21,37 @@
 
 package com.nextgis.metroaccess;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nextgis.metroaccess.data.StationItem;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -68,17 +79,24 @@ import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_X;
 import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_Y;
 import static com.nextgis.metroaccess.Constants.BUNDLE_PATH_KEY;
 import static com.nextgis.metroaccess.Constants.BUNDLE_STATIONID_KEY;
+import static com.nextgis.metroaccess.Constants.CAMERA_REQUEST;
 import static com.nextgis.metroaccess.Constants.DEFINE_AREA_RESULT;
 import static com.nextgis.metroaccess.Constants.PARAM_DEFINE_AREA;
 import static com.nextgis.metroaccess.Constants.PARAM_SCHEME_PATH;
+import static com.nextgis.metroaccess.Constants.PICK_REQUEST;
 
 public class ReportActivity extends ActionBarActivity implements View.OnClickListener {
+    private final static int IMAGES_PER_ROW = 3;
+
     private Map<String, Integer> mStations;
     private int mStationId;
     private int mX = -1, mY = -1;
     private Bitmap mScreenshot;
     private EditText mEtEmail, mEtText;
     private Spinner mSpCategories;
+    private RecyclerView mRecyclerView;
+    private PhotoAdapter mPhotoAdapter;
+    private int mRowHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +156,18 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
 
         mEtEmail = (EditText) findViewById(R.id.et_report_email);
         mEtText = (EditText) findViewById(R.id.et_report_body);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_photos);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, IMAGES_PER_ROW));
+        mPhotoAdapter = new PhotoAdapter();
+        mRecyclerView.setAdapter(mPhotoAdapter);
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                mRowHeight = mRecyclerView.getHeight();
+            }
+        });
     }
 
     @Override
@@ -163,6 +193,10 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                         mScreenshot = BitmapFactory.decodeFile(data.getStringExtra(BUNDLE_PATH_KEY));
                     }
                 }
+                break;
+            case CAMERA_REQUEST:
+            case PICK_REQUEST:
+                mPhotoAdapter.onActivityResult(requestCode, resultCode, data);
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
@@ -233,13 +267,30 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                                 jsonObject.accumulate("coord_y", mY);
                             }
 
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            byte[] byteArray;
+                            String imageBase64;
+
                             if (mScreenshot != null) {
-                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                 mScreenshot.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-                                byte[] byteArray = stream.toByteArray();
-                                String imageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                                byteArray = stream.toByteArray();
+                                imageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
                                 jsonObject.accumulate("screenshot", imageBase64);
                             }
+
+                            JSONArray photos = new JSONArray();
+                            for (Bitmap photo : mPhotoAdapter.getImages()) {
+                                stream.reset();
+                                photo.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+                                byteArray = stream.toByteArray();
+                                imageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                                photos.put(imageBase64);
+                            }
+
+                            if (photos.length() > 0)
+                                jsonObject.accumulate("photos", photos);
+
+                            stream.close();
 
                             URL url = new URL("http://");
                             conn = (HttpURLConnection) url.openConnection();
@@ -274,6 +325,127 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                 });
                 thr.start();
                 break;
+        }
+    }
+
+    class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> implements PhotoViewHolder.IViewHolderClick {
+        private List<Bitmap> mImages;
+
+        public PhotoAdapter() {
+            mImages = new ArrayList<>();
+            mImages.add(BitmapFactory.decodeResource(getResources(), R.drawable.ic_add_white_48dp));
+        }
+
+        @Override
+        public PhotoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.photo_item, parent, false);
+            return new PhotoViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(final PhotoViewHolder holder, final int position) {
+            holder.setOnClickListener(this);
+            holder.setPhoto(mImages.get(position));
+
+            if (position == mImages.size() - 1)
+                holder.setControl();
+        }
+
+        @Override
+        public int getItemCount() {
+            return mImages.size();
+        }
+
+        public List<Bitmap> getImages() {
+            ArrayList<Bitmap> images = new ArrayList<>();
+            images.addAll(mImages);
+            images.remove(images.size() - 1);
+            return images;
+        }
+
+        @Override
+        public void onItemClick(View caller, int position) {
+            switch (caller.getId()) {
+                case R.id.iv_photo:
+                    if (position == mImages.size() - 1) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ReportActivity.this);
+                        builder.setTitle(R.string.sReportPhotoAdd);
+                        builder.setItems(R.array.report_add_photos, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int item) {
+                                Intent intent;
+                                switch (item) {
+                                    case 0:
+                                        intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                        startActivityForResult(intent, CAMERA_REQUEST);
+                                        break;
+                                    case 1:
+                                        intent = new Intent(Intent.ACTION_GET_CONTENT);
+                                        intent.setType("image/*");
+                                        startActivityForResult(
+                                                Intent.createChooser(intent, getString(R.string.sReportPhotoPick)), PICK_REQUEST);
+                                        break;
+                                }
+                            }
+                        });
+                        builder.show();
+                    }
+                    break;
+                case R.id.ib_remove:
+                    mImages.remove(position);
+                    notifyItemRemoved(position);
+                    measureParent();
+                    break;
+            }
+        }
+
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            if (resultCode == RESULT_OK) {
+                Bitmap selectedImage = null;
+
+                switch (requestCode) {
+                    case CAMERA_REQUEST:
+                        selectedImage = (Bitmap) data.getExtras().get("data");
+                        break;
+                    case PICK_REQUEST:
+                        Uri selectedImageUri = data.getData();
+                        String[] projection = {MediaStore.MediaColumns.DATA};
+                        Cursor cursor = getContentResolver().query(selectedImageUri, projection, null, null, null);
+
+                        if (cursor == null || !cursor.moveToFirst()) {
+                            Toast.makeText(ReportActivity.this, getString(R.string.sReportPhotoPickFail), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        String selectedImagePath = cursor.getString(0);
+                        cursor.close();
+
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inJustDecodeBounds = true;
+                        BitmapFactory.decodeFile(selectedImagePath, options);
+                        final int REQUIRED_SIZE = 800;
+                        int scale = 1;
+
+                        while (options.outWidth / scale / 2 >= REQUIRED_SIZE && options.outHeight / scale / 2 >= REQUIRED_SIZE)
+                            scale *= 2;
+
+                        options.inSampleSize = scale;
+                        options.inJustDecodeBounds = false;
+
+                        selectedImage = BitmapFactory.decodeFile(selectedImagePath, options);
+                        break;
+                }
+
+                mImages.add(mImages.size() - 1, selectedImage);
+                notifyItemInserted(mImages.size() - 2);
+                measureParent();
+            }
+        }
+
+        private void measureParent() {
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mRecyclerView.getLayoutParams();
+            params.height = (int) Math.ceil(1f * mImages.size() / IMAGES_PER_ROW) * mRowHeight;
+            mRecyclerView.setLayoutParams(params);
         }
     }
 }

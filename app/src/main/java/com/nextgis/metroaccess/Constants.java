@@ -55,6 +55,8 @@ public interface Constants {
     public final static int PREF_RESULT = 3;
     public final static int SUBSCREEN_PORTAL_RESULT = 4;
     public final static int DEFINE_AREA_RESULT = 5;
+    public final static int CAMERA_REQUEST = 6;
+    public final static int PICK_REQUEST = 7;
     public final static int MAX_RECENT_ITEMS = 10;
 
     public final static String PARAM_PORTAL_DIRECTION = "PORTAL_DIRECTION";
