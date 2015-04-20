@@ -38,16 +38,13 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin">
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/sStationName"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    style="?android:attr/listSeparatorTextViewStyle"
+                    android:text="@string/sStationName" />
 
                 <TextView
                     android:id="@+id/tv_report_define_area"
@@ -59,7 +56,7 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="?android:textColorLink" />
 
-            </LinearLayout>
+            </FrameLayout>
 
             <Spinner
                 android:id="@+id/sp_station"
@@ -67,10 +64,8 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/sReportCategory"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:text="@string/sReportCategory" />
 
             <Spinner
                 android:id="@+id/sp_category"
@@ -78,15 +73,14 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/sReportBody"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:text="@string/sReportBody" />
 
             <EditText
                 android:id="@+id/et_report_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/sReportBodyHint"
                 android:inputType="textMultiLine"
                 android:maxLines="5"
                 android:scrollHorizontally="false"
@@ -94,23 +88,20 @@
                 android:singleLine="false" />
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/sReportEmail"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:text="@string/sReportEmail" />
 
             <EditText
                 android:id="@+id/et_report_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/sReportEmailHint"
                 android:inputType="textEmailAddress"
                 android:lines="3" />
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/sReportPhotos"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:text="@string/sReportPhotos" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_photos"
@@ -129,6 +120,7 @@
         android:layout_gravity="bottom"
         android:layout_margin="@dimen/search_button_margin"
         android:background="@drawable/btn_selector"
+        android:enabled="false"
         android:text="@string/sReportSend"
         android:textColor="@color/btn_selector" />
 

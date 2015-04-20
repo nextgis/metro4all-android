@@ -34,7 +34,9 @@ import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -151,11 +153,19 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
             }
         });
 
-        Button btnReport = (Button) findViewById(R.id.btn_report_send);
+        final Button btnReport = (Button) findViewById(R.id.btn_report_send);
         btnReport.setOnClickListener(this);
 
         mEtEmail = (EditText) findViewById(R.id.et_report_email);
         mEtText = (EditText) findViewById(R.id.et_report_body);
+        mEtText.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                btnReport.setEnabled(!TextUtils.isEmpty(s));
+            }
+        });
 
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_photos);
         mRecyclerView.setHasFixedSize(true);
