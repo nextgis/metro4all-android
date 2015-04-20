@@ -57,19 +57,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -99,6 +88,7 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
     private RecyclerView mRecyclerView;
     private PhotoAdapter mPhotoAdapter;
     private int mRowHeight;
+    private StationItem mStation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,12 +133,18 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mStationId = mStations.get(adapter.getItem(i));
+                mStation = mStationId >= 0 ? Analytics.getGraph().GetStation(mStationId) : null;
+                mScreenshot = null;
+                mX = mY = -1;
                 tvDefine.setVisibility(mStationId == -1 ? View.GONE : View.VISIBLE);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
                 mStationId = -1;
+                mStation = null;
+                mScreenshot = null;
+                mX = mY = -1;
                 tvDefine.setVisibility(View.GONE);
             }
         });
@@ -216,18 +212,16 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-        final StationItem station = mStationId >= 0 ? Analytics.getGraph().GetStation(mStationId) : null;
-
         switch (view.getId()) {
             case R.id.tv_report_define_area:
-                if (station == null)
+                if (mStation == null)
                     return;
 
                 Intent intentView = new Intent(this, StationImageView.class);
 
-                File schemaFile = new File(MainActivity.GetGraph().GetCurrentRouteDataPath() + "/schemes", station.GetNode() + ".png");
+                File schemaFile = new File(MainActivity.GetGraph().GetCurrentRouteDataPath() + "/schemes", mStation.GetNode() + ".png");
                 final Bundle bundle = new Bundle();
-                bundle.putInt(BUNDLE_STATIONID_KEY, station.GetId());
+                bundle.putInt(BUNDLE_STATIONID_KEY, mStation.GetId());
                 bundle.putString(PARAM_SCHEME_PATH, schemaFile.getPath());
                 bundle.putBoolean(PARAM_DEFINE_AREA, true);
 
@@ -245,97 +239,65 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                     return;
                 }
 
-                // enhancement
-                // http://stackoverflow.com/a/17647211
-                // http://loopj.com/android-async-http/
-
-                Thread thr = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        HttpURLConnection conn = null;
-
-                        try {
-                            JSONObject jsonObject = new JSONObject();
-                            jsonObject.accumulate("time", System.currentTimeMillis());
-                            jsonObject.accumulate("city_name", Analytics.getGraph().GetCurrentCity());
-                            jsonObject.accumulate("package_version", Analytics.getGraph().GetCurrentCityDataVersion());
-                            jsonObject.accumulate("lang_data", Analytics.getGraph().GetLocale());
-                            jsonObject.accumulate("lang_device", Locale.getDefault().getLanguage());
-                            jsonObject.accumulate("text", mEtText.getText());
-                            jsonObject.accumulate("cat_id", mSpCategories.getSelectedItemId());
-
-                            if (station != null) {
-                                jsonObject.accumulate("id_node", station.GetNode());
-                            }
-
-                            if (!TextUtils.isEmpty(mEtEmail.getText())) {
-                                jsonObject.accumulate("email", mEtEmail.getText());
-                            }
-
-                            if (mX >= 0 && mY >= 0) {
-                                jsonObject.accumulate("coord_x", mX);
-                                jsonObject.accumulate("coord_y", mY);
-                            }
-
-                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                            byte[] byteArray;
-                            String imageBase64;
-
-                            if (mScreenshot != null) {
-                                mScreenshot.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-                                byteArray = stream.toByteArray();
-                                imageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                                jsonObject.accumulate("screenshot", imageBase64);
-                            }
-
-                            JSONArray photos = new JSONArray();
-                            for (Bitmap photo : mPhotoAdapter.getImages()) {
-                                stream.reset();
-                                photo.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-                                byteArray = stream.toByteArray();
-                                imageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                                photos.put(imageBase64);
-                            }
-
-                            if (photos.length() > 0)
-                                jsonObject.accumulate("photos", photos);
-
-                            stream.close();
-
-                            URL url = new URL("http://");
-                            conn = (HttpURLConnection) url.openConnection();
-                            conn.setDoInput(true);
-                            conn.setDoOutput(true);
-                            conn.setRequestMethod("POST");
-                            conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                            conn.setConnectTimeout(10000);
-                            conn.setReadTimeout(10000);
-                            conn.connect();
-
-                            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
-                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-                            writer.write(jsonObject.toString());
-                            writer.flush();
-                            writer.close();
-                            out.close();
-
-                            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK)
-                                Toast.makeText(getApplicationContext(), "200 OK", Toast.LENGTH_SHORT).show();
-
-                            InputStream in = new BufferedInputStream(conn.getInputStream());
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-                            Toast.makeText(getApplicationContext(), reader.readLine(), Toast.LENGTH_LONG).show();
-                        } catch (JSONException | IOException e) {
-                            e.printStackTrace();
-                        } finally {
-                            if (conn != null)
-                                conn.disconnect();
-                        }
-                    }
-                });
-                thr.start();
+                final String json = makeJSON();
+                Analytics.sendReport(this, json, true);
                 break;
         }
+    }
+
+    private String makeJSON() {
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            jsonObject.accumulate("time", System.currentTimeMillis());
+
+            jsonObject.accumulate("city_name", Analytics.getGraph().GetCurrentCity());
+            jsonObject.accumulate("package_version", Analytics.getGraph().GetCurrentCityDataVersion());
+            jsonObject.accumulate("lang_data", Analytics.getGraph().GetLocale());
+            jsonObject.accumulate("lang_device", Locale.getDefault().getLanguage());
+            jsonObject.accumulate("text", mEtText.getText());
+            jsonObject.accumulate("cat_id", mSpCategories.getSelectedItemId());
+
+            if (mStation != null) {
+                jsonObject.accumulate("id_node", mStation.GetNode());
+            }
+
+            if (!TextUtils.isEmpty(mEtEmail.getText())) {
+                jsonObject.accumulate("email", mEtEmail.getText());
+            }
+
+            if (mX >= 0 && mY >= 0) {
+                jsonObject.accumulate("coord_x", mX);
+                jsonObject.accumulate("coord_y", mY);
+            }
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            byte[] byteArray;
+            String imageBase64;
+
+            if (mScreenshot != null) {
+                mScreenshot.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+                byteArray = stream.toByteArray();
+                imageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                jsonObject.accumulate("screenshot", imageBase64);
+            }
+
+            JSONArray photos = new JSONArray();
+            for (Bitmap photo : mPhotoAdapter.getImages()) {
+                stream.reset();
+                photo.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+                byteArray = stream.toByteArray();
+                imageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                photos.put(imageBase64);
+            }
+
+            if (photos.length() > 0)
+                jsonObject.accumulate("photos", photos);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return jsonObject.toString();
     }
 
     class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> implements PhotoViewHolder.IViewHolderClick {
