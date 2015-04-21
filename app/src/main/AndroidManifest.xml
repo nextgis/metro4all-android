@@ -75,6 +75,11 @@
             android:name="com.nextgis.metroaccess.ReportActivity"
             android:label="@string/sReportMenu"
             android:screenOrientation="portrait" />
+        <receiver android:name=".NetWatcher" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

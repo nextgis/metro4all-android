@@ -161,6 +161,9 @@
     <string name="sReportPhotoTake">Take new photo</string>
     <string name="sReportPhotoPick">Pick existing one</string>
     <string name="sReportPhotoPickFail">Can not attach photo</string>
+    <string name="sReportSending">Sending report…</string>
+    <string name="sReportSent">Report sent</string>
+    <string name="sReportSentFail">Can\'t send report now, it\'ll be send later</string>
     <string name="sReportCatInfo">Information</string>
     <string name="sReportCatError">Error</string>
     <string name="sReportCatMobReq">Mobility requirement</string>

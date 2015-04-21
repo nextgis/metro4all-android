@@ -65,6 +65,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 
+import static com.nextgis.metroaccess.Constants.APP_REPORTS_DIR;
 import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_X;
 import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_Y;
 import static com.nextgis.metroaccess.Constants.BUNDLE_PATH_KEY;
@@ -284,7 +285,8 @@ public class StationImageView extends ActionBarActivity {
                 mImgY = 0;
 
             if (result != null) {
-                result = new File(result, "screen.jpg");
+                result = new File(result, APP_REPORTS_DIR);
+                result = new File(result, "screenshot.jpg");
                 fos = new FileOutputStream(result);
 
                 if (getExternalFilesDir(null) != null) {

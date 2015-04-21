@@ -22,6 +22,7 @@
 package com.nextgis.metroaccess;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,6 +31,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -53,14 +55,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nextgis.metroaccess.data.StationItem;
 
+import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -68,6 +74,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.nextgis.metroaccess.Constants.APP_REPORTS_DIR;
 import static com.nextgis.metroaccess.Constants.APP_REPORTS_PHOTOS_DIR;
 import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_X;
 import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_Y;
@@ -162,7 +169,7 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                btnReport.setEnabled(!TextUtils.isEmpty(s));
+                btnReport.setEnabled(!TextUtils.isEmpty(s.toString().trim()));
             }
         });
 
@@ -232,7 +239,7 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                 startActivityForResult(intentView, DEFINE_AREA_RESULT);
                 break;
             case R.id.btn_report_send:
-                if (TextUtils.isEmpty(mEtText.getText())) {
+                if (TextUtils.isEmpty(mEtText.getText().toString().trim())) {
                     Toast.makeText(this, getString(R.string.sReportTextNotNull), Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -242,8 +249,7 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                     return;
                 }
 
-                final String json = makeJSON();
-                Analytics.sendReport(this, json, true);
+                new ReportSender().execute();
                 break;
         }
     }
@@ -258,15 +264,15 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
             jsonObject.accumulate("package_version", Analytics.getGraph().GetCurrentCityDataVersion());
             jsonObject.accumulate("lang_data", Analytics.getGraph().GetLocale());
             jsonObject.accumulate("lang_device", Locale.getDefault().getLanguage());
-            jsonObject.accumulate("text", mEtText.getText());
+            jsonObject.accumulate("text", mEtText.getText().toString().trim());
             jsonObject.accumulate("cat_id", mSpCategories.getSelectedItemId());
 
             if (mStation != null) {
                 jsonObject.accumulate("id_node", mStation.GetNode());
             }
 
-            if (!TextUtils.isEmpty(mEtEmail.getText())) {
-                jsonObject.accumulate("email", mEtEmail.getText());
+            if (!TextUtils.isEmpty(mEtEmail.getText().toString().trim())) {
+                jsonObject.accumulate("email", mEtEmail.getText().toString().trim());
             }
 
             if (mX >= 0 && mY >= 0) {
@@ -308,23 +314,67 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
         return jsonObject.toString();
     }
 
+    private class ReportSender extends AsyncTask<Void, Void, String> {
+        private ProgressDialog mProgressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog = ProgressDialog.show(ReportActivity.this, null,
+                    getString(R.string.sReportSending), true, false);
+        }
+
+        @Override
+        protected String doInBackground(Void... objects) {
+            return makeJSON();
+        }
+
+        @SuppressWarnings("deprecation")
+        @Override
+        protected void onPostExecute(final String jsonResult) {
+            super.onPostExecute(jsonResult);
+
+            AsyncHttpResponseHandler handler = new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    Toast.makeText(ReportActivity.this, R.string.sReportSent, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    Toast.makeText(ReportActivity.this, R.string.sReportSentFail, Toast.LENGTH_SHORT).show();
+
+                    File file = new File(getExternalFilesDir(null), APP_REPORTS_DIR);
+                    if (!file.exists())
+                        if (!file.mkdir())
+                            return;
+
+                    file = new File(file, System.currentTimeMillis() + ".json");
+                    FileOutputStream stream;
+                    try {
+                        stream = new FileOutputStream(file);
+                        stream.write(jsonResult.getBytes());
+                        stream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+
+            Analytics.postJSON(getParent(), jsonResult, handler);
+
+            mProgressDialog.dismiss();
+            finish();
+        }
+    }
+
     private class CategoryAdapter extends ArrayAdapter<CharSequence> {
         private int[] mIds;
-
-//        public CategoryAdapter(Context context, int resource) {
-//            super(context, resource);
-//            mIds = getResources().getIntArray(R.array.report_categories_id);
-//        }
 
         private CategoryAdapter(Context context, int resource, CharSequence[] objects) {
             super(context, resource, objects);
             mIds = getResources().getIntArray(R.array.report_categories_id);
         }
-
-//        private CategoryAdapter(Context context, int resource, int textViewResourceId, CharSequence[] objects) {
-//            super(context, resource, textViewResourceId, objects);
-//            this.mIds = mIds;
-//        }
 
         @Override
         public long getItemId(int position) {
@@ -332,7 +382,7 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
         }
     }
 
-    class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> implements PhotoViewHolder.IViewHolderClick {
+    private class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> implements PhotoViewHolder.IViewHolderClick {
         private List<Bitmap> mImages;
         private List<String> mImagesPath;
         private Uri mPhotoUri;

@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -35,19 +34,15 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nextgis.metroaccess.data.MAGraph;
 
-import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
-import static com.nextgis.metroaccess.Constants.APP_REPORTS_DIR;
 import static com.nextgis.metroaccess.Constants.APP_VERSION;
 import static com.nextgis.metroaccess.Constants.KEY_PREF_RECENT_ARR_STATIONS;
 import static com.nextgis.metroaccess.Constants.KEY_PREF_RECENT_DEP_STATIONS;
@@ -140,43 +135,16 @@ public class Analytics extends Application {
     }
 
     @SuppressWarnings("deprecation")
-    public static void sendReport(final Context context, final String json, final boolean saveOnFailure) {
+    public static void postJSON(Context context, String json, AsyncHttpResponseHandler handler) {
         StringEntity se = null;
         try {
             se = new StringEntity(json, "UTF-8");
             se.setContentType("application/json;charset=UTF-8");
             se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
-        } catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException ignored) {
         }
 
-        client.post(context, ConstantsSecured.REPORT_SERVER, se, "application/json", new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Toast.makeText(context, "Failure: " + statusCode, Toast.LENGTH_SHORT).show();
-
-                if (saveOnFailure) {
-                    File file = new File(context.getExternalFilesDir(null), APP_REPORTS_DIR);
-                    if (!file.exists())
-                        if (!file.mkdir())
-                            return;
-
-                    file = new File(file, System.currentTimeMillis() + ".json");
-                    FileOutputStream stream;
-                    try {
-                        stream = new FileOutputStream(file);
-                        stream.write(json.getBytes());
-                        stream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
+        client.post(context, ConstantsSecured.REPORT_SERVER, se, "application/json", handler);
     }
 
     private void updateApplicationStructure(SharedPreferences prefs) {
