@@ -308,6 +308,7 @@ public class SelectStationActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         menu.findItem(R.id.btn_locate).setVisible(false);
+        menu.findItem(R.id.btn_report_send).setVisible(false);
         return true;
     }
 

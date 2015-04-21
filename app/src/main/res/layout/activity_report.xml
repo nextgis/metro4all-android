@@ -38,12 +38,19 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin">
 
+            <TextView
+                style="@style/TextAppearance.AppCompat.Small"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/sReportInfo" />
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
-                    style="?android:attr/listSeparatorTextViewStyle"
+                    style="@style/Widget.Report.Title"
                     android:text="@string/sStationName" />
 
                 <TextView
@@ -64,7 +71,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                style="?android:attr/listSeparatorTextViewStyle"
+                style="@style/Widget.Report.Title"
                 android:text="@string/sReportCategory" />
 
             <Spinner
@@ -73,7 +80,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                style="?android:attr/listSeparatorTextViewStyle"
+                style="@style/Widget.Report.Title"
                 android:text="@string/sReportBody" />
 
             <EditText
@@ -88,7 +95,8 @@
                 android:singleLine="false" />
 
             <TextView
-                style="?android:attr/listSeparatorTextViewStyle"
+                style="@style/Widget.Report.Title"
+                android:layout_marginTop="8dp"
                 android:text="@string/sReportEmail" />
 
             <EditText
@@ -100,7 +108,8 @@
                 android:lines="3" />
 
             <TextView
-                style="?android:attr/listSeparatorTextViewStyle"
+                style="@style/Widget.Report.Title"
+                android:layout_marginTop="8dp"
                 android:text="@string/sReportPhotos" />
 
             <android.support.v7.widget.RecyclerView

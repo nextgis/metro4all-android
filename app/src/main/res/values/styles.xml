@@ -96,4 +96,11 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="Widget.Report.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/metro_material_dark</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:capitalize">characters</item>
+    </style>
 </resources>

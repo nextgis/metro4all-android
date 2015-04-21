@@ -129,7 +129,7 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
         mStations.put(getString(R.string.sNotSet), -1);
 
         mSpCategories = (Spinner) findViewById(R.id.sp_category);
-        CategoryAdapter categories = new CategoryAdapter(this, R.layout.support_simple_spinner_dropdown_item,
+        CategoryAdapter categories = new CategoryAdapter(this, android.R.layout.simple_list_item_1,
                 getResources().getTextArray(R.array.report_categories));
         mSpCategories.setAdapter(categories);
 
@@ -138,7 +138,7 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
         tvDefine.setPaintFlags(tvDefine.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         tvDefine.setOnClickListener(this);
 
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, keys);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, keys);
         spStations.setAdapter(adapter);
         spStations.setSelection(keys.indexOf(stationName));
 

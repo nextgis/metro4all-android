@@ -144,16 +144,17 @@
     <string name="sNaviTypeDisabled">Disabled</string>
     <string name="sNaviTypeLuggage">Luggage</string>
 
+    <string name="sReportInfo">Here you can let us know about errors on station layouts, new information or access problems.</string>
     <string name="sReportView">Error?</string>
-    <string name="sReportMenu">Report error</string>
+    <string name="sReportMenu">Send report</string>
     <string name="sReportCategory">Category</string>
-    <string name="sReportBody">Message</string>
-    <string name="sReportBodyHint">Enter your text*</string>
+    <string name="sReportBody">Message<sup>*</sup></string>
+    <string name="sReportBodyHint">Enter message text</string>
     <string name="sReportEmail">Email</string>
     <string name="sReportEmailHint">If you want to get response</string>
     <string name="sReportPhotos">Photos</string>
     <string name="sReportSend">Send</string>
-    <string name="sReportDefineArea">Define area at layout</string>
+    <string name="sReportDefineArea">Mark on layout</string>
     <string name="sReportDefineAreaTooltip">Tap to select discussed area</string>
     <string name="sReportTextNotNull">Please enter text message</string>
     <string name="sReportCityNotNull">Please load and select at least one city</string>
@@ -167,7 +168,7 @@
     <string name="sReportSentFail">Can\'t send report now, it\'ll be send later</string>
     <string name="sReportCatInfo">Information</string>
     <string name="sReportCatError">Error</string>
-    <string name="sReportCatMobReq">Mobility requirement</string>
+    <string name="sReportCatMobReq">Access problem</string>
 
     <string name="sIOError">Media storage is not available</string>
 

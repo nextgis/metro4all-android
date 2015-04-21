@@ -22,6 +22,7 @@
 package com.nextgis.metroaccess;
 
 import android.graphics.Bitmap;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
@@ -46,6 +47,11 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
     public void setControl() {
         mPhotoRemove.setVisibility(View.GONE);
+
+        View parentBox = mPhoto.getRootView();
+        GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams) parentBox.getLayoutParams();
+        lp.setMargins(lp.width / 5, lp.width / 5, lp.width / 5, lp.width / 5);
+        parentBox.setLayoutParams(lp);
     }
 
     public void setPhoto(Bitmap photo) {
