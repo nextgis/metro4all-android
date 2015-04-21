@@ -32,6 +32,7 @@ public interface Constants {
     final static String ROUTE_DATA_DIR = "rdata_v2.3";
     final static String APP_VERSION = "app_version";
     final static String APP_REPORTS_DIR = "reports";
+    final static String APP_REPORTS_PHOTOS_DIR = "Metro4All";
 
     public final static String CSV_CHAR = ";";
 

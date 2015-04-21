@@ -165,6 +165,8 @@
     <string name="sReportCatError">Error</string>
     <string name="sReportCatMobReq">Mobility requirement</string>
 
+    <string name="sIOError">Media storage is not available</string>
+
     <string name="sTimeUnitHour">h.</string>
     <string name="sTimeUnitMinute">min.</string>
 

@@ -30,6 +30,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -66,6 +67,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.nextgis.metroaccess.Constants.APP_REPORTS_PHOTOS_DIR;
 import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_X;
 import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_Y;
 import static com.nextgis.metroaccess.Constants.BUNDLE_PATH_KEY;
@@ -283,8 +285,13 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
             }
 
             JSONArray photos = new JSONArray();
-            for (Bitmap photo : mPhotoAdapter.getImages()) {
+            for (String photoPath : mPhotoAdapter.getImagesPath()) {
                 stream.reset();
+
+                if (photoPath == null)
+                    continue;
+
+                Bitmap photo = BitmapFactory.decodeFile(photoPath);
                 photo.compress(Bitmap.CompressFormat.JPEG, 50, stream);
                 byteArray = stream.toByteArray();
                 imageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
@@ -302,10 +309,14 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
 
     class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> implements PhotoViewHolder.IViewHolderClick {
         private List<Bitmap> mImages;
+        private List<String> mImagesPath;
+        private Uri mPhotoUri;
 
         public PhotoAdapter() {
             mImages = new ArrayList<>();
+            mImagesPath = new ArrayList<>();
             mImages.add(BitmapFactory.decodeResource(getResources(), R.drawable.ic_add_white_48dp));
+            mImagesPath.add(null);
         }
 
         @Override
@@ -328,9 +339,9 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
             return mImages.size();
         }
 
-        public List<Bitmap> getImages() {
-            ArrayList<Bitmap> images = new ArrayList<>();
-            images.addAll(mImages);
+        public List<String> getImagesPath() {
+            ArrayList<String> images = new ArrayList<>();
+            images.addAll(mImagesPath);
             images.remove(images.size() - 1);
             return images;
         }
@@ -349,6 +360,17 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                                 switch (item) {
                                     case 0:
                                         intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                        File photo = new File(Environment.getExternalStoragePublicDirectory(
+                                                Environment.DIRECTORY_DCIM), APP_REPORTS_PHOTOS_DIR);
+
+                                        if (!photo.mkdirs() && !photo.exists()) {
+                                            Toast.makeText(ReportActivity.this, R.string.sIOError, Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+
+                                        photo = new File(photo, System.currentTimeMillis() + ".jpg");
+                                        mPhotoUri = Uri.fromFile(photo);
+                                        intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, mPhotoUri);
                                         startActivityForResult(intent, CAMERA_REQUEST);
                                         break;
                                     case 1:
@@ -365,6 +387,7 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                     break;
                 case R.id.ib_remove:
                     mImages.remove(position);
+                    mImagesPath.remove(position);
                     notifyItemRemoved(position);
                     measureParent();
                     break;
@@ -373,11 +396,12 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
 
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             if (resultCode == RESULT_OK) {
-                Bitmap selectedImage = null;
+                Bitmap selectedImage;
+                String selectedImagePath = null;
 
                 switch (requestCode) {
                     case CAMERA_REQUEST:
-                        selectedImage = (Bitmap) data.getExtras().get("data");
+                        selectedImagePath = mPhotoUri.getPath();
                         break;
                     case PICK_REQUEST:
                         Uri selectedImageUri = data.getData();
@@ -389,29 +413,35 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                             return;
                         }
 
-                        String selectedImagePath = cursor.getString(0);
+                        selectedImagePath = cursor.getString(0);
                         cursor.close();
-
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inJustDecodeBounds = true;
-                        BitmapFactory.decodeFile(selectedImagePath, options);
-                        final int REQUIRED_SIZE = 800;
-                        int scale = 1;
-
-                        while (options.outWidth / scale / 2 >= REQUIRED_SIZE && options.outHeight / scale / 2 >= REQUIRED_SIZE)
-                            scale *= 2;
-
-                        options.inSampleSize = scale;
-                        options.inJustDecodeBounds = false;
-
-                        selectedImage = BitmapFactory.decodeFile(selectedImagePath, options);
                         break;
                 }
 
-                mImages.add(mImages.size() - 1, selectedImage);
-                notifyItemInserted(mImages.size() - 2);
+                selectedImage = getThumbnail(selectedImagePath);
+
+                int position = mImages.size() - 1;
+                mImages.add(position, selectedImage);
+                mImagesPath.add(position, selectedImagePath);
+                notifyItemInserted(position);
                 measureParent();
             }
+        }
+
+        private Bitmap getThumbnail(String path) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(path, options);
+            final int REQUIRED_SIZE = 200;
+            int scale = 1;
+
+            while (options.outWidth / scale / 2 >= REQUIRED_SIZE && options.outHeight / scale / 2 >= REQUIRED_SIZE)
+                scale *= 2;
+
+            options.inSampleSize = scale;
+            options.inJustDecodeBounds = false;
+
+            return BitmapFactory.decodeFile(path, options);
         }
 
         private void measureParent() {
