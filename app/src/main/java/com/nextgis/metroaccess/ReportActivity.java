@@ -30,10 +30,13 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -334,37 +337,50 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
         protected void onPostExecute(final String jsonResult) {
             super.onPostExecute(jsonResult);
 
-            AsyncHttpResponseHandler handler = new AsyncHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    Toast.makeText(ReportActivity.this, R.string.sReportSent, Toast.LENGTH_SHORT).show();
-                }
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo info = cm.getActiveNetworkInfo();
+            boolean onWiFiOnly = PreferenceManager.getDefaultSharedPreferences(ReportActivity.this)
+                    .getBoolean(PreferencesActivity.KEY_PREF_REPORT_WIFI, false);
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                    Toast.makeText(ReportActivity.this, R.string.sReportSentFail, Toast.LENGTH_SHORT).show();
-
-                    File file = new File(getExternalFilesDir(null), APP_REPORTS_DIR);
-                    if (!file.exists())
-                        if (!file.mkdir())
-                            return;
-
-                    file = new File(file, System.currentTimeMillis() + ".json");
-                    FileOutputStream stream;
-                    try {
-                        stream = new FileOutputStream(file);
-                        stream.write(jsonResult.getBytes());
-                        stream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            if (onWiFiOnly && info != null && info.getType() != ConnectivityManager.TYPE_WIFI)
+                saveReport(jsonResult);
+            else {
+                AsyncHttpResponseHandler handler = new AsyncHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                        Toast.makeText(ReportActivity.this, R.string.sReportSent, Toast.LENGTH_SHORT).show();
                     }
-                }
-            };
 
-            Analytics.postJSON(getParent(), jsonResult, handler);
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                        saveReport(jsonResult);
+                    }
+                };
+
+                Analytics.postJSON(getParent(), jsonResult, handler);
+            }
 
             mProgressDialog.dismiss();
             finish();
+        }
+
+        private void saveReport(String json) {
+            Toast.makeText(ReportActivity.this, R.string.sReportSentFail, Toast.LENGTH_SHORT).show();
+
+            File file = new File(getExternalFilesDir(null), APP_REPORTS_DIR);
+            if (!file.exists())
+                if (!file.mkdir())
+                    return;
+
+            file = new File(file, System.currentTimeMillis() + ".json");
+            FileOutputStream stream;
+            try {
+                stream = new FileOutputStream(file);
+                stream.write(json.getBytes());
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

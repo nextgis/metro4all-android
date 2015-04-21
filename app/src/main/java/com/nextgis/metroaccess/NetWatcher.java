@@ -47,8 +47,12 @@ public class NetWatcher extends BroadcastReceiver {
             ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo info = cm.getActiveNetworkInfo();
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            boolean onWiFiOnly = preferences.getBoolean(PreferencesActivity.KEY_PREF_REPORT_WIFI, false);
 
             if (info != null && info.isConnected()) {
+                if (onWiFiOnly && info.getType() != ConnectivityManager.TYPE_WIFI)
+                    return;
+
                 File file = new File(context.getExternalFilesDir(null), APP_REPORTS_DIR);
                 if (file.exists() && file.isDirectory()) {
                     for (final File report : file.listFiles()) {

@@ -69,7 +69,11 @@
                 <!--android:targetClass="com.nextgis.metroaccess.LimitationsActivity"/>-->
         <!--</Preference>-->
 
-
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="reports_wifi"
+            android:title="@string/sPrefReportWiFi"
+            />
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="ga_enabled"
