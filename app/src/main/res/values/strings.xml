@@ -145,7 +145,6 @@
     <string name="sNaviTypeLuggage">Luggage</string>
 
     <string name="sReportInfo">Here you can let us know about errors on station layouts, new information or access problems.</string>
-    <string name="sReportView">Error?</string>
     <string name="sReportMenu">Send report</string>
     <string name="sReportCategory">Category</string>
     <string name="sReportBody">Message<sup>*</sup></string>
