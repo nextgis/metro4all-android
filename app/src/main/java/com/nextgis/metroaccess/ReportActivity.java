@@ -22,6 +22,7 @@
 package com.nextgis.metroaccess;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -118,8 +119,8 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
         mStations.put(getString(R.string.sNotSet), -1);
 
         mSpCategories = (Spinner) findViewById(R.id.sp_category);
-        ArrayAdapter<CharSequence> categories = ArrayAdapter.createFromResource(this,
-                R.array.report_categories, R.layout.support_simple_spinner_dropdown_item);
+        CategoryAdapter categories = new CategoryAdapter(this, R.layout.support_simple_spinner_dropdown_item,
+                getResources().getTextArray(R.array.report_categories));
         mSpCategories.setAdapter(categories);
 
         final TextView tvDefine = (TextView) findViewById(R.id.tv_report_define_area);
@@ -305,6 +306,30 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
         }
 
         return jsonObject.toString();
+    }
+
+    private class CategoryAdapter extends ArrayAdapter<CharSequence> {
+        private int[] mIds;
+
+//        public CategoryAdapter(Context context, int resource) {
+//            super(context, resource);
+//            mIds = getResources().getIntArray(R.array.report_categories_id);
+//        }
+
+        private CategoryAdapter(Context context, int resource, CharSequence[] objects) {
+            super(context, resource, objects);
+            mIds = getResources().getIntArray(R.array.report_categories_id);
+        }
+
+//        private CategoryAdapter(Context context, int resource, int textViewResourceId, CharSequence[] objects) {
+//            super(context, resource, textViewResourceId, objects);
+//            this.mIds = mIds;
+//        }
+
+        @Override
+        public long getItemId(int position) {
+            return mIds[position];
+        }
     }
 
     class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> implements PhotoViewHolder.IViewHolderClick {

@@ -51,6 +51,12 @@
         <item>@string/sReportCatError</item>
         <item>@string/sReportCatMobReq</item>
     </string-array>
+    <integer-array name="report_categories_id">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </integer-array>
+
     <string-array name="report_add_photos">
         <item>@string/sReportPhotoTake</item>
         <item>@string/sReportPhotoPick</item>
