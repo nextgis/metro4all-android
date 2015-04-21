@@ -43,7 +43,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.TextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -165,8 +165,8 @@ public class StationMapActivity extends ActionBarActivity {
         ((FrameLayout) findViewById(R.id.fl_map_container)).addView(mMapView);
 
         // TODO super
-        TextView tvReport = (TextView) findViewById(R.id.tv_report);
-        tvReport.setPaintFlags(tvReport.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        ImageButton tvReport = (ImageButton) findViewById(R.id.ib_report);
+//        tvReport.setPaintFlags(tvReport.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         tvReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

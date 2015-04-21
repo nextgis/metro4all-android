@@ -27,7 +27,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,8 +48,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -155,9 +154,9 @@ public class StationImageView extends ActionBarActivity {
 
         mIsLimitations = LimitationsActivity.hasLimitations(this);
 
-        TextView tvReport = (TextView) findViewById(R.id.tv_report);
+        ImageButton tvReport = (ImageButton) findViewById(R.id.ib_report);
         tvReport.setVisibility(mIsDefineArea || isForLegend ? View.GONE : View.VISIBLE);
-        tvReport.setPaintFlags(tvReport.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+//        tvReport.setPaintFlags(tvReport.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         tvReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -62,7 +62,7 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
-    <include layout="@layout/tv_report_error" />
+    <include layout="@layout/ib_report_error" />
 
     <com.nhaarman.supertooltips.ToolTipRelativeLayout
         android:id="@+id/ttPortals"
