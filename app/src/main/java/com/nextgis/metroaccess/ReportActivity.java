@@ -26,7 +26,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
@@ -60,6 +59,7 @@ import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nextgis.metroaccess.data.StationItem;
+import com.nextgis.metroaccess.util.FileUtil;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -495,21 +495,16 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                         selectedImagePath = mPhotoUri.getPath();
                         break;
                     case PICK_REQUEST:
-                        Uri selectedImageUri = data.getData();
-                        String[] projection = {MediaStore.MediaColumns.DATA};
-                        Cursor cursor = getContentResolver().query(selectedImageUri, projection, null, null, null);
-
-                        if (cursor == null || !cursor.moveToFirst()) {
-                            Toast.makeText(ReportActivity.this, getString(R.string.sReportPhotoPickFail), Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        selectedImagePath = cursor.getString(0);
-                        cursor.close();
+                        selectedImagePath = FileUtil.getPath(ReportActivity.this, data.getData());
                         break;
                 }
 
                 selectedImage = getThumbnail(selectedImagePath);
+
+                if (selectedImage == null) {
+                    Toast.makeText(ReportActivity.this, getString(R.string.sReportPhotoPickFail), Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 int position = mImages.size() - 1;
                 mImages.add(position, selectedImage);

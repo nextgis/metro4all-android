@@ -288,7 +288,7 @@ public class StationImageView extends ActionBarActivity {
             if (result != null) {
                 result = new File(result, APP_REPORTS_DIR);
 
-                if (!result.mkdirs()) {
+                if (!result.exists() && !result.mkdirs()) {
                     Toast.makeText(this, R.string.sIOError, Toast.LENGTH_SHORT).show();
                     return;
                 }
