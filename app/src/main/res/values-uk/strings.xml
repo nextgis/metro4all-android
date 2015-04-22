@@ -161,7 +161,7 @@
 	<string name="sReportPhotoTake">Нове фото</string>
 	<string name="sReportPhotoPick">Обрати фото</string>
 	<string name="sReportPhotoPickFail">Неможливо прикріпити фото</string>
-	<string name="sReportSending">Відправка повідомлення...</string>
+	<string name="sReportSending">Відправка повідомлення…</string>
 	<string name="sReportSent">Повідомлення надіслано</string>
 	<string name="sReportSentFail">Не вдалося відправити, повідомлення буде надіслано пізніше</string>
 	<string name="sReportWaiting">повідомлень в черзі на відправку</string>
@@ -169,7 +169,7 @@
 	<string name="sReportCatError">Помилка</string>
 	<string name="sReportCatMobReq">Проблеми доступності</string>
 
-	<string name="sIOError">Пам'ять пристрою тимчасово недоступна</string>
+	<string name="sIOError">Пам\'ять пристрою тимчасово недоступна</string>
 
     <string name="sTimeUnitHour">год.</string>
     <string name="sTimeUnitMinute">хв.</string>

@@ -169,7 +169,7 @@
     <string name="sReportCatInfo">Information</string>
     <string name="sReportCatError">Error</string>
     <string name="sReportCatMobReq">Access problem</string>
-    <string name="sPrefReportWiFi">Отправлять отчеты только по Wi-Fi</string>
+
     <string name="sIOError">Media storage is not available</string>
 
     <string name="sTimeUnitHour">h.</string>
