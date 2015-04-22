@@ -21,13 +21,17 @@
 
 <ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ib_report"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="@dimen/search_button_height"
+    android:layout_height="@dimen/search_button_height"
     android:layout_alignParentBottom="true"
     android:layout_alignParentLeft="true"
     android:layout_alignParentStart="true"
     android:layout_gravity="start|bottom"
+    android:layout_marginBottom="@dimen/search_button_margin"
+    android:layout_marginLeft="@dimen/search_button_margin"
+    android:layout_marginStart="@dimen/search_button_margin"
+    android:background="@drawable/btn_selector"
     android:contentDescription="@string/sReportMenu"
     android:gravity="start|bottom"
     android:padding="8dp"
-    android:src="@drawable/ic_add_white_48dp" />
+    android:src="@drawable/ic_mail_white_24dp" />

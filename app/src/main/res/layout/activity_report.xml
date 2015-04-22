@@ -53,16 +53,6 @@
                     style="@style/Widget.Report.Title"
                     android:text="@string/sStationName" />
 
-                <TextView
-                    android:id="@+id/tv_report_define_area"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:gravity="end"
-                    android:text="@string/sReportDefineArea"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="?android:textColorLink" />
-
             </FrameLayout>
 
             <Spinner
@@ -71,6 +61,17 @@
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:id="@+id/tv_report_define_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:gravity="start"
+                android:text="@string/sReportDefineArea"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="?android:textColorLink" />
+
+            <TextView
+                android:layout_marginTop="8dp"
                 style="@style/Widget.Report.Title"
                 android:text="@string/sReportCategory" />
 
