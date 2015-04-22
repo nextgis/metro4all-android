@@ -100,6 +100,7 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
     private Spinner mSpCategories;
     private RecyclerView mRecyclerView;
     private PhotoAdapter mPhotoAdapter;
+    private TextView mTvDefine;
     private int mRowHeight;
     private StationItem mStation;
 
@@ -133,10 +134,10 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                 getResources().getTextArray(R.array.report_categories));
         mSpCategories.setAdapter(categories);
 
-        final TextView tvDefine = (TextView) findViewById(R.id.tv_report_define_area);
-        tvDefine.setVisibility(mStationId == -1 ? View.GONE : View.VISIBLE);
-        tvDefine.setPaintFlags(tvDefine.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        tvDefine.setOnClickListener(this);
+        mTvDefine = (TextView) findViewById(R.id.tv_report_define_area);
+        mTvDefine.setVisibility(mStationId == -1 ? View.GONE : View.VISIBLE);
+        mTvDefine.setPaintFlags(mTvDefine.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        mTvDefine.setOnClickListener(this);
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, keys);
         spStations.setAdapter(adapter);
@@ -149,7 +150,8 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                 mStation = mStationId >= 0 ? Analytics.getGraph().GetStation(mStationId) : null;
                 mScreenshot = null;
                 mX = mY = -1;
-                tvDefine.setVisibility(mStationId == -1 ? View.GONE : View.VISIBLE);
+                mTvDefine.setVisibility(mStationId == -1 ? View.GONE : View.VISIBLE);
+                mTvDefine.setText(R.string.sReportDefineArea);
             }
 
             @Override
@@ -158,7 +160,7 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                 mStation = null;
                 mScreenshot = null;
                 mX = mY = -1;
-                tvDefine.setVisibility(View.GONE);
+                mTvDefine.setVisibility(View.GONE);
             }
         });
 
@@ -210,6 +212,7 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                         mX = data.getIntExtra(BUNDLE_IMG_X, -1);
                         mY = data.getIntExtra(BUNDLE_IMG_Y, -1);
                         mScreenshot = BitmapFactory.decodeFile(data.getStringExtra(BUNDLE_PATH_KEY));
+                        mTvDefine.setText(R.string.sReportRedefineArea);
                     }
                 }
                 break;
