@@ -129,6 +129,7 @@
 	<string name="stationFilterHintText">Пачніце ўвод назвы станцыі</string>
     <string name="sPrefGA">Уключыць Google Analytics</string>
     <string name="sPrefGASum">Збірае дадзеныя для паляпшэння прадуктыўнасці праграмы</string>
+    <string name="sPrefReportWiFi">Отправлять отчеты только по Wi-Fi</string>
     <string name="sLimitationsInfo">Рэжым абмежаванняў дазваляе ўбачыць дадатковую інфармацыю пра перашкоды на маршруце і схемах станцый</string>
     <string name="sLimitationsHelp">Афіцыйная дапамога</string>
     <string name="sLimitationsHelpDialog">Служба дапамогі горада %s</string>
@@ -141,6 +142,34 @@
     <string name="sNaviTypeAll">All</string>
     <string name="sNaviTypeDisabled">Disabled</string>
     <string name="sNaviTypeLuggage">Luggage</string>
+    
+        <string name="sReportInfo">Используйте эту форму, чтобы рассказать нам об ошибках на схемах, проблемах с доступом или сообщить новую информацию.</string>
+    <string name="sReportMenu">Отправить сообщение</string>
+    <string name="sReportCategory">Категория</string>
+    <string name="sReportBody">Сообщение<sup>*</sup></string>
+    <string name="sReportBodyHint">Ввести текст сообщения</string>
+    <string name="sReportEmail">Email</string>
+    <string name="sReportEmailHint">Для получения ответа</string>
+    <string name="sReportPhotos">Фото</string>
+    <string name="sReportSend">Отправить</string>
+    <string name="sReportDefineArea">Отметить на схеме</string>
+    <string name="sReportDefineAreaTooltip">Тапните в нужном месте</string>
+    <string name="sReportTextNotNull">Введите текст сообщения</string>
+    <string name="sReportCityNotNull">Сначала необходимо загрузить и выбрать город</string>
+    <string name="sReportPhotoAdd">Добавить фото</string>
+    <string name="sReportPhotoRemove">Удалить</string>
+    <string name="sReportPhotoTake">Новое фото</string>
+    <string name="sReportPhotoPick">Выбрать фото</string>
+    <string name="sReportPhotoPickFail">Невозможно прикрепить фото</string>
+    <string name="sReportSending">Отправка сообщения…</string>
+    <string name="sReportSent">Сообщение отправлено</string>
+    <string name="sReportSentFail">Отправка не удалась, сообщение будет отправлено позже</string>
+    <string name="sReportWaiting">сообщений ожидают отправки</string>
+    <string name="sReportCatInfo">Информация</string>
+    <string name="sReportCatError">Ошибка</string>
+    <string name="sReportCatMobReq">Проблемы доступности</string>
+
+    <string name="sIOError">Память устройства временно недоступна</string>
 
     <string name="sTimeUnitHour">г.</string>
     <string name="sTimeUnitMinute">хв.</string>
