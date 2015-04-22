@@ -164,6 +164,7 @@
     <string name="sReportSending">Отправка сообщения…</string>
     <string name="sReportSent">Сообщение отправлено</string>
     <string name="sReportSentFail">Отправка не удалась, сообщение отправится позже</string>
+    <string name="sReportWaiting">сообщений ожидают отправки</string>
     <string name="sReportCatInfo">Информация</string>
     <string name="sReportCatError">Ошибка</string>
     <string name="sReportCatMobReq">Проблемы доступности</string>

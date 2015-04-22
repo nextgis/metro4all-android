@@ -33,6 +33,7 @@ public interface Constants {
     final static String APP_VERSION = "app_version";
     final static String APP_REPORTS_DIR = "reports";
     final static String APP_REPORTS_PHOTOS_DIR = "Metro4All";
+    final static String APP_REPORTS_SCREENSHOT = "screenshot.jpg";
 
     public final static String CSV_CHAR = ";";
 

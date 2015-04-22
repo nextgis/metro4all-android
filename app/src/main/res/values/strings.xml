@@ -165,6 +165,7 @@
     <string name="sReportSending">Sending report…</string>
     <string name="sReportSent">Report sent</string>
     <string name="sReportSentFail">Can\'t send report now, it\'ll be send later</string>
+    <string name="sReportWaiting">reports waiting to be sent</string>
     <string name="sReportCatInfo">Information</string>
     <string name="sReportCatError">Error</string>
     <string name="sReportCatMobReq">Access problem</string>

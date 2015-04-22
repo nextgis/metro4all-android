@@ -53,6 +53,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static com.nextgis.metroaccess.Constants.APP_REPORTS_DIR;
+import static com.nextgis.metroaccess.Constants.APP_REPORTS_SCREENSHOT;
 import static com.nextgis.metroaccess.Constants.BUNDLE_CITY_CHANGED;
 import static com.nextgis.metroaccess.Constants.BUNDLE_ERRORMARK_KEY;
 import static com.nextgis.metroaccess.Constants.BUNDLE_EVENTSRC_KEY;
@@ -320,6 +322,16 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                 return true;
             }
         });
+
+        int reportsCount = 0;
+        File file = new File(getExternalFilesDir(null), APP_REPORTS_DIR);
+        if (file.exists() && file.isDirectory())
+            for (File report : file.listFiles())
+                if (report.isFile() && !report.getName().equals(APP_REPORTS_SCREENSHOT))
+                    reportsCount++;
+
+        if (reportsCount > 0)
+            findPreference(KEY_PREF_REPORT_WIFI).setSummary(reportsCount + " " + getString(R.string.sReportWaiting));
     }
 
     @Override
