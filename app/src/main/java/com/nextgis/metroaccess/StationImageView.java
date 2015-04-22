@@ -50,6 +50,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -65,6 +66,7 @@ import java.io.FileOutputStream;
 import java.util.List;
 
 import static com.nextgis.metroaccess.Constants.APP_REPORTS_DIR;
+import static com.nextgis.metroaccess.Constants.APP_REPORTS_SCREENSHOT;
 import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_X;
 import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_Y;
 import static com.nextgis.metroaccess.Constants.BUNDLE_PATH_KEY;
@@ -285,20 +287,28 @@ public class StationImageView extends ActionBarActivity {
 
             if (result != null) {
                 result = new File(result, APP_REPORTS_DIR);
-                result = new File(result, "screenshot.jpg");
+
+                if (!result.mkdirs()) {
+                    Toast.makeText(this, R.string.sIOError, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                result = new File(result, APP_REPORTS_SCREENSHOT);
                 fos = new FileOutputStream(result);
 
-                if (getExternalFilesDir(null) != null) {
-                    b.compress(Bitmap.CompressFormat.JPEG, 25, fos);
-                    fos.close();
-                }
+                b.compress(Bitmap.CompressFormat.JPEG, 25, fos);
+                fos.close();
 
                 outIntent.putExtra(BUNDLE_PATH_KEY, result.getAbsolutePath());
                 outIntent.putExtra(BUNDLE_IMG_X, mImgX);
                 outIntent.putExtra(BUNDLE_IMG_Y, mImgY);
                 resultCode = RESULT_OK;
-            }
-        } catch (Exception ignored) { }
+            } else
+                Toast.makeText(this, R.string.sIOError, Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, R.string.sIOError, Toast.LENGTH_SHORT).show();
+        }
 
         mIsAreaDefined = true;
 
