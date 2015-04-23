@@ -1,5 +1,6 @@
 package com.nextgis.metroaccess;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,7 +10,9 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -19,6 +22,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.regex.Pattern;
 
@@ -101,7 +105,7 @@ public class LimitationsActivity extends PreferenceActivity implements Preferenc
                         .setTitle(title).setMessage(Analytics.getGraph().GetOfficialHelp())
                         .setPositiveButton(android.R.string.ok, null).create();
                 builder.show();
-                TextView message = (TextView) builder.findViewById(android.R.id.message);
+                final TextView message = (TextView) builder.findViewById(android.R.id.message);
                 message.setMovementMethod(LinkMovementMethod.getInstance());
                 message.setLinksClickable(true);
                 Linkify.addLinks(message, Linkify.WEB_URLS);
@@ -109,6 +113,15 @@ public class LimitationsActivity extends PreferenceActivity implements Preferenc
                 Pattern pattern = Pattern.compile("\\+[0-9]+\\s\\(?[0-9]*\\)?\\s[0-9\\-]+");
                 String scheme = "tel:";
                 Linkify.addLinks(message, pattern, scheme);
+
+                message.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (message.getSelectionStart() != -1 || message.getSelectionEnd() != -1) {
+                            ((Analytics) getApplication()).addEvent(Analytics.SCREEN_LIMITATIONS, Analytics.HELP_LINK, Analytics.SCREEN_LIMITATIONS);
+                        }
+                    }
+                });
             }
         });
         officialHelp.setVisibility(View.VISIBLE);

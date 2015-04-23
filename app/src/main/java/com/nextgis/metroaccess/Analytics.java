@@ -64,6 +64,7 @@ public class Analytics extends Application {
     final static String SCREEN_LAYOUT = "Layout Screen";
     final static String SCREEN_SELECT_STATION = "Select Station Screen";
     final static String SCREEN_ROUTING = "Routing Screen";
+    final static String SCREEN_LIMITATIONS = "Limitations Screen";
 
     final static String FROM = "From";
     final static String TO = "To";
@@ -82,6 +83,7 @@ public class Analytics extends Application {
     final static String STATION_EXPAND = "Station expanded";
     final static String STATION_COLLAPSE = "Station collapsed";
     final static String LEGEND = "Legend";
+    final static String HELP_LINK = "Help link";
 
     private Tracker tracker;
     private static MAGraph mGraph;
