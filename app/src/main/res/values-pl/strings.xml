@@ -8,7 +8,7 @@
     <string name="acknowledgements_caption">Licencje</string>
 
     <string name="about_app">Aplikacja ta pozwala na nawigację w metrze dla osób z ograniczeniami ruchu. Obliczy dla Ciebie najbardziej dostępną trasę podróży. \n\nWięcej informacji znajdziesz na:</string>
-    <string name="ga_text">Ta aplikacja zbiera i analizuje korzystanie z aplikacji przy pomocy Google Analytics. Wszystkie dane są anonimizowane i wykorzystywane wyłącznie do poprawy jakości aplikacji. Możesz wyłączyć zbieranie danych w Ustawieniach.</string>
+    <string name="ga_text">Ta aplikacja zbiera i analizuje korzystanie z aplikacji przy pomocy Google Analytics. Wszystkie dane są anonimizowane i wykorzystywane wyłącznie do poprawy jakości aplikacji. Możesz wyłączyć zbieranie danych w Ustawieniach. \r\n\r\nPersonal data sent through the report form are strictly for internal purposes and not being shared with third parties.</string>
 
     <string name="sSettings">Ustawienia</string>
 	<string name="sAbout">O aplikacji</string>
