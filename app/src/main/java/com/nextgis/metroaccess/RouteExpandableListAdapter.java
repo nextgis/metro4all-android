@@ -59,6 +59,7 @@ public class RouteExpandableListAdapter extends BaseExpandableListAdapter {
 	protected Context mContext;
 	protected List <RouteItem> maRouteList;
     protected int mDeparturePortalId, mArrivalPortalId, mDepartureStationId, mArrivalStationId;
+    protected int mWeight = -1;
 
 	protected LayoutInflater mInfalInflater;
 	
@@ -381,4 +382,11 @@ public class RouteExpandableListAdapter extends BaseExpandableListAdapter {
         mArrivalStationId = arr;
     }
 
+    public int getWeight() {
+        return mWeight;
+    }
+
+    public void setWeight(int weight) {
+        mWeight = weight;
+    }
 }

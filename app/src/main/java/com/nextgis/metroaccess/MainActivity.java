@@ -96,6 +96,7 @@ import static com.nextgis.metroaccess.Constants.BUNDLE_PATH_KEY;
 import static com.nextgis.metroaccess.Constants.BUNDLE_PAYLOAD_KEY;
 import static com.nextgis.metroaccess.Constants.BUNDLE_PORTALID_KEY;
 import static com.nextgis.metroaccess.Constants.BUNDLE_STATIONID_KEY;
+import static com.nextgis.metroaccess.Constants.BUNDLE_WEIGHT_KEY;
 import static com.nextgis.metroaccess.Constants.DEPARTURE_RESULT;
 import static com.nextgis.metroaccess.Constants.ICONS_RAW;
 import static com.nextgis.metroaccess.Constants.LOCATING_TIMEOUT;
@@ -967,12 +968,13 @@ public class MainActivity extends ActionBarActivity {
 
 			        for (Path path : shortest_paths_list) {
 						ArrayList<Integer> IndexPath = new  ArrayList<>();
-						Log.d(TAG, "Route# " + nCounter);
+						Log.d(TAG, "Route# " + nCounter + " weight: " + path.get_weight());
 			            for (BaseVertex v : path.get_vertices()) {
 			            	IndexPath.add(v.get_id());
 			            	Log.d(TAG, "<" + m_oGraph.GetStation(v.get_id()));
 			            }
 			            intentView.putIntegerArrayListExtra(BUNDLE_PATH_KEY + nCounter, IndexPath);
+			            intentView.putExtra(BUNDLE_WEIGHT_KEY + nCounter, path.get_weight());
 			            nCounter++;
 			        }
 

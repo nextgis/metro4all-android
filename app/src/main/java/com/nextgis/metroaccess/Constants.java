@@ -44,6 +44,7 @@ public interface Constants {
     final static String BUNDLE_ENTRANCE_KEY = "in";
     final static String BUNDLE_PATHCOUNT_KEY = "pathcount";
     final static String BUNDLE_PATH_KEY = "path_";
+    final static String BUNDLE_WEIGHT_KEY = "weight_";
     final static String BUNDLE_STATIONMAP_KEY = "stationmap";
     final static String BUNDLE_CROSSESMAP_KEY = "crossmap";
     final static String BUNDLE_STATIONID_KEY = "stationid";

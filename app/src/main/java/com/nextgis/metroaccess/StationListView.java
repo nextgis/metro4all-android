@@ -34,6 +34,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
 import com.nextgis.metroaccess.data.BarrierItem;
 import com.nextgis.metroaccess.data.PortalItem;
@@ -47,14 +48,14 @@ import java.util.Map;
 import static com.nextgis.metroaccess.Constants.BUNDLE_PATHCOUNT_KEY;
 import static com.nextgis.metroaccess.Constants.BUNDLE_PATH_KEY;
 import static com.nextgis.metroaccess.Constants.BUNDLE_PORTALID_KEY;
-import static com.nextgis.metroaccess.Constants.PREF_RESULT;
-import static com.nextgis.metroaccess.Constants.SUBSCREEN_PORTAL_RESULT;
+import static com.nextgis.metroaccess.Constants.BUNDLE_WEIGHT_KEY;
 
 public class StationListView extends ActionBarActivity implements ActionBar.OnNavigationListener {
 	
 	protected int mnType;
 	protected int mnMaxWidth, mnWheelWidth;	
 	protected ExpandableListView mExpListView;
+    protected TextView mTvTime;
 	protected int mnPathCount, mnDeparturePortalId, mnArrivalPortalId;
 	protected boolean m_bHaveLimits;
 	protected boolean firstLaunch = true;   // fix for GA, first item selected onCreate by default
@@ -109,6 +110,8 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
 			    for(int i = 0; i < mnPathCount; i++){
 			    	List<Integer> list = extras.getIntegerArrayList(BUNDLE_PATH_KEY + i);
 			    	moAdapters[i] = CreateAndFillAdapter(list);
+                    int weight = (int) extras.getDouble(BUNDLE_WEIGHT_KEY + i);
+                    moAdapters[i].setWeight((weight + 25 * (list.size() - 1)) / 60);
 			    }
 		    }
 	    }
@@ -125,6 +128,8 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
         mExpListView.setGroupIndicator(null);
         
         //mExpListView.setOnGroupClickListener(this);
+
+        mTvTime = (TextView) findViewById(R.id.tv_time);
     }
 
     protected RouteExpandableListAdapter CreateAndFillAdapter(List<Integer> list) {
@@ -458,6 +463,7 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
             ((Analytics) getApplication()).addEvent(Analytics.SCREEN_ROUTING, "Selected option " + itemPosition + 1, Analytics.ACTION_ITEM);
 
 	    mExpListView.setAdapter(moAdapters[itemPosition]);
+        mTvTime.setText("Weight: " + moAdapters[itemPosition].getWeight() + " min");
 
 		return true;
 	}
