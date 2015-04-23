@@ -39,8 +39,10 @@ import org.json.JSONObject;
 
 import com.nextgis.metroaccess.data.GraphDataItem;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -76,6 +78,7 @@ public class DataDownloader extends AsyncTask<String, Integer, String> {
     @Override
     protected void onPreExecute() {
     	super.onPreExecute();
+        ((Activity) m_oContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		m_oDownloadDialog = new ProgressDialog(m_oContext);
 		m_oDownloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		m_oDownloadDialog.setMessage(m_sDownloadDialogMsg);
