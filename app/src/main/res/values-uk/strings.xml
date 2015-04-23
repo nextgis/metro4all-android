@@ -153,6 +153,7 @@
 	<string name="sReportPhotos">Фото</string>
 	<string name="sReportSend">Надіслати</string>
 	<string name="sReportDefineArea">Позначити на схемі</string>
+	<string name="sReportRedefineArea">Змінити мітку на схемі</string>
 	<string name="sReportDefineAreaTooltip">Тапніть в потрібному місці</string>
 	<string name="sReportTextNotNull">Введіть текст повідомлення</string>
 	<string name="sReportCityNotNull">Спочатку необхідно завантажити та вибрати місто</string>
