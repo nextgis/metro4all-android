@@ -437,8 +437,12 @@ public class StationMapActivity extends ActionBarActivity {
 
         boolean was = m_bHaveLimits;
         m_bHaveLimits = LimitationsActivity.hasLimitations(this);
+        boolean limitationsChanged = LimitationsActivity.getWheelWidth(this) != mnWheelWidth ||
+                LimitationsActivity.getMaxWidth(this) != mnMaxWidth;
 
-        if (was != m_bHaveLimits) {
+        if (was != m_bHaveLimits || limitationsChanged) {
+            mnWheelWidth = LimitationsActivity.getWheelWidth(this);
+            mnMaxWidth = LimitationsActivity.getMaxWidth(this);
             mMapView.getOverlays().remove(1);
             LoadPortalsToOverlay();
         }

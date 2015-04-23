@@ -53,7 +53,7 @@ import static com.nextgis.metroaccess.Constants.BUNDLE_WEIGHT_KEY;
 public class StationListView extends ActionBarActivity implements ActionBar.OnNavigationListener {
 	
 	protected int mnType;
-	protected int mnMaxWidth, mnWheelWidth;	
+	protected int mnMaxWidth, mnWheelWidth;
 	protected ExpandableListView mExpListView;
     protected TextView mTvTime;
 	protected int mnPathCount, mnDeparturePortalId, mnArrivalPortalId;
@@ -107,12 +107,7 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
 
 		    if(mnPathCount > 0){
 		    	moAdapters = new RouteExpandableListAdapter[mnPathCount];
-			    for(int i = 0; i < mnPathCount; i++){
-			    	List<Integer> list = extras.getIntegerArrayList(BUNDLE_PATH_KEY + i);
-			    	moAdapters[i] = CreateAndFillAdapter(list);
-                    int weight = (int) extras.getDouble(BUNDLE_WEIGHT_KEY + i);
-                    moAdapters[i].setWeight((weight + 25 * (list.size() - 1)) / 60);
-			    }
+			    fillAdapter();
 		    }
 	    }
 
@@ -130,6 +125,18 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
         //mExpListView.setOnGroupClickListener(this);
 
         mTvTime = (TextView) findViewById(R.id.tv_time);
+    }
+
+    private void fillAdapter() {
+        Bundle extras = getIntent().getExtras();
+
+        if (extras != null && moAdapters != null)
+            for(int i = 0; i < mnPathCount; i++){
+                List<Integer> list = extras.getIntegerArrayList(BUNDLE_PATH_KEY + i);
+                moAdapters[i] = CreateAndFillAdapter(list);
+                int weight = (int) extras.getDouble(BUNDLE_WEIGHT_KEY + i);
+                moAdapters[i].setWeight((weight + 25 * (list.size() - 1)) / 60);
+            }
     }
 
     protected RouteExpandableListAdapter CreateAndFillAdapter(List<Integer> list) {
@@ -431,16 +438,13 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
 
         boolean was = m_bHaveLimits;
         m_bHaveLimits = LimitationsActivity.hasLimitations(this);
+        boolean limitationsChanged = LimitationsActivity.getWheelWidth(this) != mnWheelWidth ||
+                LimitationsActivity.getMaxWidth(this) != mnMaxWidth;
 
-        if (was != m_bHaveLimits) {
-            Bundle extras = getIntent().getExtras();
-            if (extras != null && moAdapters != null) {
-                for (int i = 0; i < mnPathCount; i++) {
-                    List<Integer> list = extras.getIntegerArrayList(BUNDLE_PATH_KEY + i);
-                    moAdapters[i] = CreateAndFillAdapter(list);
-                }
-            }
-
+        if (was != m_bHaveLimits || limitationsChanged) {
+            mnWheelWidth = LimitationsActivity.getWheelWidth(this);
+            mnMaxWidth = LimitationsActivity.getMaxWidth(this);
+            fillAdapter();
             firstLaunch = true;
             onNavigationItemSelected(0, 0);
         }
