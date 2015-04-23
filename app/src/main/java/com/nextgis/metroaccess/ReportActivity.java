@@ -91,6 +91,8 @@ import static com.nextgis.metroaccess.Constants.PICK_REQUEST;
 
 public class ReportActivity extends ActionBarActivity implements View.OnClickListener {
     private final static int IMAGES_PER_ROW = 3;
+    private final static int REQUIRED_THUMBNAIL_SIZE = 200;
+    private final static int REQUIRED_ATTACHMENT_SIZE = 1920;
 
     private Map<String, Integer> mStations;
     private int mStationId;
@@ -293,6 +295,8 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
             if (mScreenshot != null) {
                 mScreenshot.compress(Bitmap.CompressFormat.JPEG, 50, stream);
                 byteArray = stream.toByteArray();
+                mScreenshot.recycle();
+                mScreenshot = null;
                 imageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
                 jsonObject.accumulate("screenshot", imageBase64);
             }
@@ -304,17 +308,23 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                 if (photoPath == null)
                     continue;
 
-                Bitmap photo = BitmapFactory.decodeFile(photoPath);
-                photo.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-                byteArray = stream.toByteArray();
-                imageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                photos.put(imageBase64);
+                Bitmap photo = getBitmap(photoPath, REQUIRED_ATTACHMENT_SIZE);
+
+                if (photo != null) {
+                    photo.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+                    byteArray = stream.toByteArray();
+                    photo.recycle();
+                    imageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                    photos.put(imageBase64);
+                }
             }
 
             if (photos.length() > 0)
                 jsonObject.accumulate("photos", photos);
         } catch (JSONException e) {
             e.printStackTrace();
+        } catch (OutOfMemoryError e) {
+            Toast.makeText(ReportActivity.this, getString(R.string.sReportPhotoPickFail), Toast.LENGTH_SHORT).show();
         }
 
         return jsonObject.toString();
@@ -385,6 +395,21 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                 e.printStackTrace();
             }
         }
+    }
+
+    private Bitmap getBitmap(String path, int requiredSize) throws OutOfMemoryError{
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+        int scale = 1;
+
+        while (options.outWidth / scale > requiredSize && options.outHeight / scale > requiredSize)
+            scale *= 2;
+
+        options.inSampleSize = scale;
+        options.inJustDecodeBounds = false;
+
+        return BitmapFactory.decodeFile(path, options);
     }
 
     private class CategoryAdapter extends ArrayAdapter<CharSequence> {
@@ -502,7 +527,7 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                         break;
                 }
 
-                selectedImage = getThumbnail(selectedImagePath);
+                selectedImage = getBitmap(selectedImagePath, REQUIRED_THUMBNAIL_SIZE);
 
                 if (selectedImage == null) {
                     Toast.makeText(ReportActivity.this, getString(R.string.sReportPhotoPickFail), Toast.LENGTH_SHORT).show();
@@ -515,22 +540,6 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                 notifyItemInserted(position);
                 measureParent();
             }
-        }
-
-        private Bitmap getThumbnail(String path) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(path, options);
-            final int REQUIRED_SIZE = 200;
-            int scale = 1;
-
-            while (options.outWidth / scale / 2 >= REQUIRED_SIZE && options.outHeight / scale / 2 >= REQUIRED_SIZE)
-                scale *= 2;
-
-            options.inSampleSize = scale;
-            options.inJustDecodeBounds = false;
-
-            return BitmapFactory.decodeFile(path, options);
         }
 
         private void measureParent() {
