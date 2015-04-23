@@ -449,7 +449,7 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
             holder.setOnClickListener(this);
             holder.setPhoto(mImages.get(position));
 
-            if (position == mImages.size() - 1)
+            if (position == 0)
                 holder.setControl();
         }
 
@@ -461,7 +461,7 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
         public List<String> getImagesPath() {
             ArrayList<String> images = new ArrayList<>();
             images.addAll(mImagesPath);
-            images.remove(images.size() - 1);
+            images.remove(0);
             return images;
         }
 
@@ -469,7 +469,7 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
         public void onItemClick(View caller, int position) {
             switch (caller.getId()) {
                 case R.id.iv_photo:
-                    if (position == mImages.size() - 1) {
+                    if (position == 0) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(ReportActivity.this);
                         builder.setTitle(R.string.sReportPhotoAdd);
                         builder.setItems(R.array.report_add_photos, new DialogInterface.OnClickListener() {
@@ -534,10 +534,9 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                     return;
                 }
 
-                int position = mImages.size() - 1;
-                mImages.add(position, selectedImage);
-                mImagesPath.add(position, selectedImagePath);
-                notifyItemInserted(position);
+                mImages.add(selectedImage);
+                mImagesPath.add(selectedImagePath);
+                notifyItemInserted(mImages.size() - 1);
                 measureParent();
             }
         }
