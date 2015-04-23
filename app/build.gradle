@@ -13,7 +13,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-metro.txt')
+            proguardFile 'proguard-metro.txt'
         }
     }
 }

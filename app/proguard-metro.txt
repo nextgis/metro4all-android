@@ -8,6 +8,7 @@
 
 -dontwarn com.caverock.androidsvg.**
 -dontwarn com.osmdroid.contributor.**
+-dontwarn org.apache.http.entity.**
 
 -printseeds seeds.txt
 -printusage unused.txt
