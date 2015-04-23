@@ -163,7 +163,7 @@
     <string name="sReportPhotoPick">Выбрать фото</string>
     <string name="sReportPhotoPickFail">Невозможно прикрепить фото</string>
     <string name="sReportSending">Отправка сообщения…</string>
-    <string name="sReportSent">Сообщение отправлено</string>
+    <string name="sReportSent">Сообщение отправлено. Спасибо!</string>
     <string name="sReportSentFail">Отправка не удалась, сообщение будет отправлено позже</string>
     <string name="sReportWaiting">сообщений ожидают отправки</string>
     <string name="sReportCatInfo">Информация</string>

@@ -154,6 +154,7 @@
     <string name="sReportPhotos">Photos</string>
     <string name="sReportSend">Send</string>
     <string name="sReportDefineArea">Mark on layout</string>
+    <string name="sReportRedefineArea">Change mark on layout</string>
     <string name="sReportDefineAreaTooltip">Tap to select discussed area</string>
     <string name="sReportTextNotNull">Please enter text message</string>
     <string name="sReportCityNotNull">Please load and select at least one city</string>
@@ -163,7 +164,7 @@
     <string name="sReportPhotoPick">Pick existing one</string>
     <string name="sReportPhotoPickFail">Can\'t attach photo</string>
     <string name="sReportSending">Sending report…</string>
-    <string name="sReportSent">Report sent</string>
+    <string name="sReportSent">Report sent. Thank you!</string>
     <string name="sReportSentFail">Can\'t send report now, it\'ll be sent later</string>
     <string name="sReportWaiting">reports waiting to be sent</string>
     <string name="sReportCatInfo">Information</string>

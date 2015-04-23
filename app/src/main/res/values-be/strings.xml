@@ -162,8 +162,8 @@
     <string name="sReportPhotoTake">Новае фота</string>
     <string name="sReportPhotoPick">Выбраць фота</string>
     <string name="sReportPhotoPickFail">Немагчыма прымацаваць фота</string>
-    <string name="sReportSending">Адпраўка паведамлення ...</string>
-    <string name="sReportSent">Паведамленне адпраўлена</string>
+    <string name="sReportSending">Адпраўка паведамлення…</string>
+    <string name="sReportSent">Паведамленне адпраўлена. Дзякуй!</string>
     <string name="sReportSentFail">Адпраўка не атрымалася, паведамленне будзе адпраўлена пазней</string>
     <string name="sReportWaiting">паведамленняў чакаюць адпраўкі</string>
     <string name="sReportCatInfo">Інфармацыя</string>
