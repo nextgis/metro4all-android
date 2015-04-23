@@ -25,20 +25,20 @@
         <item>@string/sNaviTypeDisabled</item>
         <item>@string/sNaviTypeLuggage</item>
     </string-array>
-    <string-array name="navi_type_val">
+    <string-array name="navi_type_val" translatable="false">
         <item>1</item>
         <item>2</item>
         <item>3</item>
     </string-array>
 
-    <string-array name="locales">
+    <string-array name="locales" translatable="false">
         <item>English</item>
         <item>Беларуская</item>
         <item>Polski</item>
         <item>Русский</item>
         <item>Українська</item>
     </string-array>
-    <string-array name="locales_val">
+    <string-array name="locales_val" translatable="false">
         <item>en</item>
         <item>be</item>
         <item>pl</item>

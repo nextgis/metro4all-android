@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.FileInputStream;
 
 import static com.nextgis.metroaccess.Constants.APP_REPORTS_DIR;
+import static com.nextgis.metroaccess.Constants.APP_REPORTS_SCREENSHOT;
 
 @SuppressWarnings("deprecation")
 public class NetWatcher extends BroadcastReceiver {
@@ -56,6 +57,9 @@ public class NetWatcher extends BroadcastReceiver {
                 File file = new File(context.getExternalFilesDir(null), APP_REPORTS_DIR);
                 if (file.exists() && file.isDirectory()) {
                     for (final File report : file.listFiles()) {
+                        if (report.getName().equals(APP_REPORTS_SCREENSHOT))
+                            continue;
+
                         int length = (int) report.length();
                         byte[] bytes = new byte[length];
                         FileInputStream in = new FileInputStream(report);

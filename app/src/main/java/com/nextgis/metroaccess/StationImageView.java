@@ -296,7 +296,7 @@ public class StationImageView extends ActionBarActivity {
                 result = new File(result, APP_REPORTS_SCREENSHOT);
                 fos = new FileOutputStream(result);
 
-                b.compress(Bitmap.CompressFormat.JPEG, 25, fos);
+                b.compress(Bitmap.CompressFormat.JPEG, 100, fos);
                 fos.close();
 
                 outIntent.putExtra(BUNDLE_PATH_KEY, result.getAbsolutePath());
