@@ -1,3 +1,9 @@
+## v.2.7.1 (25.04.2015)
++ Add feedback form
++ Add Ukranian language support
++ Bugfixing
+
+
 ## v. 2.7 (01.03.2015)
 + Added official assistance service info
 + Rework all station layouts (all numbers are moved to a separate layer and can be switched off)
