@@ -8,7 +8,7 @@
     <string name="acknowledgements_caption">Licencje</string>
 
     <string name="about_app">Aplikacja ta pozwala na nawigację w metrze dla osób z ograniczeniami ruchu. Obliczy dla Ciebie najbardziej dostępną trasę podróży. \n\nWięcej informacji znajdziesz na:</string>
-    <string name="ga_text">Ta aplikacja zbiera i analizuje korzystanie z aplikacji przy pomocy Google Analytics. Wszystkie dane są anonimizowane i wykorzystywane wyłącznie do poprawy jakości aplikacji. Możesz wyłączyć zbieranie danych w Ustawieniach. \r\n\r\nPersonal data (email) sent through the report form are strictly for internal purposes and not being shared with third parties.</string>
+    <string name="ga_text">Ta aplikacja zbiera i analizuje korzystanie z aplikacji przy pomocy Google Analytics. Wszystkie dane są anonimizowane i wykorzystywane wyłącznie do poprawy jakości aplikacji. Możesz wyłączyć zbieranie danych w Ustawieniach. \r\n\r\nDane osobowe (email) przesyłane przez formularz są wykorzystywane do ulepszenia działania aplikacji, nie są przekazywane innym podmiotom.</string>
 
     <string name="sSettings">Ustawienia</string>
 	<string name="sAbout">O aplikacji</string>
@@ -153,7 +153,7 @@
     <string name="sReportPhotos">Zdjęcia</string>
     <string name="sReportSend">Wyślij</string>
     <string name="sReportDefineArea">Zaznacz na schemacie</string>
-    <string name="sReportRedefineArea">Change mark on layout</string>
+    <string name="sReportRedefineArea">Zmień zaznaczenie na schemacie</string>
     <string name="sReportDefineAreaTooltip">Kliknij, aby zaznaczyć problematyczny obszar</string>
     <string name="sReportTextNotNull">Wpisz treść wiadomości</string>
     <string name="sReportCityNotNull">Wybierz przynajmniej jedno miasto</string>
