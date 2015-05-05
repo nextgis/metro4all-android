@@ -127,7 +127,7 @@
 	<string name="sPrefCityLoc">Language</string>
 	<string name="sPrefCityLocSummary">Choose language</string>
 	<string name="sPrefCityLocTitle">Choose language for names</string>
-	<string name="sPrefReportWiFi">Send reports by WiFi only</string>
+	<string name="sPrefReportWiFi">Send reports by Wi-Fi only</string>
 	<string name="stationFilterHintText">Start entering name of the station</string>
     <string name="sPrefGA">Enable Google Analytics</string>
     <string name="sPrefGASum">Collects data to enhance app performance</string>
@@ -155,7 +155,7 @@
     <string name="sReportSend">Send</string>
     <string name="sReportDefineArea">Mark on layout</string>
     <string name="sReportRedefineArea">Change mark on layout</string>
-    <string name="sReportDefineAreaTooltip">Tap to select discussed area</string>
+    <string name="sReportDefineAreaTooltip">Tap to select reported area</string>
     <string name="sReportTextNotNull">Please enter text message</string>
     <string name="sReportCityNotNull">Please load and select at least one city</string>
     <string name="sReportPhotoAdd">Add photo</string>
