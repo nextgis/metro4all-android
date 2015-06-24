@@ -20,9 +20,9 @@ android {
 
 dependencies {
     compile 'com.google.android.gms:play-services-base:6.5.+'
-    compile 'com.android.support:support-v4:22.0.0'
+    compile 'com.android.support:support-v4:22.2.0'
     compile 'com.android.support:recyclerview-v7:21.0.3'
-    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.nhaarman.supertooltips:library:3.0.0'
     compile 'com.loopj.android:android-async-http:1.4.5'
     compile files('libs/osmdroid-android-4.2.jar')

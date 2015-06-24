@@ -3,6 +3,7 @@
 -dontskipnonpubliclibraryclassmembers
 -verbose
 
+-dontobfuscate
 -dontoptimize
 -dontpreverify
 
