@@ -430,15 +430,13 @@ public class MAGraph {
                     m_omLines.put(nLineId, sName);
 
                     if (RowData.length > 2) { // data back compatibility?
-                        String sLineColor = RowData[2];
+                        String sLineColor = RowData[2].trim();
                         m_omLinesColors.put(nLineId, sLineColor);
                     }
 		        }
 			        
 		        reader.close();
-		        if (in != null) {
-		        	in.close();
-		    	} 
+				in.close();
 			}
 			else{
 				m_sErr = m_oContext.getString(R.string.sCannotGetPath);

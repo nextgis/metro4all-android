@@ -1,7 +1,8 @@
 /******************************************************************************
  * Project:  Metro4All
  * Purpose:  Routing in subway.
- * Authors:  Dmitry Baryshnikov (polimax@mail.ru), Stanislav Petriakov
+ * Author:   Dmitry Baryshnikov (polimax@mail.ru)
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  ******************************************************************************
 *   Copyright (C) 2013-2015 NextGIS
 *
@@ -461,7 +462,7 @@ public class MainActivity extends ActionBarActivity {
             }
         };
 
-        new Handler().postDelayed(new Runnable(){
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 h.sendEmptyMessage(STATUS_INTERRUPT_LOCATING);
@@ -511,7 +512,7 @@ public class MainActivity extends ActionBarActivity {
 
                 h.sendEmptyMessage(STATUS_FINISH_LOCATING);
 
-                if(stationClosest != null && portalClosest != null) {
+                if (stationClosest != null && portalClosest != null) {
                     String portalName = portalClosest.GetReadableMeetCode();
                     portalName = portalName.equals("") ? ": " + portalClosest.GetName() : " " + portalName + ": " + portalClosest.GetName();
 
@@ -569,38 +570,38 @@ public class MainActivity extends ActionBarActivity {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.sUpdateAvaliable)
 		.setMultiChoiceItems(checkedItemStrings, checkedItems,
-				new DialogInterface.OnMultiChoiceClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-				checkedItems[which] = isChecked;
-			}
-		})
+                new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        checkedItems[which] = isChecked;
+                    }
+                })
 		.setPositiveButton(R.string.sDownload,
-				new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int id) {
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
 
-				m_asDownloadData.clear();
+                        m_asDownloadData.clear();
 
-				for (int i = 0; i < checkedItems.length; i++) {
-					if (checkedItems[i]){
-						m_asDownloadData.add(new DownloadData(MainActivity.this, items.get(i), GetDownloadURL() + items.get(i).GetPath() + ".zip", m_oGetJSONHandler));
-					}
-				}
+                        for (int i = 0; i < checkedItems.length; i++) {
+                            if (checkedItems[i]) {
+                                m_asDownloadData.add(new DownloadData(MainActivity.this, items.get(i), GetDownloadURL() + items.get(i).GetPath() + ".zip", m_oGetJSONHandler));
+                            }
+                        }
 
-				OnDownloadData();
+                        OnDownloadData();
 
-			}
-		})
+                    }
+                })
 
 		.setNegativeButton(R.string.sCancel,
-				new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int id) {
-				LoadInterface();
-				dialog.cancel();
-			}
-		});
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        LoadInterface();
+                        dialog.cancel();
+                    }
+                });
 		builder.create();
 		builder.show();
     }
@@ -1073,9 +1074,10 @@ public class MainActivity extends ActionBarActivity {
     public static Bitmap getBitmapFromSVG(Context context, int id, String color) {
         Bitmap bitmap = null;
 
-        if (color != null) {
+        try {
             int c = Color.parseColor(color);
             bitmap = getBitmapFromSVG(context, id, c);
+        } catch (Exception ignored) {
         }
 
         return bitmap;
@@ -1143,13 +1145,19 @@ public class MainActivity extends ActionBarActivity {
         Bitmap bitmap = null;
         int type = subItem ? 8 : entry.GetType();
 
-        if (color != null) {
-            int c = Color.parseColor(color);
-            bitmap = getBitmapFromSVG(context, ICONS_RAW[type], c);
+        switch (type) {
+            case 6:
+            case 7:
+                bitmap = getBitmapFromSVG(MainActivity.GetGraph().GetCurrentRouteDataPath() + "/icons/metro.svg");
+                break;
+            default:
+                try {
+                    int c = Color.parseColor(color);
+                    bitmap = getBitmapFromSVG(context, ICONS_RAW[type], c);
+                } catch (Exception ignored) {
+                }
+                break;
         }
-
-        if (type == 6 || type == 7)
-            bitmap = getBitmapFromSVG(MainActivity.GetGraph().GetCurrentRouteDataPath() + "/icons/metro.svg");
 
         return bitmap;
     }

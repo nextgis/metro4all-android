@@ -215,7 +215,12 @@ public abstract class StationExpandableListAdapter extends BaseExpandableListAda
         bundle.putBoolean(PARAM_PORTAL_DIRECTION, parentActivity.IsIn());
         bundle.putInt(BUNDLE_STATIONID_KEY, entry.GetId());
 
-        int i = parentActivity.getSupportActionBar().getSelectedTab().getPosition();
+        android.support.v7.app.ActionBar ab = parentActivity.getSupportActionBar();
+        int i = 0;
+
+        if (ab != null)
+            i = ab.getSelectedNavigationIndex();
+
         final String gaParent = i == 0 ? Analytics.TAB_AZ : i == 1 ? Analytics.TAB_LINES : Analytics.TAB_RECENT;
         final String direction = parentActivity.IsIn() ? Analytics.FROM : Analytics.TO;
 
