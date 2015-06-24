@@ -21,6 +21,7 @@
 package com.nextgis.metroaccess;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -148,6 +149,9 @@ public abstract class SelectStationListFragment extends Fragment {
             }
 
         m_oExpListView.smoothScrollToPositionFromTop(position);
-        m_oExpListView.expandGroup(position, true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            m_oExpListView.expandGroup(position, true);
+        }
     }
 }

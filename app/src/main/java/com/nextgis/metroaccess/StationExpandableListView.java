@@ -20,7 +20,9 @@
  ****************************************************************************/
 package com.nextgis.metroaccess;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -70,13 +72,16 @@ public class StationExpandableListView extends ExpandableListView {
                                  final int totalItemCount) { }
         });
 
-        // Perform scrolling to position
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                smoothScrollToPositionFromTop(position, 0);
-            }
-        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            // Perform scrolling to position
+            new Handler().post(new Runnable() {
+                @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                @Override
+                public void run() {
+                    smoothScrollToPositionFromTop(position, 0);
+                }
+            });
+        }
     }
 
     public View getChildAtPosition(final int position) {
