@@ -33,6 +33,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nextgis.metroaccess.data.MAGraph;
+import com.nextgis.metroaccess.util.FileUtil;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
@@ -46,7 +47,6 @@ import java.util.Locale;
 import static com.nextgis.metroaccess.Constants.APP_VERSION;
 import static com.nextgis.metroaccess.Constants.KEY_PREF_RECENT_ARR_STATIONS;
 import static com.nextgis.metroaccess.Constants.KEY_PREF_RECENT_DEP_STATIONS;
-import static com.nextgis.metroaccess.PreferencesActivity.DeleteRecursive;
 import static com.nextgis.metroaccess.SelectStationActivity.getRecentStations;
 import static com.nextgis.metroaccess.SelectStationActivity.indexOf;
 
@@ -157,8 +157,8 @@ public class Analytics extends Application {
             switch (savedVersionCode) {
                 case 0:
                     // ==========Improvement==========
-                    File oDataFolder = new File(getExternalFilesDir(MainActivity.GetRouteDataDir()).getPath());
-                    DeleteRecursive(oDataFolder);
+                    File oDataFolder = getExternalFilesDir(MainActivity.GetRouteDataDir());
+                    FileUtil.deleteRecursive(oDataFolder);
                     // ==========End Improvement==========
                 case 14:
                 case 15:

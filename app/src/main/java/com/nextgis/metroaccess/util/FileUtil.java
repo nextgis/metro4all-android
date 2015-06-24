@@ -26,6 +26,8 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
+import java.io.File;
+
 public class FileUtil {
     /**
      * Get a file path from a Uri. This will get the the path for Storage Access
@@ -155,5 +157,20 @@ public class FileUtil {
      */
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param fileOrDirectory File to delete.
+     * @return Whether the file was deleted.
+     */
+    public static boolean deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory == null)
+            return false;
+
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles())
+                deleteRecursive(child);
+
+        return fileOrDirectory.delete();
     }
 }

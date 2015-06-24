@@ -47,6 +47,7 @@ import android.widget.Toast;
 import com.nextgis.metroaccess.data.DownloadData;
 import com.nextgis.metroaccess.data.GraphDataItem;
 import com.nextgis.metroaccess.data.MAGraph;
+import com.nextgis.metroaccess.util.FileUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -285,7 +286,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         									else{//delete
         										//File oDataFolder = new File(getExternalFilesDir(MainActivity.GetRouteDataDir()), exist_items.get(i - new_items.size()).GetPath());
                                                 File oDataFolder = new File(getExternalFilesDir(MainActivity.GetRouteDataDir()), exist_items.get(i).GetPath());
-        										DeleteRecursive(oDataFolder);
+        										FileUtil.deleteRecursive(oDataFolder);
         									}
         								}
         								OnDownloadData();
@@ -428,14 +429,6 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 		}
 	}
 
-	public static void DeleteRecursive(File fileOrDirectory) {
-	    if (fileOrDirectory.isDirectory())
-	        for (File child : fileOrDirectory.listFiles())
-	            DeleteRecursive(child);
-
-	    fileOrDirectory.delete();
-	}
-	
 	protected void OnDownloadData(){
 		if(m_asDownloadData.isEmpty()){
 			MAGraph oGraph = MainActivity.GetGraph();
