@@ -42,7 +42,7 @@
 	<string name="sDelete">Delete</string>
 	<string name="sYes">Yes</string>
 	<string name="sNo">No</string>
-	<string name="sOk">Ok</string>
+	<string name="sOk">OK</string>
 	<string name="sCancel">Cancel</string>
 	<string name="sQuestion">Update all data</string>
 	<string name="sAreYouSure">Are you sure?</string>
@@ -171,10 +171,12 @@
     <string name="sReportCatError">Error</string>
     <string name="sReportCatMobReq">Access problem</string>
 
+	<string name="sRouteETA">"ETA: "</string>
+
     <string name="sIOError">Media storage is not available</string>
 
-    <string name="sTimeUnitHour">h.</string>
-    <string name="sTimeUnitMinute">min.</string>
+    <string name="sTimeUnitHour">h</string>
+    <string name="sTimeUnitMinute">min</string>
 
 	<string name="switch_on">On</string>
 	<string name="switch_off">Off</string>

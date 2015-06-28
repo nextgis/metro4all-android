@@ -40,6 +40,7 @@ import com.nextgis.metroaccess.data.BarrierItem;
 import com.nextgis.metroaccess.data.PortalItem;
 import com.nextgis.metroaccess.data.RouteItem;
 import com.nextgis.metroaccess.data.StationItem;
+import com.nextgis.metroaccess.util.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,6 +126,7 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
         //mExpListView.setOnGroupClickListener(this);
 
         mTvTime = (TextView) findViewById(R.id.tv_time);
+        mTvTime.bringToFront();
     }
 
     private void fillAdapter() {
@@ -467,7 +469,7 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
             ((Analytics) getApplication()).addEvent(Analytics.SCREEN_ROUTING, "Selected option " + itemPosition + 1, Analytics.ACTION_ITEM);
 
 	    mExpListView.setAdapter(moAdapters[itemPosition]);
-        mTvTime.setText("Weight: " + moAdapters[itemPosition].getWeight() + " min");
+        mTvTime.setText(TimeUtil.formatTime(this, moAdapters[itemPosition].getWeight()));
 
 		return true;
 	}

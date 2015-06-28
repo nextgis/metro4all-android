@@ -52,6 +52,7 @@ import android.util.TimeUtils;
 
 import com.nextgis.metroaccess.MainActivity;
 import com.nextgis.metroaccess.R;
+import com.nextgis.metroaccess.util.TimeUtil;
 
 import javax.xml.datatype.Duration;
 
@@ -500,31 +501,8 @@ public class MAGraph {
 
                         line = dataList.get(headersList.indexOf("request_advance"));
                         if (!TextUtils.isEmpty(line)) {
-                            int time = Integer.parseInt(line);
-//                            String min = "min", hour = "hour";
-                            String min = m_oContext.getString(R.string.sTimeUnitMinute), hour = m_oContext.getString(R.string.sTimeUnitHour);
-
-//                            try {
-//                                Class clasz = Class.forName("com.android.internal.R$string");
-//                                Field field = clasz.getDeclaredField("minutes");
-//                                field.setAccessible(true);
-//                                min = m_oContext.getString((int) field.get(null));
-//                                field = clasz.getDeclaredField("hours");
-//                                field.setAccessible(true);
-//                                hour = m_oContext.getString((int) field.get(null));
-//                            } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
-//                                e.printStackTrace();
-//                            }
-
-                            String str = "";
-
-                            if (time % 60 == 0)
-                                str = String.format("%d %s ", time / 60, hour);
-
-                            if (time % 60 != 0)
-                                str = String.format("%s%d %s", str, time % 60, min);
-
-                            sb.append(String.format(m_oContext.getString(R.string.sLimitationsRequest), str)).append("\r\n");
+                            sb.append(String.format(m_oContext.getString(R.string.sLimitationsRequest),
+                                    TimeUtil.formatTime(m_oContext, Integer.parseInt(line)))).append("\r\n");
                         }
 
                         line = dataList.get(headersList.indexOf("source"));

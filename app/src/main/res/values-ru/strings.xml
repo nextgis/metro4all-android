@@ -170,10 +170,12 @@
     <string name="sReportCatError">Ошибка</string>
     <string name="sReportCatMobReq">Проблемы доступности</string>
 
+	<string name="sRouteETA">"Время в пути: "</string>
+
     <string name="sIOError">Память устройства временно недоступна</string>
 
-    <string name="sTimeUnitHour">ч.</string>
-    <string name="sTimeUnitMinute">мин.</string>
+    <string name="sTimeUnitHour">ч</string>
+    <string name="sTimeUnitMinute">мин</string>
 
 	<string name="switch_on">Вкл</string>
 	<string name="switch_off">Выкл</string>
