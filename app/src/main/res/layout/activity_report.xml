@@ -20,8 +20,8 @@
   -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="@string/sReportInfo" />
+                android:text="@string/sReportInfo"/>
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -51,14 +51,13 @@
 
                 <TextView
                     style="@style/Widget.Report.Title"
-                    android:text="@string/sStationName" />
-
+                    android:text="@string/sStationName"/>
             </FrameLayout>
 
             <Spinner
                 android:id="@+id/sp_station"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/tv_report_define_area"
@@ -68,21 +67,21 @@
                 android:gravity="start"
                 android:text="@string/sReportDefineArea"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="?android:textColorLink" />
+                android:textColor="?android:textColorLink"/>
 
             <TextView
-                android:layout_marginTop="8dp"
                 style="@style/Widget.Report.Title"
-                android:text="@string/sReportCategory" />
+                android:layout_marginTop="8dp"
+                android:text="@string/sReportCategory"/>
 
             <Spinner
                 android:id="@+id/sp_category"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
 
             <TextView
                 style="@style/Widget.Report.Title"
-                android:text="@string/sReportBody" />
+                android:text="@string/sReportBody"/>
 
             <EditText
                 android:id="@+id/et_report_body"
@@ -93,12 +92,13 @@
                 android:maxLines="5"
                 android:scrollHorizontally="false"
                 android:scrollbars="vertical"
-                android:singleLine="false" />
+                android:singleLine="false"
+                android:textColor="@android:color/black"/>
 
             <TextView
                 style="@style/Widget.Report.Title"
                 android:layout_marginTop="8dp"
-                android:text="@string/sReportEmail" />
+                android:text="@string/sReportEmail"/>
 
             <EditText
                 android:id="@+id/et_report_email"
@@ -106,21 +106,20 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/sReportEmailHint"
                 android:inputType="textEmailAddress"
-                android:lines="3" />
+                android:lines="3"
+                android:textColor="@android:color/black"/>
 
             <TextView
                 style="@style/Widget.Report.Title"
                 android:layout_marginTop="8dp"
-                android:text="@string/sReportPhotos" />
+                android:text="@string/sReportPhotos"/>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_photos"
                 android:layout_width="match_parent"
                 android:layout_height="104dp"
-                android:clipToPadding="false" />
-
+                android:clipToPadding="false"/>
         </LinearLayout>
-
     </ScrollView>
 
     <Button
@@ -132,6 +131,5 @@
         android:background="@drawable/btn_selector"
         android:enabled="false"
         android:text="@string/sReportSend"
-        android:textColor="@color/btn_selector" />
-
+        android:textColor="@color/btn_selector"/>
 </FrameLayout>

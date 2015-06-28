@@ -20,11 +20,11 @@
   -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
-    android:layout_margin="2dp"
-    android:background="@color/metro_material_dark"
-    android:padding="2dp">
+             android:layout_width="100dp"
+             android:layout_height="match_parent"
+             android:layout_margin="2dp"
+             android:background="@color/metro_material_dark"
+             android:padding="2dp">
 
     <ImageView
         android:id="@+id/iv_photo"
@@ -33,7 +33,7 @@
         android:layout_gravity="center"
         android:adjustViewBounds="true"
         android:contentDescription="@string/sReportPhotoAdd"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"/>
 
     <ImageButton
         android:id="@+id/ib_remove"
@@ -44,5 +44,5 @@
         android:contentDescription="@string/sReportPhotoRemove"
         android:padding="4dp"
         android:src="@drawable/abc_ic_clear_mtrl_alpha"
-        android:tint="@color/background_floating_material_dark" />
+        android:tint="@color/background_floating_material_dark"/>
 </FrameLayout>

@@ -53,6 +53,7 @@ public interface Constants {
     final static String BUNDLE_CITY_CHANGED = "city_changed";
     final static String BUNDLE_IMG_X = "coord_x";
     final static String BUNDLE_IMG_Y = "coord_y";
+    final static String BUNDLE_ATTACHED_IMAGES = "attached_images";
 
     public final static int DEPARTURE_RESULT = 1;
     public final static int ARRIVAL_RESULT = 2;

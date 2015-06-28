@@ -26,6 +26,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
@@ -37,7 +38,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -79,6 +80,7 @@ import java.util.Map;
 
 import static com.nextgis.metroaccess.Constants.APP_REPORTS_DIR;
 import static com.nextgis.metroaccess.Constants.APP_REPORTS_PHOTOS_DIR;
+import static com.nextgis.metroaccess.Constants.BUNDLE_ATTACHED_IMAGES;
 import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_X;
 import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_Y;
 import static com.nextgis.metroaccess.Constants.BUNDLE_PATH_KEY;
@@ -89,8 +91,9 @@ import static com.nextgis.metroaccess.Constants.PARAM_DEFINE_AREA;
 import static com.nextgis.metroaccess.Constants.PARAM_SCHEME_PATH;
 import static com.nextgis.metroaccess.Constants.PICK_REQUEST;
 
-public class ReportActivity extends ActionBarActivity implements View.OnClickListener {
-    private final static int IMAGES_PER_ROW = 3;
+public class ReportActivity extends AppCompatActivity implements View.OnClickListener {
+    private final static int IMAGES_PER_ROW_P = 3;
+    private final static int IMAGES_PER_ROW_L = 5;
     private final static int REQUIRED_THUMBNAIL_SIZE = 200;
     private final static int REQUIRED_ATTACHMENT_SIZE = 1920;
 
@@ -103,13 +106,14 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
     private RecyclerView mRecyclerView;
     private PhotoAdapter mPhotoAdapter;
     private TextView mTvDefine;
-    private int mRowHeight;
+    private int mRowHeight, mImagesPerRow;
     private StationItem mStation;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
+        assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         final Bundle extras = getIntent().getExtras();
@@ -180,17 +184,28 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
             }
         });
 
+        mImagesPerRow = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? IMAGES_PER_ROW_L : IMAGES_PER_ROW_P;
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_photos);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, IMAGES_PER_ROW));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, mImagesPerRow));
         mPhotoAdapter = new PhotoAdapter();
         mRecyclerView.setAdapter(mPhotoAdapter);
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
-                mRowHeight = mRecyclerView.getHeight();
+                mRowHeight = mRecyclerView.getWidth() / mImagesPerRow;
+                mPhotoAdapter.measureParent();
+
+                if (savedInstanceState != null)
+                    mPhotoAdapter.restoreImages(savedInstanceState.getStringArrayList(BUNDLE_ATTACHED_IMAGES));
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList(BUNDLE_ATTACHED_IMAGES, mPhotoAdapter.getImagesPath());
     }
 
     @Override
@@ -451,6 +466,8 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
 
             if (position == 0)
                 holder.setControl();
+            else
+                holder.setSize(mRowHeight);
         }
 
         @Override
@@ -458,11 +475,16 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
             return mImages.size();
         }
 
-        public List<String> getImagesPath() {
+        public ArrayList<String> getImagesPath() {
             ArrayList<String> images = new ArrayList<>();
             images.addAll(mImagesPath);
             images.remove(0);
             return images;
+        }
+
+        public void restoreImages(ArrayList<String> imagesPath) {
+            for (String imagePath : imagesPath)
+                addImage(imagePath);
         }
 
         @Override
@@ -515,7 +537,6 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
 
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             if (resultCode == RESULT_OK) {
-                Bitmap selectedImage;
                 String selectedImagePath = null;
 
                 switch (requestCode) {
@@ -527,23 +548,29 @@ public class ReportActivity extends ActionBarActivity implements View.OnClickLis
                         break;
                 }
 
-                selectedImage = getBitmap(selectedImagePath, REQUIRED_THUMBNAIL_SIZE);
-
-                if (selectedImage == null) {
-                    Toast.makeText(ReportActivity.this, getString(R.string.sReportPhotoPickFail), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                mImages.add(selectedImage);
-                mImagesPath.add(selectedImagePath);
-                notifyItemInserted(mImages.size() - 1);
-                measureParent();
+                addImage(selectedImagePath);
             }
         }
 
-        private void measureParent() {
+        private boolean addImage(String imagePath) {
+            Bitmap selectedImage = getBitmap(imagePath, REQUIRED_THUMBNAIL_SIZE);
+
+            if (selectedImage == null) {
+                Toast.makeText(ReportActivity.this, getString(R.string.sReportPhotoPickFail), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            boolean result = mImages.add(selectedImage);
+            result &= mImagesPath.add(imagePath);
+            notifyItemInserted(mImages.size() - 1);
+            measureParent();
+
+            return result;
+        }
+
+        public void measureParent() {
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mRecyclerView.getLayoutParams();
-            params.height = (int) Math.ceil(1f * mImages.size() / IMAGES_PER_ROW) * mRowHeight;
+            params.height = (int) Math.ceil(1f * mImages.size() / mImagesPerRow) * mRowHeight;
             mRecyclerView.setLayoutParams(params);
         }
     }

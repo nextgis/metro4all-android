@@ -33,8 +33,8 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
     private ImageView mPhoto;
     private IViewHolderClick mViewHolderClick;
 
-    public static interface IViewHolderClick {
-        public void onItemClick(View caller, int position);
+    public interface IViewHolderClick {
+        void onItemClick(View caller, int position);
     }
 
     public PhotoViewHolder(View itemView) {
@@ -50,7 +50,14 @@ public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
         View parentBox = mPhoto.getRootView();
         GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams) parentBox.getLayoutParams();
-        lp.setMargins(lp.width / 5, lp.width / 5, lp.width / 5, lp.width / 5);
+        lp.setMargins(lp.width / 6, lp.width / 6, lp.width / 6, lp.width / 6);
+        parentBox.setLayoutParams(lp);
+    }
+
+    public void setSize(int side) {
+        View parentBox = mPhoto.getRootView();
+        GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams) parentBox.getLayoutParams();
+        lp.height = lp.width = side;
         parentBox.setLayoutParams(lp);
     }
 

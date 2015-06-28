@@ -74,7 +74,6 @@
         <activity
             android:name="com.nextgis.metroaccess.ReportActivity"
             android:label="@string/sReportMenu"
-            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
 
         <receiver android:name=".NetWatcher">
