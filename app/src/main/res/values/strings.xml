@@ -170,6 +170,8 @@
     <string name="sReportCatInfo">Information</string>
     <string name="sReportCatError">Error</string>
     <string name="sReportCatMobReq">Access problem</string>
+    <string name="sReportSaveEmail">Remember</string>
+    <string name="sReportIncorrectEmail">Email is incorrect!</string>
 
 	<string name="sRouteETA">"ETA: "</string>
 

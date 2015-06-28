@@ -79,6 +79,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 	public static final String KEY_PREF_MAX_ROUTE_COUNT = "max_route_count";
 	public static final String KEY_PREF_GA = "ga_enabled";
 	public static final String KEY_PREF_REPORT_WIFI = "reports_wifi";
+	public static final String KEY_PREF_SAVED_EMAIL = "reports_email";
 
 	protected List<DownloadData> m_asDownloadData;
 	protected static Handler m_oGetJSONHandler; 

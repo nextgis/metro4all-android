@@ -26,6 +26,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -52,6 +53,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -106,8 +108,10 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     private RecyclerView mRecyclerView;
     private PhotoAdapter mPhotoAdapter;
     private TextView mTvDefine;
+    private CheckBox mCbRemember;
     private int mRowHeight, mImagesPerRow;
     private StationItem mStation;
+    private SharedPreferences mPreferences;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -184,6 +188,11 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
 
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(ReportActivity.this);
+        mCbRemember = (CheckBox) findViewById(R.id.cb_save_email);
+        mCbRemember.setChecked(mPreferences.contains(PreferencesActivity.KEY_PREF_SAVED_EMAIL));
+        mEtEmail.setText(mPreferences.getString(PreferencesActivity.KEY_PREF_SAVED_EMAIL, ""));
+
         mImagesPerRow = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? IMAGES_PER_ROW_L : IMAGES_PER_ROW_P;
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_photos);
         mRecyclerView.setHasFixedSize(true);
@@ -206,6 +215,16 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putStringArrayList(BUNDLE_ATTACHED_IMAGES, mPhotoAdapter.getImagesPath());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (mCbRemember.isChecked() && android.util.Patterns.EMAIL_ADDRESS.matcher(mEtEmail.getText()).matches())
+            mPreferences.edit().putString(PreferencesActivity.KEY_PREF_SAVED_EMAIL, mEtEmail.getText().toString()).apply();
+        else
+            mPreferences.edit().remove(PreferencesActivity.KEY_PREF_SAVED_EMAIL).apply();
     }
 
     @Override
@@ -263,12 +282,18 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.btn_report_send:
                 if (TextUtils.isEmpty(mEtText.getText().toString().trim())) {
-                    Toast.makeText(this, getString(R.string.sReportTextNotNull), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.sReportTextNotNull, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (TextUtils.isEmpty(Analytics.getGraph().GetCurrentCity())) {
-                    Toast.makeText(this, getString(R.string.sReportCityNotNull), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.sReportCityNotNull, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!TextUtils.isEmpty(mEtEmail.getText().toString().trim()) &&
+                        !android.util.Patterns.EMAIL_ADDRESS.matcher(mEtEmail.getText()).matches()) {
+                    Toast.makeText(this, R.string.sReportIncorrectEmail, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -294,7 +319,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                 jsonObject.accumulate("id_node", mStation.GetNode());
             }
 
-            if (!TextUtils.isEmpty(mEtEmail.getText().toString().trim())) {
+            if (android.util.Patterns.EMAIL_ADDRESS.matcher(mEtEmail.getText()).matches()) {
                 jsonObject.accumulate("email", mEtEmail.getText().toString().trim());
             }
 
@@ -367,8 +392,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
 
             ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo info = cm.getActiveNetworkInfo();
-            boolean onWiFiOnly = PreferenceManager.getDefaultSharedPreferences(ReportActivity.this)
-                    .getBoolean(PreferencesActivity.KEY_PREF_REPORT_WIFI, false);
+            boolean onWiFiOnly = mPreferences.getBoolean(PreferencesActivity.KEY_PREF_REPORT_WIFI, false);
 
             if (onWiFiOnly && info != null && info.getType() != ConnectivityManager.TYPE_WIFI)
                 saveReport(jsonResult);

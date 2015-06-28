@@ -100,14 +100,27 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/sReportEmail"/>
 
-            <EditText
-                android:id="@+id/et_report_email"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/sReportEmailHint"
-                android:inputType="textEmailAddress"
-                android:lines="3"
-                android:textColor="@android:color/black"/>
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/et_report_email"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/sReportEmailHint"
+                    android:inputType="textEmailAddress"
+                    android:lines="3"
+                    android:textColor="@android:color/black"/>
+
+                <CheckBox
+                    android:id="@+id/cb_save_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/sReportSaveEmail"/>
+            </LinearLayout>
 
             <TextView
                 style="@style/Widget.Report.Title"

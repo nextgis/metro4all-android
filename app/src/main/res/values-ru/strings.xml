@@ -169,6 +169,8 @@
     <string name="sReportCatInfo">Информация</string>
     <string name="sReportCatError">Ошибка</string>
     <string name="sReportCatMobReq">Проблемы доступности</string>
+	<string name="sReportSaveEmail">Запомнить</string>
+	<string name="sReportIncorrectEmail">Некорректный адрес почты!</string>
 
 	<string name="sRouteETA">"Время в пути: "</string>
 
