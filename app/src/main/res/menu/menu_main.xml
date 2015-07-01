@@ -2,7 +2,7 @@
 <!--
 	Project:  Metro4All
  	Purpose:  Routing in subway
-    Authors:  Stanislav Petriakov
+    Authors:  Stanislav Petriakov, becomeglory@gmail.com
     Copyright (C) 2015 NextGIS
 
     This program is free software: you can redistribute it and/or modify
@@ -23,30 +23,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/btn_reverse"
+        android:icon="@drawable/ic_swap_vert_white_24dp"
+        android:orderInCategory="0"
+        android:title="@string/sLocate"
+        app:showAsAction="ifRoom"/>
+    <item
         android:id="@+id/btn_locate"
         android:icon="@drawable/ic_action_location_found"
-        android:orderInCategory="0"
+        android:orderInCategory="10"
         android:title="@string/sLocate"
         app:showAsAction="always"/>
     <item
         android:id="@+id/btn_settings"
         android:title="@string/sSettings"
-        android:orderInCategory="1"
+        android:orderInCategory="20"
         app:showAsAction="never"/>
     <item
         android:id="@+id/btn_limitations"
         android:title="@string/sLimits"
-        android:orderInCategory="2"
+        android:orderInCategory="30"
         app:showAsAction="never"/>
     <item
         android:id="@+id/btn_report"
         android:title="@string/sReportMenu"
-        android:orderInCategory="3"
+        android:orderInCategory="40"
         app:showAsAction="never"/>
     <item
         android:id="@+id/btn_about"
         android:title="@string/sAbout"
-        android:orderInCategory="4"
+        android:orderInCategory="50"
         app:showAsAction="never"/>
 
 </menu>

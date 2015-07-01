@@ -309,6 +309,7 @@ public class SelectStationActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         menu.findItem(R.id.btn_locate).setVisible(false);
         menu.findItem(R.id.btn_report).setVisible(false);
+        menu.findItem(R.id.btn_reverse).setVisible(false);
         return true;
     }
 

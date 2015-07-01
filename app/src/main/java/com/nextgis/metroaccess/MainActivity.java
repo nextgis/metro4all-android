@@ -44,7 +44,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -112,7 +112,7 @@ import static com.nextgis.metroaccess.PreferencesActivity.clearRecent;
 
 //https://code.google.com/p/k-shortest-paths/
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
 	protected boolean m_bInterfaceLoaded;
 
@@ -393,9 +393,23 @@ public class MainActivity extends ActionBarActivity {
             } else
                 locateClosestEntrance();
             break;
+        case R.id.btn_reverse:
+            swapStations();
+            break;
         }
 		return super.onOptionsItemSelected(item);
 	}
+
+    private void swapStations() {
+        int t = m_nDeparturePortalId;
+        m_nDeparturePortalId = m_nArrivalPortalId;
+        m_nArrivalPortalId = t;
+        t = m_nDepartureStationId;
+        m_nDepartureStationId = m_nArrivalStationId;
+        m_nArrivalStationId = t;
+
+        UpdateUI();
+    }
 
     public static void showLocationInfoDialog(final Context context, DialogInterface.OnClickListener onNegativeButtonClicked) {
         LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
@@ -691,24 +705,18 @@ public class MainActivity extends ActionBarActivity {
 
 	    try {
 	    	FileInputStream inputStream = new FileInputStream(filePath);
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String receiveString;
+            StringBuilder stringBuilder = new StringBuilder();
 
-	        if ( inputStream != null ) {
-	            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-	            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-	            String receiveString = "";
-	            StringBuilder stringBuilder = new StringBuilder();
+            while ((receiveString = bufferedReader.readLine()) != null) {
+                stringBuilder.append(receiveString);
+            }
 
-	            while ( (receiveString = bufferedReader.readLine()) != null ) {
-	                stringBuilder.append(receiveString);
-	            }
-
-	            inputStream.close();
-	            ret = stringBuilder.toString();
-	        }
-	    }
-	    catch (FileNotFoundException e) {
-	    	e.printStackTrace();
-	    } catch (IOException e) {
+            inputStream.close();
+            ret = stringBuilder.toString();
+        } catch (IOException e) {
 	    	e.printStackTrace();
 	    }
 
