@@ -1,7 +1,8 @@
 /*******************************************************************************
  * Project:  Metro Access
  * Purpose:  Routing in subway for disabled.
- * Authors:  Baryshnikov Dmitriy aka Bishop (polimax@mail.ru), Stanislav Petriakov
+ * Author:   Baryshnikov Dmitriy aka Bishop (polimax@mail.ru)
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  ******************************************************************************
 *   Copyright (C) 2013,2015 NextGIS
 *
@@ -33,7 +34,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.nextgis.metroaccess.data.BarrierItem;
@@ -71,9 +71,10 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
         super.onCreate(savedInstanceState);
         //mbFilled = false;
         setContentView(R.layout.station_list_view);
-              
+
 	    ActionBar actionBar = getSupportActionBar();
-		Context context = actionBar.getThemedContext();		
+        assert actionBar != null;
+        Context context = actionBar.getThemedContext();
         
 	    actionBar.setHomeButtonEnabled(true);
 	    actionBar.setDisplayHomeAsUpEnabled(true);
@@ -103,7 +104,7 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
 
 		    actionBar.setDisplayShowTitleEnabled(false);
 		    actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-		    actionBar.setListNavigationCallbacks((SpinnerAdapter)adapter, this);   
+		    actionBar.setListNavigationCallbacks(adapter, this);
 		    
 
 		    if(mnPathCount > 0){
@@ -143,11 +144,11 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
 
     protected RouteExpandableListAdapter CreateAndFillAdapter(List<Integer> list) {
    		boolean bCross = false;
-   		boolean bCrossCross = false;
+   		boolean bCrossCross;
    		if(list != null){
     			
 			//add entrance
-	   		List<RouteItem> routeList = new ArrayList<RouteItem>();
+	   		List<RouteItem> routeList = new ArrayList<>();
             StationItem sit = mmoStations.get(list.get(0));
             PortalItem pit = null;
             String meetcode = "";
@@ -311,7 +312,7 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
 		if(sit != null){
 			PortalItem pit = sit.GetPortal(it.GetId());
 			if(pit != null && LimitationsActivity.hasLimitations(this)){
-				FillWithData(pit.GetDetailes(), it, false);
+				FillWithData(pit.GetDetails(), it, false);
 			}
 			it.SetLine(sit.GetLine());
 		}		
@@ -323,7 +324,7 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
 		if(sit != null){
 			PortalItem pit = sit.GetPortal(PortalId);
 			if(pit != null){
-				FillWithData(pit.GetDetailes(), it, false);
+				FillWithData(pit.GetDetails(), it, false);
 			}
 			//it.SetLine(sit.GetLine());
 		}

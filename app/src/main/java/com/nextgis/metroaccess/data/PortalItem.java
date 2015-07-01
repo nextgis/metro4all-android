@@ -2,8 +2,9 @@
  * Project:  Metro Access
  * Purpose:  Routing in subway for disabled.
  * Author:   Baryshnikov Dmitriy (aka Bishop), polimax@mail.ru
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  ******************************************************************************
-*   Copyright (C) 2013 NextGIS
+*   Copyright (C) 2013,2015 NextGIS
 *
 *    This program is free software: you can redistribute it and/or modify
 *    it under the terms of the GNU General Public License as published by
@@ -28,13 +29,13 @@ public class PortalItem implements Parcelable {
 	private String sName;
 	private int nDirection;// 1 - in, 2 - out, 3 - both
 	private int nId, nMeetCode = -1;
-	private int nStationId;
+	private int nStationId, nTime;
 	private int[] anDetails;
     private double nLatitude;
     private double nLongitude;
 
 	public PortalItem(int nId, String sName, int nStationId, int nDirection,
-                      int[] anDetails, double nLat, double nLong, int nMeetCode) {
+                      int[] anDetails, double nLat, double nLong, int nMeetCode, int nTime) {
 		this.sName = sName;
 		this.nId = nId;
 		this.nDirection = nDirection;
@@ -44,6 +45,7 @@ public class PortalItem implements Parcelable {
         this.nLatitude = nLat;
         this.nLongitude = nLong;
         this.nMeetCode = nMeetCode;
+        this.nTime = nTime;
 	}
 	
 	public String GetName(){
@@ -65,7 +67,7 @@ public class PortalItem implements Parcelable {
 		return nStationId;
 	}
 	
-	public int[] GetDetailes(){
+	public int[] GetDetails(){
 		return anDetails;
 	}
 
@@ -81,13 +83,16 @@ public class PortalItem implements Parcelable {
         return nMeetCode;
     }
 
+    public int GetTime() {
+        return nTime;
+    }
+
     public String GetReadableMeetCode() {
         return nMeetCode == -1 ? "" : "#" + nMeetCode;
     }
 
     @Override
 	public int describeContents() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -98,9 +103,10 @@ public class PortalItem implements Parcelable {
 		out.writeInt(nStationId);
 		out.writeInt(nDirection);
 		out.writeInt(anDetails.length);
-		for(int i = 0; i < anDetails.length; i++){
-			out.writeInt(anDetails[i]);
-		}
+
+		for (int anDetail : anDetails)
+			out.writeInt(anDetail);
+
         out.writeDouble(nLatitude);
         out.writeDouble(nLongitude);
     }

@@ -1,7 +1,8 @@
 /*******************************************************************************
  * Project:  Metro4All
  * Purpose:  Routing in subway.
- * Authors:  Dmitry Baryshnikov (polimax@mail.ru), Stanislav Petriakov
+ * Author:   Dmitry Baryshnikov (polimax@mail.ru)
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  ******************************************************************************
  *   Copyright (C) 2013-2015 NextGIS
  *
@@ -128,9 +129,9 @@ public abstract class StationExpandableListAdapter extends BaseExpandableListAda
         TextView meetcode = (TextView) convertView.findViewById(R.id.tvPortalMeetCode);
 
         if (mnType > 1) {
-            boolean bSmallWidth = entry.GetDetailes()[0] < mnMaxWidth;
-            boolean bCanRoll = entry.GetDetailes()[7] == 0 || entry.GetDetailes()[5] <= mnWheelWidth
-                    && (entry.GetDetailes()[6] == 0 || mnWheelWidth <= entry.GetDetailes()[6]);
+            boolean bSmallWidth = entry.GetDetails()[0] < mnMaxWidth;
+            boolean bCanRoll = entry.GetDetails()[7] == 0 || entry.GetDetails()[5] <= mnWheelWidth
+                    && (entry.GetDetails()[6] == 0 || mnWheelWidth <= entry.GetDetails()[6]);
 
             if (m_bHaveLimits && (bSmallWidth || !bCanRoll)) {
                 item.setTextColor(Color.RED);

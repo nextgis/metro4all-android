@@ -969,13 +969,16 @@ public class MainActivity extends ActionBarActivity {
 
 			        for (Path path : shortest_paths_list) {
 						ArrayList<Integer> IndexPath = new  ArrayList<>();
-						Log.d(TAG, "Route# " + nCounter + " weight: " + path.get_weight());
+                        double time = path.get_weight();
+                        time += m_oGraph.GetStation(m_nDepartureStationId).GetPortal(m_nDeparturePortalId).GetTime();
+                        time += m_oGraph.GetStation(m_nArrivalStationId).GetPortal(m_nArrivalPortalId).GetTime();
+						Log.d(TAG, "Route# " + nCounter + " weight: " + time);
 			            for (BaseVertex v : path.get_vertices()) {
 			            	IndexPath.add(v.get_id());
 			            	Log.d(TAG, "<" + m_oGraph.GetStation(v.get_id()));
 			            }
 			            intentView.putIntegerArrayListExtra(BUNDLE_PATH_KEY + nCounter, IndexPath);
-			            intentView.putExtra(BUNDLE_WEIGHT_KEY + nCounter, path.get_weight());
+			            intentView.putExtra(BUNDLE_WEIGHT_KEY + nCounter, time);
 			            nCounter++;
 			        }
 

@@ -2,8 +2,9 @@
  * Project:  Metro4All
  * Purpose:  Routing in subway.
  * Author:   Dmitry Baryshnikov, polimax@mail.ru
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  ******************************************************************************
-*   Copyright (C) 2014 NextGIS
+*   Copyright (C) 2014,2015 NextGIS
 *
 *    This program is free software: you can redistribute it and/or modify
 *    it under the terms of the GNU General Public License as published by
@@ -20,6 +21,18 @@
  ****************************************************************************/
 package com.nextgis.metroaccess.data;
 
+import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.nextgis.metroaccess.MainActivity;
+import com.nextgis.metroaccess.R;
+import com.nextgis.metroaccess.util.TimeUtil;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,7 +41,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,23 +50,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.Context;
-import android.text.TextUtils;
-import android.text.format.DateUtils;
-import android.util.Log;
-import android.util.TimeUtils;
-
-import com.nextgis.metroaccess.MainActivity;
-import com.nextgis.metroaccess.R;
-import com.nextgis.metroaccess.util.TimeUtil;
-
-import javax.xml.datatype.Duration;
 
 import edu.asu.emit.qyan.alg.control.YenTopKShortestPathsAlg;
 import edu.asu.emit.qyan.alg.model.Graph;
@@ -62,7 +57,8 @@ import edu.asu.emit.qyan.alg.model.Path;
 import edu.asu.emit.qyan.alg.model.VariableGraph;
 import edu.asu.emit.qyan.alg.model.Vertex;
 
-import static com.nextgis.metroaccess.Constants.*;
+import static com.nextgis.metroaccess.Constants.CSV_CHAR;
+import static com.nextgis.metroaccess.Constants.TAG;
 
 public class MAGraph {
 
@@ -101,12 +97,12 @@ public class MAGraph {
 		this.m_sLocale = sLocale;
 		this.m_bIsValid = false;
 		
-		m_moRouteMetadata = new HashMap<String, GraphDataItem>();
-		m_asChoiceItems = new ArrayList<GraphDataItem>();
-		m_moStations = new HashMap<Integer, StationItem>();
-		m_moCrosses = new HashMap<String, int[]>();
-		m_omLines = new HashMap<Integer, String>();
-		m_omLinesColors = new HashMap<Integer, String>();
+		m_moRouteMetadata = new HashMap<>();
+		m_asChoiceItems = new ArrayList<>();
+		m_moStations = new HashMap<>();
+		m_moCrosses = new HashMap<>();
+		m_omLines = new HashMap<>();
+		m_omLinesColors = new HashMap<>();
 
 		m_oGraph = new VariableGraph();
 		
@@ -133,7 +129,9 @@ public class MAGraph {
 			if (intercharges_file.exists()) {
 				InputStream in = new BufferedInputStream(new FileInputStream(intercharges_file));
 				BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-				String line = reader.readLine();
+				String line;
+                reader.readLine();
+
 		        while ((line = reader.readLine()) != null) {
 		             String[] RowData = line.split(CSV_CHAR);
 		             
@@ -154,10 +152,8 @@ public class MAGraph {
 					 m_moCrosses.put("" + nFromId + "->" + nToId, naBarriers);					 
 		        }
 		        reader.close();
-		        if (in != null) {
-		        	in.close();
-		    	}
-			}
+                in.close();
+            }
 			else{
 				m_sErr = m_oContext.getString(R.string.sCannotGetPath);
 				return false;
@@ -185,7 +181,9 @@ public class MAGraph {
 	        	InputStream in;
 				in = new BufferedInputStream(new FileInputStream(file_route));
 				BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-		        String line = reader.readLine();
+		        String line;
+                reader.readLine();
+
 		        while ((line = reader.readLine()) != null) {
 		             String[] RowData = line.split(CSV_CHAR);
 		             
@@ -205,10 +203,8 @@ public class MAGraph {
 					 }
 		        }
 		        reader.close();
-		        if (in != null) {
-		        	in.close();
-		    	}
-			}
+                in.close();
+            }
 			else{
 				m_sErr = m_oContext.getString(R.string.sCannotGetPath);
 				return false;
@@ -243,14 +239,14 @@ public class MAGraph {
             if (portals_file.exists()) {
                 InputStream in;
                 in = new BufferedInputStream(new FileInputStream(portals_file));
-
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                String line;
+				reader.readLine();
 
-                String line = reader.readLine();
                 while ((line = reader.readLine()) != null) {
                     String[] RowData = line.split(CSV_CHAR);
 
-                    List<String> list = new ArrayList<String>(Arrays.asList(RowData));
+                    List<String> list = new ArrayList<>(Arrays.asList(RowData));
                     String meetcode = list.get(1);
                     list.remove(1);
                     list.add(meetcode);
@@ -264,13 +260,18 @@ public class MAGraph {
                     int nID = Integer.parseInt(RowData[0]);
                     String sName = RowData[1];
                     int nStationId = Integer.parseInt(RowData[2]);
-                    int nDirection = 0;
-                    if (RowData[3].equals("in")) {
-                        nDirection = 1;
-                    } else if (RowData[3].equals("out")) {
-                        nDirection = 2;
-                    } else {
-                        nDirection = 3;
+                    int nDirection;
+
+                    switch (RowData[3]) {
+                        case "in":
+                            nDirection = 1;
+                            break;
+                        case "out":
+                            nDirection = 2;
+                            break;
+                        default:
+                            nDirection = 3;
+                            break;
                     }
 
                     double nLat = Double.parseDouble(RowData[4]);
@@ -307,10 +308,11 @@ public class MAGraph {
                         escalator = tmp.length() == 0 ? 0 : Integer.parseInt(tmp);
                     }
 
-                    int[] detailes = {min_width, min_step, min_step_ramp, lift, lift_minus_step, min_rail_width, max_rail_width, max_angle, escalator};
+                    int[] details = {min_width, min_step, min_step_ramp, lift, lift_minus_step, min_rail_width, max_rail_width, max_angle, escalator};
                     int nMeetCode = meetcode.equals("") ? -1 : Integer.parseInt(meetcode);
+                    int nTime = Integer.parseInt(RowData[15]);
 
-                    PortalItem pt = new PortalItem(nID, sName, nStationId, nDirection, detailes, nLat, nLong, nMeetCode);
+                    PortalItem pt = new PortalItem(nID, sName, nStationId, nDirection, details, nLat, nLong, nMeetCode, nTime);
                     StationItem item = m_moStations.get(nStationId);
 
                     if (item == null) {
@@ -357,10 +359,10 @@ public class MAGraph {
 			if (station_file.exists()) {
 	        	InputStream in;
 				in = new BufferedInputStream(new FileInputStream(station_file));
-	       	
 				BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-	
-		        String line = reader.readLine();
+		        String line;
+                reader.readLine();
+
 		        while ((line = reader.readLine()) != null) {
 		             String[] RowData = line.split(CSV_CHAR);
 		             
@@ -384,10 +386,8 @@ public class MAGraph {
 		        }
 			        
 		        reader.close();
-		        if (in != null) {
-		        	in.close();
-		    	} 
-			}
+                in.close();
+            }
 			else{
 				m_sErr = m_oContext.getString(R.string.sCannotGetPath);
 				return false;
@@ -419,10 +419,10 @@ public class MAGraph {
 			if (lines_file.exists()) {
 	        	InputStream in;
 				in = new BufferedInputStream(new FileInputStream(lines_file));
-	       	
 				BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-	
-		        String line = reader.readLine();
+		        String line;
+                reader.readLine();
+
 		        while ((line = reader.readLine()) != null) {
 		             String[] RowData = line.split(CSV_CHAR);
 		             
@@ -471,7 +471,6 @@ public class MAGraph {
                 StringBuilder sb = new StringBuilder();
                 List<String> headersList = new ArrayList<>();
                 List<String> dataList = new ArrayList<>();
-
                 String line = reader.readLine();
 
                 if (line != null) {
@@ -690,12 +689,10 @@ public class MAGraph {
 			JSONObject oJSONMetaRemote = new JSONObject(sJSONData);
 			
 			//save remote meta to file
-			if(oJSONMetaRemote != null ){
-				File file = new File(m_oExternalDir, MainActivity.GetRemoteMetaFile());
-				MainActivity.writeToFile(file, sJSONData);
-			}			
-			
-			final JSONArray jsonArray = oJSONMetaRemote.getJSONArray("packages");
+            File file = new File(m_oExternalDir, MainActivity.GetRemoteMetaFile());
+            MainActivity.writeToFile(file, sJSONData);
+
+            final JSONArray jsonArray = oJSONMetaRemote.getJSONArray("packages");
 
 			m_asChoiceItems.clear();
 
@@ -785,7 +782,7 @@ public class MAGraph {
 	}
 	
 	protected Map<String,String> GetNames(JSONObject obj){
-		Map<String,String> ret = new HashMap<String,String>();
+		Map<String,String> ret = new HashMap<>();
     	try {
 		Iterator<?> keys = obj.keys();
 

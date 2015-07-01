@@ -1,7 +1,8 @@
 /******************************************************************************
  * Project:  Metro Access
  * Purpose:  Routing in subway for disabled.
- * Authors:  Baryshnikov Dmitriy aka Bishop (polimax@mail.ru), Stanislav Petriakov
+ * Author:   Baryshnikov Dmitriy aka Bishop (polimax@mail.ru)
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  ******************************************************************************
  *   Copyright (C) 2013-2015 NextGIS
  *
@@ -324,11 +325,11 @@ public class StationMapActivity extends ActionBarActivity {
                 boolean isInvalidPortal = false;
 
                 if (mnType > 1) {
-                    boolean bSmallWidth = portal.GetDetailes()[0] < mnMaxWidth;
-                    boolean bCanRoll = portal.GetDetailes()[7] == 0
-                            || portal.GetDetailes()[5] <= mnWheelWidth
-                            && (portal.GetDetailes()[6] == 0
-                                || mnWheelWidth <= portal.GetDetailes()[6]);
+                    boolean bSmallWidth = portal.GetDetails()[0] < mnMaxWidth;
+                    boolean bCanRoll = portal.GetDetails()[7] == 0
+                            || portal.GetDetails()[5] <= mnWheelWidth
+                            && (portal.GetDetails()[6] == 0
+                                || mnWheelWidth <= portal.GetDetails()[6]);
                     if (m_bHaveLimits && (bSmallWidth || !bCanRoll)) {
                         isInvalidPortal = true;
                     }
