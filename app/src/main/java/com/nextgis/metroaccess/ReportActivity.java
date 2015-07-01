@@ -198,6 +198,10 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, mImagesPerRow));
         mPhotoAdapter = new PhotoAdapter();
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_PATH_KEY))
+            mPhotoAdapter.setPhotoUri(Uri.parse(savedInstanceState.getString(BUNDLE_PATH_KEY)));
+
         mRecyclerView.setAdapter(mPhotoAdapter);
         mRecyclerView.post(new Runnable() {
             @Override
@@ -215,6 +219,9 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putStringArrayList(BUNDLE_ATTACHED_IMAGES, mPhotoAdapter.getImagesPath());
+
+        if (mPhotoAdapter.getPhotoUri() != null)
+            outState.putString(BUNDLE_PATH_KEY, mPhotoAdapter.getPhotoUri().getPath());
     }
 
     @Override
@@ -509,6 +516,14 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
         public void restoreImages(ArrayList<String> imagesPath) {
             for (String imagePath : imagesPath)
                 addImage(imagePath);
+        }
+
+        public Uri getPhotoUri() {
+            return mPhotoUri;
+        }
+
+        public void setPhotoUri(Uri photoUri) {
+            this.mPhotoUri = photoUri;
         }
 
         @Override
