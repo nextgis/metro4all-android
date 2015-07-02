@@ -12,12 +12,13 @@
 
     <string name="sSettings">Настройки</string>
 	<string name="sAbout">О программе</string>
-	<string name="sNetworkGetErr">Ошибка получения данных</string>
+	<string name="sNetworkGetErr">Ошибка получения данных. Попробуйте обновить позже.</string>
 	<string name="sNetworkUnreachErr">Отсутствует подключение к сети</string>
-    <string name="sDownLoading">Загружается:</string>
+    <string name="sDownLoading">"Загружается: "</string>
+	<string name="sDownLoadingCancelled">Загрузка отменена</string>
     <string name="sSearching">Поиск &#8230;</string>
     <string name="sZipExtractionProcess">Распаковка &#8230;</string>
-	<string name="sNetworkInvalidData">Ошибка в данных</string>
+	<string name="sNetworkInvalidData">Ошибка в данных. Попробуйте перезагрузить данные.</string>
 	<string name="sFileNotFound">Файл не найден</string>
 	<string name="sCannotReadFile">Не могу прочитать файл</string>
 	<string name="sCannotGetPath">Не найден путь</string>
@@ -35,13 +36,13 @@
     <string name="sLocationNetwork">По Wi-Fi и координатам сети</string>
     <string name="sLocationNoCitySelected">Не выбран город</string>
 
-	<string name="sSelectDataToDownload">Выберите город для загрузки:</string>
+	<string name="sSelectDataToDownload">Выберите города для загрузки</string>
 	<string name="sUpdateAvaliable">Имеется обновление данных</string>
 	<string name="sDownload">Загрузить</string>
 	<string name="sDelete">Удалить</string>
 	<string name="sYes">Да</string>
 	<string name="sNo">Нет</string>
-	<string name="sOk">Ok</string>
+	<string name="sOk">ОК</string>
 	<string name="sCancel">Отмена</string>
 	<string name="sQuestion">Обновить все данные</string>
 	<string name="sAreYouSure">Уверены?</string>
@@ -113,15 +114,12 @@
 	<string name="sPrefDataPath">Загружать данные по ссылке</string>
 	<string name="sPrefDataPathSummary">Ссылка для загрузки данных маршрутизации</string>
 	<string name="sPrefDataPathTitle">Ввести ссылку для загрузки данных</string>
-	<string name="sPrefUpdDataSummary">Нажмите, чтобы обновить данные</string>
 	<string name="sPrefUpdDataTitle">Обновить данные</string>
 	<string name="sPrefChangeCityBasesBtn">Изменить</string>
 	<string name="sPrefChangeCityBasesTitle">Добавить/Удалить город</string>
-	<string name="sPrefChangeCityBasesSummary">Нажмите, чтобы выбрать загружаемые города</string>
     <string name="sPrefLegend">Условные обозначения</string>
     <string name="sPrefLegendSummary">Условные обозначения схемы станции</string>
     <string name="sPrefCity">Текущий город</string>
-	<string name="sPrefCitySummary">Выберите город</string>
 	<string name="sPrefCityTitle">Выберите город из списка</string>
 	<string name="sPrefCityLoc">Язык названий</string>
 	<string name="sPrefCityLocSummary">Выбор языка названий</string>
@@ -171,8 +169,6 @@
     <string name="sReportCatMobReq">Проблемы доступности</string>
 	<string name="sReportSaveEmail">Запомнить</string>
 	<string name="sReportIncorrectEmail">Некорректный адрес почты!</string>
-
-	<string name="sRouteETA">"Время в пути: "</string>
 
     <string name="sIOError">Память устройства временно недоступна</string>
 

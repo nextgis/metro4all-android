@@ -29,7 +29,6 @@
         <ListPreference
             android:dialogTitle="@string/sPrefCityTitle"
             android:key="city"
-            android:summary="@string/sPrefCitySummary"
             android:title="@string/sPrefCity"
             />
         <ListPreference

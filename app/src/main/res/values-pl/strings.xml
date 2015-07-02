@@ -12,12 +12,13 @@
 
     <string name="sSettings">Ustawienia</string>
 	<string name="sAbout">O aplikacji</string>
-	<string name="sNetworkGetErr">Wystąpił błąd pobierania danych</string>
+	<string name="sNetworkGetErr">Wystąpił błąd pobierania danych. Try to reload later.</string>
 	<string name="sNetworkUnreachErr">Brak połączenia z internetem</string>
-    <string name="sDownLoading">Pobieranie:</string>
+    <string name="sDownLoading">"Pobieranie: "</string>
+	<string name="sDownLoadingCancelled">Downloading cancelled</string>
     <string name="sZipExtractionProcess">Wypakowywanie &#8230;</string>
     <string name="sSearching">Wyszukiwanie &#8230;</string>
-	<string name="sNetworkInvalidData">Otrzymano niepoprawne dane</string>
+	<string name="sNetworkInvalidData">Otrzymano niepoprawne dane. Please try to reload.</string>
 	<string name="sFileNotFound">Nie znaleziono pliku</string>
 	<string name="sCannotReadFile">Nie można odczytać pliku</string>
 	<string name="sCannotGetPath">Błędna ścieżka do pliku</string>
@@ -113,15 +114,12 @@
 	<string name="sPrefDataPath">URL bazy danych</string>
 	<string name="sPrefDataPathSummary">Ustaw URL bazy danych</string>
 	<string name="sPrefDataPathTitle">Ustaw URL bazy danych</string>
-	<string name="sPrefUpdDataSummary">Kliknij, aby zaktualizować bazę danych</string>
 	<string name="sPrefUpdDataTitle">Aktualizuj bazę danych</string>
 	<string name="sPrefChangeCityBasesTitle">Przechowywane mapy metra</string>
 	<string name="sPrefChangeCityBasesBtn">Ustaw</string>
-	<string name="sPrefChangeCityBasesSummary">Kliknij, aby dodać/usunąć miasta</string>
     <string name="sPrefLegend">Legenda do schematów</string>
     <string name="sPrefLegendSummary">Legenda do schematów stacji</string>
 	<string name="sPrefCity">Miasto</string>
-	<string name="sPrefCitySummary">Wybierz miasto</string>
 	<string name="sPrefCityTitle">Wybierz miasto z listy</string>
 	<string name="sPrefCityLoc">Język</string>
 	<string name="sPrefCityLocSummary">Wybierz język</string>
@@ -169,11 +167,13 @@
     <string name="sReportCatInfo">Informacja</string>
     <string name="sReportCatError">Błąd</string>
     <string name="sReportCatMobReq">Problem dostępności</string>
+	<string name="sReportSaveEmail">Remember</string>
+	<string name="sReportIncorrectEmail">Email is incorrect!</string>
 
     <string name="sIOError">Brak miejsca w pamięci telefonu</string>
 
-    <string name="sTimeUnitHour">h.</string>
-    <string name="sTimeUnitMinute">min.</string>
+    <string name="sTimeUnitHour">h</string>
+    <string name="sTimeUnitMinute">min</string>
 	
 	<string name="switch_on">Wł</string>
 	<string name="switch_off">Wył</string>

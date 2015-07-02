@@ -12,12 +12,13 @@
 
     <string name="sSettings">Налаштування</string>
 	<string name="sAbout">Про додаток</string>
-	<string name="sNetworkGetErr">Помилка отримання даних</string>
+	<string name="sNetworkGetErr">Помилка отримання даних. Попробуйте обновить позже.</string>
 	<string name="sNetworkUnreachErr">Немає підключення до мережі</string>
-    <string name="sDownLoading">Завантажується:</string>
+    <string name="sDownLoading">"Завантажується: "</string>
+	<string name="sDownLoadingCancelled">Загрузка отменена</string>
     <string name="sSearching">Пошук &#8230;</string>
     <string name="sZipExtractionProcess">Розпакування &#8230;</string>
-	<string name="sNetworkInvalidData">Помилка в даних</string>
+	<string name="sNetworkInvalidData">Помилка в даних. Попробуйте перезагрузить данные.</string>
 	<string name="sFileNotFound">Файл не знайдено</string>
 	<string name="sCannotReadFile">Не можу прочитати файл</string>
 	<string name="sCannotGetPath">Не знайдено шлях</string>
@@ -41,7 +42,7 @@
 	<string name="sDelete">Видалити</string>
 	<string name="sYes">Так</string>
 	<string name="sNo">Ні</string>
-	<string name="sOk">Ok</string>
+	<string name="sOk">OK</string>
 	<string name="sCancel">Скасувати</string>
 	<string name="sQuestion">Оновити всі дані</string>
 	<string name="sAreYouSure">Впевнені?</string>
@@ -113,15 +114,12 @@
 	<string name="sPrefDataPath">Завантажити дані за посиланням</string>
 	<string name="sPrefDataPathSummary">Посилання для завантаження даних маршрутизації</string>
 	<string name="sPrefDataPathTitle">Ввести посилання для завантаження даних</string>
-	<string name="sPrefUpdDataSummary">Натисніть, щоб оновити дані</string>
 	<string name="sPrefUpdDataTitle">Оновити дані</string>
 	<string name="sPrefChangeCityBasesBtn">Змінити</string>
 	<string name="sPrefChangeCityBasesTitle">Додати/Видалити місто</string>
-	<string name="sPrefChangeCityBasesSummary">Натисніть, щоб вибрати міста, які треба завантажити</string>
     <string name="sPrefLegend">Умовні позначення</string>
     <string name="sPrefLegendSummary">Умовні позначення схеми станції</string>
     <string name="sPrefCity">Поточне місто</string>
-	<string name="sPrefCitySummary">Виберіть місто</string>
 	<string name="sPrefCityTitle">Виберіть місто зі списку</string>
 	<string name="sPrefCityLoc">Мова назв</string>
 	<string name="sPrefCityLocSummary">Вибір мови назв</string>
@@ -169,11 +167,13 @@
 	<string name="sReportCatInfo">Інформація</string>
 	<string name="sReportCatError">Помилка</string>
 	<string name="sReportCatMobReq">Проблеми доступності</string>
+	<string name="sReportSaveEmail">Запомнить</string>
+	<string name="sReportIncorrectEmail">Некорректный адрес почты!</string>
 
 	<string name="sIOError">Пам\'ять пристрою тимчасово недоступна</string>
 
-    <string name="sTimeUnitHour">год.</string>
-    <string name="sTimeUnitMinute">хв.</string>
+    <string name="sTimeUnitHour">год</string>
+    <string name="sTimeUnitMinute">хв</string>
 
 	<string name="switch_on">Увімк</string>
 	<string name="switch_off">Вимк</string>
