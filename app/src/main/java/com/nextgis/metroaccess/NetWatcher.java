@@ -36,8 +36,8 @@ import org.apache.http.Header;
 import java.io.File;
 import java.io.FileInputStream;
 
-import static com.nextgis.metroaccess.Constants.APP_REPORTS_DIR;
-import static com.nextgis.metroaccess.Constants.APP_REPORTS_SCREENSHOT;
+import static com.nextgis.metroaccess.util.Constants.APP_REPORTS_DIR;
+import static com.nextgis.metroaccess.util.Constants.APP_REPORTS_SCREENSHOT;
 
 @SuppressWarnings("deprecation")
 public class NetWatcher extends BroadcastReceiver {
@@ -79,7 +79,7 @@ public class NetWatcher extends BroadcastReceiver {
                                     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
                                 };
 
-                                Analytics.postJSON(context, json, handler);
+                                MetroApp.postJSON(context, json, handler);
                             }
                         } finally {
                             in.close();

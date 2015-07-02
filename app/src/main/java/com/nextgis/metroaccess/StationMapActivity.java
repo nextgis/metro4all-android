@@ -51,6 +51,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.nextgis.metroaccess.data.PortalItem;
 import com.nextgis.metroaccess.data.StationItem;
+import com.nextgis.metroaccess.util.Constants;
 
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
@@ -65,12 +66,12 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.nextgis.metroaccess.Constants.BUNDLE_PORTALID_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_STATIONID_KEY;
-import static com.nextgis.metroaccess.Constants.PARAM_ACTIVITY_FOR_RESULT;
-import static com.nextgis.metroaccess.Constants.PARAM_PORTAL_DIRECTION;
-import static com.nextgis.metroaccess.Constants.PARAM_ROOT_ACTIVITY;
-import static com.nextgis.metroaccess.Constants.SUBSCREEN_PORTAL_RESULT;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_PORTALID_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_STATIONID_KEY;
+import static com.nextgis.metroaccess.util.Constants.PARAM_ACTIVITY_FOR_RESULT;
+import static com.nextgis.metroaccess.util.Constants.PARAM_PORTAL_DIRECTION;
+import static com.nextgis.metroaccess.util.Constants.PARAM_ROOT_ACTIVITY;
+import static com.nextgis.metroaccess.util.Constants.SUBSCREEN_PORTAL_RESULT;
 import static com.nextgis.metroaccess.MainActivity.isProviderDisabled;
 import static com.nextgis.metroaccess.MainActivity.showLocationInfoDialog;
 import static com.nextgis.metroaccess.MainActivity.tintIcons;
@@ -131,14 +132,14 @@ public class StationMapActivity extends ActionBarActivity {
         mIsRootActivity = inIntent.getBooleanExtra(PARAM_ROOT_ACTIVITY, true);
 //        isCrossReference = inIntent.getExtras().containsKey(PARAM_ROOT_ACTIVITY); // if PARAM_ROOT_ACTIVITY not contains, it called from another
 
-//        selectedStation = MainActivity.GetGraph().GetStation(mStationID);
-        StationItem station = MainActivity.GetGraph().GetStation(mStationID);
+//        selectedStation = Analytics.getGraph().GetStation(mStationID);
+        StationItem station = MetroApp.getGraph().GetStation(mStationID);
 
 //        if (selectedStation == null)
 //            selectedStation = new StationItem(-1, getString(R.string.sStationName) + ": " + m_oContext.getString(R.string.sNotSet), -1, -1, -1, -1, -1, -1);
 
-        Tracker t = ((Analytics) getApplication()).getTracker();
-        t.setScreenName(Analytics.SCREEN_MAP + " " + getDirection());
+        Tracker t = ((MetroApp) getApplication()).getTracker();
+        t.setScreenName(Constants.SCREEN_MAP + " " + getDirection());
         t.send(new HitBuilders.AppViewBuilder().build());
 
         mAppContext = getApplicationContext();
@@ -279,7 +280,7 @@ public class StationMapActivity extends ActionBarActivity {
         markerTransparentPortal.setAlpha(127);
         markerTransparentInvalidPortal.setAlpha(127);
 
-        stationList = new ArrayList<>(MainActivity.GetGraph().GetStations().values());
+        stationList = new ArrayList<>(MetroApp.getGraph().GetStations().values());
 
         double minLat = Double.MAX_VALUE, minLong = Double.MAX_VALUE, maxLat = Double.MIN_VALUE, maxLong = Double.MIN_VALUE;
 
@@ -293,7 +294,7 @@ public class StationMapActivity extends ActionBarActivity {
             if (!isForSelectedStation) {
                 station = stationList.get(i);
             } else {
-                station = MainActivity.GetGraph().GetStation(mStationID);
+                station = MetroApp.getGraph().GetStation(mStationID);
             }
 
             boolean isSelectedStation = isForSelectedStation || (station.GetId() == mStationID);
@@ -388,9 +389,9 @@ public class StationMapActivity extends ActionBarActivity {
                                 return true;
                             }
 
-                            ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAP + " " + getDirection(), Analytics.PORTAL, Analytics.SCREEN_MAP);
+                            ((MetroApp) getApplication()).addEvent(Constants.SCREEN_MAP + " " + getDirection(), Constants.PORTAL, Constants.SCREEN_MAP);
 
-                            StationItem selectedStation = MainActivity.GetGraph()
+                            StationItem selectedStation = MetroApp.getGraph()
                                     .GetStation(Integer.parseInt(item.getUid()));
 
                             if (selectedStation == null) {
@@ -540,12 +541,12 @@ public class StationMapActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAP + " " + getDirection(), Analytics.BACK, Analytics.SCREEN_MAP);
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_MAP + " " + getDirection(), Constants.BACK, Constants.SCREEN_MAP);
 
                 finish();
                 return true;
             case R.id.btn_layout:
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAP + " " + getDirection(), Analytics.BTN_LAYOUT, Analytics.ACTION_BAR);
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_MAP + " " + getDirection(), Constants.BTN_LAYOUT, Constants.ACTION_BAR);
 
                 if (mIsRootActivity) {
                     Intent intentView = new Intent(this, StationImageView.class);
@@ -557,7 +558,7 @@ public class StationMapActivity extends ActionBarActivity {
 
                 return true;
             case R.id.btn_location_found:
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAP + " " + getDirection(), "Find nearest station", Analytics.ACTION_BAR);
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_MAP + " " + getDirection(), "Find nearest station", Constants.ACTION_BAR);
 
                 final Context context = this;
                 if (isProviderDisabled(context, false)) {
@@ -575,7 +576,7 @@ public class StationMapActivity extends ActionBarActivity {
 
                 return true;
             case R.id.btn_limitations:
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAP + " " + getDirection(), Analytics.LIMITATIONS, Analytics.MENU);
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_MAP + " " + getDirection(), Constants.LIMITATIONS, Constants.MENU);
                 startActivity(new Intent(this, LimitationsActivity.class));
 //                startActivityForResult(new Intent(this, LimitationsActivity.class), PREF_RESULT);
                 return true;
@@ -599,12 +600,12 @@ public class StationMapActivity extends ActionBarActivity {
     }
 
     private String getDirection() {
-        return mIsPortalIn ? Analytics.FROM : Analytics.TO;
+        return mIsPortalIn ? Constants.FROM : Constants.TO;
     }
 
     @Override
     public void onBackPressed() {
-        ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAP + " " + getDirection(), Analytics.BACK, Analytics.SCREEN_MAP);
+        ((MetroApp) getApplication()).addEvent(Constants.SCREEN_MAP + " " + getDirection(), Constants.BACK, Constants.SCREEN_MAP);
 
         super.onBackPressed();
     }

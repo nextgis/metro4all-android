@@ -1,6 +1,5 @@
 package com.nextgis.metroaccess;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,9 +9,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
-import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -22,7 +19,8 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.nextgis.metroaccess.util.Constants;
 
 import java.util.regex.Pattern;
 
@@ -100,9 +98,9 @@ public class LimitationsActivity extends PreferenceActivity implements Preferenc
         officialHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String title = String.format(getString(R.string.sLimitationsHelpDialog), Analytics.getGraph().GetCurrentCityName());
+                String title = String.format(getString(R.string.sLimitationsHelpDialog), MetroApp.getGraph().GetCurrentCityName());
                 AlertDialog builder = new AlertDialog.Builder(v.getContext())
-                        .setTitle(title).setMessage(Analytics.getGraph().GetOfficialHelp())
+                        .setTitle(title).setMessage(MetroApp.getGraph().GetOfficialHelp())
                         .setPositiveButton(android.R.string.ok, null).create();
                 builder.show();
                 final TextView message = (TextView) builder.findViewById(android.R.id.message);
@@ -118,7 +116,7 @@ public class LimitationsActivity extends PreferenceActivity implements Preferenc
                     @Override
                     public void onClick(View view) {
                         if (message.getSelectionStart() != -1 || message.getSelectionEnd() != -1) {
-                            ((Analytics) getApplication()).addEvent(Analytics.SCREEN_LIMITATIONS, Analytics.HELP_LINK, Analytics.SCREEN_LIMITATIONS);
+                            ((MetroApp) getApplication()).addEvent(Constants.SCREEN_LIMITATIONS, Constants.HELP_LINK, Constants.SCREEN_LIMITATIONS);
                         }
                     }
                 });
@@ -151,9 +149,9 @@ public class LimitationsActivity extends PreferenceActivity implements Preferenc
 
     private void switchLimitations(boolean bHaveLimits) {
         if (bHaveLimits)
-            ((Analytics) getApplication()).addEvent(Analytics.SCREEN_PREFERENCE, "Enable " + Analytics.LIMITATIONS, Analytics.PREFERENCE);
+            ((MetroApp) getApplication()).addEvent(Constants.SCREEN_PREFERENCE, "Enable " + Constants.LIMITATIONS, Constants.PREFERENCE);
         else
-            ((Analytics) getApplication()).addEvent(Analytics.SCREEN_PREFERENCE, "Disable " + Analytics.LIMITATIONS, Analytics.PREFERENCE);
+            ((MetroApp) getApplication()).addEvent(Constants.SCREEN_PREFERENCE, "Disable " + Constants.LIMITATIONS, Constants.PREFERENCE);
 
         setDependency(bHaveLimits);
     }

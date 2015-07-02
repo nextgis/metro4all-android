@@ -1,7 +1,8 @@
 /******************************************************************************
  * Project:  Metro4All
  * Purpose:  Routing in subway.
- * Authors:  Dmitry Baryshnikov (polimax@mail.ru), Stanislav Petriakov
+ * Author:   Dmitry Baryshnikov (polimax@mail.ru)
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  ******************************************************************************
  *   Copyright (C) 2013-2015 NextGIS
  *
@@ -18,8 +19,10 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
-package com.nextgis.metroaccess;
+package com.nextgis.metroaccess.util;
 
+
+import com.nextgis.metroaccess.R;
 
 public interface Constants {
     int[] ICONS_RAW = { R.raw._0, R.raw._5, R.raw._5, R.raw._3, R.raw._4, R.raw._5, R.raw._6, R.raw._7, R.raw._8, R.raw._9 };
@@ -77,4 +80,38 @@ public interface Constants {
     int STATUS_INTERRUPT_LOCATING = 0;
     int STATUS_FINISH_LOCATING = 1;
     int LOCATING_TIMEOUT = 15000;
+
+    // Google Analytics
+    String PANE = "Pane";
+    String MENU = "Menu";
+    String PREFERENCE = "Preference";
+    String ACTION_BAR = "ActionBar";
+    String ACTION_ITEM = "List Item";
+
+    String SCREEN_MAIN = "Main Screen";
+    String SCREEN_PREFERENCE = "Preferences Screen";
+    String SCREEN_MAP = "Map Screen";
+    String SCREEN_LAYOUT = "Layout Screen";
+    String SCREEN_SELECT_STATION = "Select Station Screen";
+    String SCREEN_ROUTING = "Routing Screen";
+    String SCREEN_LIMITATIONS = "Limitations Screen";
+
+    String FROM = "From";
+    String TO = "To";
+    String TAB_AZ = "Tab A...Z";
+    String TAB_LINES = "Tab Lines";
+    String TAB_RECENT = "Tab Recent";
+
+    String BTN_MAP = "Map";
+    String BTN_LAYOUT = "Layout";
+    String MENU_ABOUT = "About";
+    String MENU_SETTINGS = "Settings";
+    String BACK = "Back";
+    String LIMITATIONS = "Limitations";
+    String PORTAL = "Portal selected";
+    String HEADER = "Header clicked";
+    String STATION_EXPAND = "Station expanded";
+    String STATION_COLLAPSE = "Station collapsed";
+    String LEGEND = "Legend";
+    String HELP_LINK = "Help link";
 }

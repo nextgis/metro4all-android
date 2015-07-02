@@ -1,7 +1,8 @@
 /******************************************************************************
  * Project:  Metro Access
  * Purpose:  Routing in subway for disabled.
- * Authors:  Baryshnikov Dmitriy aka Bishop (polimax@mail.ru), Stanislav Petriakov
+ * Author:   Baryshnikov Dmitriy aka Bishop (polimax@mail.ru)
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  ******************************************************************************
  *   Copyright (C) 2013-2015 NextGIS
  *
@@ -56,6 +57,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.nextgis.metroaccess.data.PortalItem;
 import com.nextgis.metroaccess.data.StationItem;
+import com.nextgis.metroaccess.util.Constants;
 import com.nhaarman.supertooltips.ToolTip;
 import com.nhaarman.supertooltips.ToolTipRelativeLayout;
 import com.nhaarman.supertooltips.ToolTipView;
@@ -65,20 +67,20 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 
-import static com.nextgis.metroaccess.Constants.APP_REPORTS_DIR;
-import static com.nextgis.metroaccess.Constants.APP_REPORTS_SCREENSHOT;
-import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_X;
-import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_Y;
-import static com.nextgis.metroaccess.Constants.BUNDLE_PATH_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_PORTALID_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_STATIONID_KEY;
-import static com.nextgis.metroaccess.Constants.KEY_PREF_TOOLTIPS;
-import static com.nextgis.metroaccess.Constants.PARAM_ACTIVITY_FOR_RESULT;
-import static com.nextgis.metroaccess.Constants.PARAM_DEFINE_AREA;
-import static com.nextgis.metroaccess.Constants.PARAM_PORTAL_DIRECTION;
-import static com.nextgis.metroaccess.Constants.PARAM_ROOT_ACTIVITY;
-import static com.nextgis.metroaccess.Constants.PARAM_SCHEME_PATH;
-import static com.nextgis.metroaccess.Constants.SUBSCREEN_PORTAL_RESULT;
+import static com.nextgis.metroaccess.util.Constants.APP_REPORTS_DIR;
+import static com.nextgis.metroaccess.util.Constants.APP_REPORTS_SCREENSHOT;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_IMG_X;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_IMG_Y;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_PATH_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_PORTALID_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_STATIONID_KEY;
+import static com.nextgis.metroaccess.util.Constants.KEY_PREF_TOOLTIPS;
+import static com.nextgis.metroaccess.util.Constants.PARAM_ACTIVITY_FOR_RESULT;
+import static com.nextgis.metroaccess.util.Constants.PARAM_DEFINE_AREA;
+import static com.nextgis.metroaccess.util.Constants.PARAM_PORTAL_DIRECTION;
+import static com.nextgis.metroaccess.util.Constants.PARAM_ROOT_ACTIVITY;
+import static com.nextgis.metroaccess.util.Constants.PARAM_SCHEME_PATH;
+import static com.nextgis.metroaccess.util.Constants.SUBSCREEN_PORTAL_RESULT;
 import static com.nextgis.metroaccess.MainActivity.tintIcons;
 
 public class StationImageView extends ActionBarActivity {
@@ -126,7 +128,7 @@ public class StationImageView extends ActionBarActivity {
             msPath = bundle.getString(PARAM_SCHEME_PATH);
             mIsPortalIn = bundle.getBoolean(PARAM_PORTAL_DIRECTION, true);
 
-            StationItem station = MainActivity.GetGraph().GetStation(bundle.getInt(BUNDLE_STATIONID_KEY, 0)); // TODO global
+            StationItem station = MetroApp.getGraph().GetStation(bundle.getInt(BUNDLE_STATIONID_KEY, 0)); // TODO global
             String title = station == null ? getString(R.string.sFileNotFound) :
                     String.format(getString(R.string.sSchema), getString(R.string.sLayout), station.GetName());
             setTitle(title);
@@ -149,8 +151,8 @@ public class StationImageView extends ActionBarActivity {
             isForLegend = true;
             setTitle(R.string.sLegend);
 
-            Tracker t = ((Analytics) getApplication()).getTracker();
-            t.setScreenName(Analytics.SCREEN_LAYOUT + " " + Analytics.LEGEND);
+            Tracker t = ((MetroApp) getApplication()).getTracker();
+            t.setScreenName(Constants.SCREEN_LAYOUT + " " + Constants.LEGEND);
             t.send(new HitBuilders.AppViewBuilder().build());
         }
 
@@ -488,11 +490,11 @@ public class StationImageView extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_LAYOUT, Analytics.BACK, Analytics.SCREEN_LAYOUT);
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_LAYOUT, Constants.BACK, Constants.SCREEN_LAYOUT);
                 finish();
                 return true;
             case R.id.btn_map:
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_LAYOUT, Analytics.BTN_MAP, Analytics.ACTION_BAR);
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_LAYOUT, Constants.BTN_MAP, Constants.ACTION_BAR);
 
                 if (mIsRootActivity) {
                     Intent intentMap = new Intent(this, StationMapActivity.class);
@@ -503,11 +505,11 @@ public class StationImageView extends ActionBarActivity {
                     finish();
                 return true;
             case R.id.btn_legend:
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_LAYOUT, Analytics.LEGEND, Analytics.ACTION_BAR);
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_LAYOUT, Constants.LEGEND, Constants.ACTION_BAR);
                 onLegendClick();
                 return true;
             case R.id.btn_limitations:
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_LAYOUT + " " + getDirection(), Analytics.LIMITATIONS, Analytics.MENU);
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_LAYOUT + " " + getDirection(), Constants.LIMITATIONS, Constants.MENU);
                 startActivity(new Intent(this, LimitationsActivity.class));
 //                startActivityForResult(new Intent(this, LimitationsActivity.class), PREF_RESULT);
                 return true;
@@ -518,7 +520,7 @@ public class StationImageView extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        ((Analytics) getApplication()).addEvent(Analytics.SCREEN_LAYOUT, Analytics.BACK, Analytics.SCREEN_LAYOUT);
+        ((MetroApp) getApplication()).addEvent(Constants.SCREEN_LAYOUT, Constants.BACK, Constants.SCREEN_LAYOUT);
 
         super.onBackPressed();
     }
@@ -543,7 +545,7 @@ public class StationImageView extends ActionBarActivity {
     }
 
     private String getDirection() {
-        return mIsPortalIn ? Analytics.FROM : Analytics.TO;
+        return mIsPortalIn ? Constants.FROM : Constants.TO;
     }
 
     class RVPortalAdapter extends RecyclerView.Adapter<ViewHolder> implements ViewHolder.IViewHolderClick {
@@ -582,7 +584,7 @@ public class StationImageView extends ActionBarActivity {
             if (mIsHintNotShowed)
                 hideHint(caller.getContext(), mHintScreenName);
 
-            ((Analytics) getApplication()).addEvent(Analytics.SCREEN_LAYOUT + " " + getDirection(), Analytics.PORTAL, Analytics.SCREEN_LAYOUT);
+            ((MetroApp) getApplication()).addEvent(Constants.SCREEN_LAYOUT + " " + getDirection(), Constants.PORTAL, Constants.SCREEN_LAYOUT);
 
             Intent outIntent = new Intent();
             outIntent.putExtra(BUNDLE_STATIONID_KEY, bundle.getInt(BUNDLE_STATIONID_KEY, 0));

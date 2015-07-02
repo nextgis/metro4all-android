@@ -48,16 +48,17 @@ import android.widget.TextView;
 
 import com.nextgis.metroaccess.data.PortalItem;
 import com.nextgis.metroaccess.data.StationItem;
+import com.nextgis.metroaccess.util.Constants;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.nextgis.metroaccess.Constants.BUNDLE_STATIONID_KEY;
-import static com.nextgis.metroaccess.Constants.PARAM_PORTAL_DIRECTION;
-import static com.nextgis.metroaccess.Constants.PARAM_ROOT_ACTIVITY;
-import static com.nextgis.metroaccess.Constants.PARAM_SCHEME_PATH;
-import static com.nextgis.metroaccess.Constants.SUBSCREEN_PORTAL_RESULT;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_STATIONID_KEY;
+import static com.nextgis.metroaccess.util.Constants.PARAM_PORTAL_DIRECTION;
+import static com.nextgis.metroaccess.util.Constants.PARAM_ROOT_ACTIVITY;
+import static com.nextgis.metroaccess.util.Constants.PARAM_SCHEME_PATH;
+import static com.nextgis.metroaccess.util.Constants.SUBSCREEN_PORTAL_RESULT;
 import static com.nextgis.metroaccess.StationImageView.hideHint;
 
 public abstract class StationExpandableListAdapter extends BaseExpandableListAdapter implements Filterable {
@@ -200,9 +201,9 @@ public abstract class StationExpandableListAdapter extends BaseExpandableListAda
 
         ImageView ivIcon = (ImageView) convertView.findViewById(R.id.ivIcon);
 
-        String sRouteDataPath = MainActivity.GetGraph().GetCurrentRouteDataPath();
+        String sRouteDataPath = MetroApp.getGraph().GetCurrentRouteDataPath();
 
-        String color = MainActivity.GetGraph().GetLineColor(entry.GetLine());
+        String color = MetroApp.getGraph().GetLineColor(entry.GetLine());
         Bitmap myBitmap = MainActivity.getBitmapFromSVG(mContext, R.raw._0, color);
         ivIcon.setImageBitmap(myBitmap);
 
@@ -222,8 +223,8 @@ public abstract class StationExpandableListAdapter extends BaseExpandableListAda
         if (ab != null)
             i = ab.getSelectedNavigationIndex();
 
-        final String gaParent = i == 0 ? Analytics.TAB_AZ : i == 1 ? Analytics.TAB_LINES : Analytics.TAB_RECENT;
-        final String direction = parentActivity.IsIn() ? Analytics.FROM : Analytics.TO;
+        final String gaParent = i == 0 ? Constants.TAB_AZ : i == 1 ? Constants.TAB_LINES : Constants.TAB_RECENT;
+        final String direction = parentActivity.IsIn() ? Constants.FROM : Constants.TO;
 
         ibtnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -263,7 +264,7 @@ public abstract class StationExpandableListAdapter extends BaseExpandableListAda
                     itemMap.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ((Analytics) ((Activity) mContext).getApplication()).addEvent(Analytics.SCREEN_SELECT_STATION + " " + direction, Analytics.BTN_MAP, gaParent);
+                            ((MetroApp) ((Activity) mContext).getApplication()).addEvent(Constants.SCREEN_SELECT_STATION + " " + direction, Constants.BTN_MAP, gaParent);
 
                             mDropdown.dismiss();
                             Intent intent = new Intent(parentActivity, StationMapActivity.class);
@@ -275,7 +276,7 @@ public abstract class StationExpandableListAdapter extends BaseExpandableListAda
                     itemLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ((Analytics) ((Activity) mContext).getApplication()).addEvent(Analytics.SCREEN_SELECT_STATION + " " + direction, Analytics.BTN_LAYOUT, gaParent);
+                            ((MetroApp) ((Activity) mContext).getApplication()).addEvent(Constants.SCREEN_SELECT_STATION + " " + direction, Constants.BTN_LAYOUT, gaParent);
 
                             mDropdown.dismiss();
                             Intent intentView = new Intent(parentActivity, StationImageView.class);

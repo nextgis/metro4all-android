@@ -1,7 +1,8 @@
 /******************************************************************************
  * Project:  Metro Access
  * Purpose:  Routing in subway for disabled.
- * Authors:  Baryshnikov Dmitriy aka Bishop (polimax@mail.ru), Stanislav Petriakov
+ * Author:   Baryshnikov Dmitriy aka Bishop (polimax@mail.ru)
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  ******************************************************************************
  *   Copyright (C) 2013-2015 NextGIS
  *
@@ -25,7 +26,6 @@ import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
@@ -43,6 +43,7 @@ import android.widget.TextView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.nextgis.metroaccess.data.StationItem;
+import com.nextgis.metroaccess.util.Constants;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,20 +51,20 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.nextgis.metroaccess.Constants.ARRIVAL_RESULT;
-import static com.nextgis.metroaccess.Constants.BUNDLE_CITY_CHANGED;
-import static com.nextgis.metroaccess.Constants.BUNDLE_ENTRANCE_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_EVENTSRC_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_PORTALID_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_STATIONID_KEY;
-import static com.nextgis.metroaccess.Constants.DEPARTURE_RESULT;
-import static com.nextgis.metroaccess.Constants.KEY_PREF_RECENT_ARR_STATIONS;
-import static com.nextgis.metroaccess.Constants.KEY_PREF_RECENT_DEP_STATIONS;
-import static com.nextgis.metroaccess.Constants.KEY_PREF_TOOLTIPS;
-import static com.nextgis.metroaccess.Constants.MAX_RECENT_ITEMS;
-import static com.nextgis.metroaccess.Constants.PREF_RESULT;
-import static com.nextgis.metroaccess.Constants.SUBSCREEN_PORTAL_RESULT;
-import static com.nextgis.metroaccess.Constants.TAG;
+import static com.nextgis.metroaccess.util.Constants.ARRIVAL_RESULT;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_CITY_CHANGED;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_ENTRANCE_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_EVENTSRC_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_PORTALID_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_STATIONID_KEY;
+import static com.nextgis.metroaccess.util.Constants.DEPARTURE_RESULT;
+import static com.nextgis.metroaccess.util.Constants.KEY_PREF_RECENT_ARR_STATIONS;
+import static com.nextgis.metroaccess.util.Constants.KEY_PREF_RECENT_DEP_STATIONS;
+import static com.nextgis.metroaccess.util.Constants.KEY_PREF_TOOLTIPS;
+import static com.nextgis.metroaccess.util.Constants.MAX_RECENT_ITEMS;
+import static com.nextgis.metroaccess.util.Constants.PREF_RESULT;
+import static com.nextgis.metroaccess.util.Constants.SUBSCREEN_PORTAL_RESULT;
+import static com.nextgis.metroaccess.util.Constants.TAG;
 import static com.nextgis.metroaccess.PreferencesActivity.clearRecent;
 
 public class SelectStationActivity extends ActionBarActivity {
@@ -144,8 +145,8 @@ public class SelectStationActivity extends ActionBarActivity {
             mPortalId = extras.getInt(BUNDLE_PORTALID_KEY);
             int selectedStation = -1;
 
-            Tracker t = ((Analytics) getApplication()).getTracker();
-            t.setScreenName(Analytics.SCREEN_SELECT_STATION + " " + getDirection());
+            Tracker t = ((MetroApp) getApplication()).getTracker();
+            t.setScreenName(Constants.SCREEN_SELECT_STATION + " " + getDirection());
             t.send(new HitBuilders.AppViewBuilder().build());
 
             switch (nType) {
@@ -241,7 +242,7 @@ public class SelectStationActivity extends ActionBarActivity {
     }
 
     public List<StationItem> GetStationList() {
-        return new ArrayList<>(MainActivity.GetGraph().GetStations().values());
+        return new ArrayList<>(MetroApp.getGraph().GetStations().values());
     }
 
     public static class TabListener implements ActionBar.TabListener {
@@ -318,19 +319,19 @@ public class SelectStationActivity extends ActionBarActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_SELECT_STATION + " " + getDirection(), Analytics.BACK, getTab());
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_SELECT_STATION + " " + getDirection(), Constants.BACK, getTab());
                 finish();
                 return true;
             case R.id.btn_settings:
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_SELECT_STATION + " " + getDirection(), Analytics.MENU_SETTINGS, getTab());
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_SELECT_STATION + " " + getDirection(), Constants.MENU_SETTINGS, getTab());
                 onSettings(false);
                 return true;
             case R.id.btn_limitations:
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_SELECT_STATION + " " + getDirection(), Analytics.LIMITATIONS, getTab());
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_SELECT_STATION + " " + getDirection(), Constants.LIMITATIONS, getTab());
                 onSettings(true);
                 return true;
             case R.id.btn_about:
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_SELECT_STATION + " " + getDirection(), Analytics.MENU_ABOUT, getTab());
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_SELECT_STATION + " " + getDirection(), Constants.MENU_ABOUT, getTab());
                 Intent intentAbout = new Intent(this, AboutActivity.class);
                 intentAbout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intentAbout);
@@ -341,18 +342,18 @@ public class SelectStationActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        ((Analytics) getApplication()).addEvent(Analytics.SCREEN_SELECT_STATION + " " + getDirection(), Analytics.BACK, getTab());
+        ((MetroApp) getApplication()).addEvent(Constants.SCREEN_SELECT_STATION + " " + getDirection(), Constants.BACK, getTab());
 
         super.onBackPressed();
     }
 
     private String getDirection() {
-        return m_bIn ? Analytics.FROM : Analytics.TO;
+        return m_bIn ? Constants.FROM : Constants.TO;
     }
 
     private String getTab() {
         int i = getSupportActionBar().getSelectedTab().getPosition();
-        return i == 0 ? Analytics.TAB_AZ : i == 1 ? Analytics.TAB_LINES : Analytics.TAB_RECENT;
+        return i == 0 ? Constants.TAB_AZ : i == 1 ? Constants.TAB_LINES : Constants.TAB_RECENT;
     }
 
     public void Finish(int nStationId, int nPortalId) {

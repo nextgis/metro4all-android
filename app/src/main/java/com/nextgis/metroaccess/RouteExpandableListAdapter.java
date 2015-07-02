@@ -1,7 +1,8 @@
 /*******************************************************************************
  * Project:  Metro Access
  * Purpose:  Routing in subway for disabled.
- * Authors:  Baryshnikov Dmitriy aka Bishop (polimax@mail.ru), Stanislav Petriakov
+ * Author:   Baryshnikov Dmitriy aka Bishop (polimax@mail.ru)
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  ******************************************************************************
 *   Copyright (C) 2013,2015 NextGIS
 *
@@ -43,17 +44,18 @@ import android.widget.TextView;
 
 import com.nextgis.metroaccess.data.BarrierItem;
 import com.nextgis.metroaccess.data.RouteItem;
+import com.nextgis.metroaccess.util.Constants;
 
 import java.io.File;
 import java.util.List;
 
-import static com.nextgis.metroaccess.Constants.BUNDLE_PORTALID_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_STATIONID_KEY;
-import static com.nextgis.metroaccess.Constants.PARAM_ACTIVITY_FOR_RESULT;
-import static com.nextgis.metroaccess.Constants.PARAM_PORTAL_DIRECTION;
-import static com.nextgis.metroaccess.Constants.PARAM_ROOT_ACTIVITY;
-import static com.nextgis.metroaccess.Constants.PARAM_SCHEME_PATH;
-import static com.nextgis.metroaccess.Constants.TAG;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_PORTALID_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_STATIONID_KEY;
+import static com.nextgis.metroaccess.util.Constants.PARAM_ACTIVITY_FOR_RESULT;
+import static com.nextgis.metroaccess.util.Constants.PARAM_PORTAL_DIRECTION;
+import static com.nextgis.metroaccess.util.Constants.PARAM_ROOT_ACTIVITY;
+import static com.nextgis.metroaccess.util.Constants.PARAM_SCHEME_PATH;
+import static com.nextgis.metroaccess.util.Constants.TAG;
 
 public class RouteExpandableListAdapter extends BaseExpandableListAdapter {
 	protected Context mContext;
@@ -105,7 +107,7 @@ public class RouteExpandableListAdapter extends BaseExpandableListAdapter {
 		
 		ImageView ivIcon = (ImageView)convertView.findViewById(R.id.ivIcon);
 		// set data to display
-//		String sRouteDataPath = MainActivity.GetGraph().GetCurrentRouteDataPath();
+//		String sRouteDataPath = Analytics.getGraph().GetCurrentRouteDataPath();
 //	    File imgFile = new File(sRouteDataPath + "/icons", "" + rit.GetLine() + "8.png");
 //		Log.d(TAG, imgFile.getPath());
 
@@ -144,7 +146,7 @@ public class RouteExpandableListAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public long getGroupId(int groupPosition) {
-		RouteItem rit = (RouteItem)maRouteList.get(groupPosition);
+		RouteItem rit = maRouteList.get(groupPosition);
 		if(rit != null)
 			return rit.GetId();
 		return -1;
@@ -193,7 +195,7 @@ public class RouteExpandableListAdapter extends BaseExpandableListAdapter {
 		
 		ImageView ivIcon = (ImageView)convertView.findViewById(R.id.ivIcon);
 		// set data to display
-		String sRouteDataPath = MainActivity.GetGraph().GetCurrentRouteDataPath();
+		String sRouteDataPath = MetroApp.getGraph().GetCurrentRouteDataPath();
 
 //	    File imgFile = new File(sRouteDataPath + "/icons", "" + entry.GetLine() + "" + entry.GetType() + ".png");
 //		Log.d(TAG, imgFile.getPath());
@@ -282,7 +284,7 @@ public class RouteExpandableListAdapter extends BaseExpandableListAdapter {
                     itemMap.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ((Analytics) ((Activity) mContext).getApplication()).addEvent(Analytics.SCREEN_ROUTING, Analytics.BTN_MAP, Analytics.ACTION_ITEM);
+                            ((MetroApp) ((Activity) mContext).getApplication()).addEvent(Constants.SCREEN_ROUTING, Constants.BTN_MAP, Constants.ACTION_ITEM);
 
                             mDropdown.dismiss();
 
@@ -298,7 +300,7 @@ public class RouteExpandableListAdapter extends BaseExpandableListAdapter {
                         @Override
                         public void onClick(View v) {
                             Log.d(TAG, schemaFile.getPath());
-                            ((Analytics) ((Activity) mContext).getApplication()).addEvent(Analytics.SCREEN_ROUTING, Analytics.BTN_LAYOUT, Analytics.ACTION_ITEM);
+                            ((MetroApp) ((Activity) mContext).getApplication()).addEvent(Constants.SCREEN_ROUTING, Constants.BTN_LAYOUT, Constants.ACTION_ITEM);
 
                             mDropdown.dismiss();
 
@@ -343,7 +345,7 @@ public class RouteExpandableListAdapter extends BaseExpandableListAdapter {
                 public void onClick(View arg0) {
                     try {
                         Log.d(TAG, schemaFile.getPath());
-                        ((Analytics) ((Activity) mContext).getApplication()).addEvent(Analytics.SCREEN_ROUTING, Analytics.BTN_LAYOUT, Analytics.ACTION_ITEM);
+                        ((MetroApp) ((Activity) mContext).getApplication()).addEvent(Constants.SCREEN_ROUTING, Constants.BTN_LAYOUT, Constants.ACTION_ITEM);
 
                         Intent intent = new Intent(mContext, com.nextgis.metroaccess.StationImageView.class);
                         intent.putExtras(bundle);

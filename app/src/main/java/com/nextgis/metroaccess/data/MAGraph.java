@@ -25,8 +25,8 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.nextgis.metroaccess.MainActivity;
 import com.nextgis.metroaccess.R;
+import com.nextgis.metroaccess.util.FileUtil;
 import com.nextgis.metroaccess.util.TimeUtil;
 
 import org.json.JSONArray;
@@ -57,8 +57,11 @@ import edu.asu.emit.qyan.alg.model.Path;
 import edu.asu.emit.qyan.alg.model.VariableGraph;
 import edu.asu.emit.qyan.alg.model.Vertex;
 
-import static com.nextgis.metroaccess.Constants.CSV_CHAR;
-import static com.nextgis.metroaccess.Constants.TAG;
+import static com.nextgis.metroaccess.util.Constants.CSV_CHAR;
+import static com.nextgis.metroaccess.util.Constants.META;
+import static com.nextgis.metroaccess.util.Constants.REMOTE_METAFILE;
+import static com.nextgis.metroaccess.util.Constants.ROUTE_DATA_DIR;
+import static com.nextgis.metroaccess.util.Constants.TAG;
 
 public class MAGraph {
 
@@ -77,7 +80,7 @@ public class MAGraph {
 	protected Map<Integer, String> m_omLines;
 	protected Map<Integer, String> m_omLinesColors;
 
-	protected String m_sCurrentCity;
+	protected String m_sCurrentCity = "";
 	protected String m_sCurrentCityName;
 	protected int m_sCurrentCityVersion;
 
@@ -89,7 +92,6 @@ public class MAGraph {
 	protected String m_sFirstCity;
 	
 	public MAGraph(Context oContext, String sCurrentCity, File oExternalDir, String sLocale) {
-		
 		this.m_oContext = oContext;
 		
 		this.m_bDirected = false;
@@ -105,9 +107,7 @@ public class MAGraph {
 		m_omLinesColors = new HashMap<>();
 
 		m_oGraph = new VariableGraph();
-		
 		FillRouteMetadata(sCurrentCity);
-		
 		SetCurrentCity(sCurrentCity);
 	}
 	
@@ -119,7 +119,7 @@ public class MAGraph {
 		return m_sErr;
 	}
 	
-	protected boolean LoadIntercharges(){
+	protected boolean LoadInterchanges(){
 		m_moCrosses.clear();	
 		//fill interchanges.csv
 		try {
@@ -532,16 +532,16 @@ public class MAGraph {
 		m_sFirstCity = "";
 		boolean bHaveCity = false;
 		//fill meta
-		File oRouteDataDir = new File(m_oExternalDir, MainActivity.GetRouteDataDir());
+		File oRouteDataDir = new File(m_oExternalDir, ROUTE_DATA_DIR);
 		if(!oRouteDataDir.exists())
 			return;
 
 		File[] files = oRouteDataDir.listFiles();
 		for (File inFile : files) {
 		    if (inFile.isDirectory()) {
-		        File metafile = new File(inFile, MainActivity.GetMetaFileName());
+		        File metafile = new File(inFile, META);
 		        if(metafile.isFile()){
-		        	String sJSON = MainActivity.readFromFile(metafile);
+		        	String sJSON = FileUtil.readFromFile(metafile);
 		        	JSONObject oJSON;
 					try {
 						oJSON = new JSONObject(sJSON);
@@ -581,7 +581,7 @@ public class MAGraph {
 		}
 
 		if(!bHaveCity)
-			SetCurrentCity( m_sFirstCity );
+			SetCurrentCity(m_sFirstCity);
 	}
 
     public static Map<String, GraphDataItem> sortByLocalNames(final Map<String, GraphDataItem> map) {
@@ -621,7 +621,6 @@ public class MAGraph {
 			return;
 		if(!LoadPortals())
 			return;
-
 		if(!LoadGraph())
 			return;
 	}
@@ -635,19 +634,18 @@ public class MAGraph {
 	}
 
 	public void SetCurrentCity(String sCurrentCity){
-		if(sCurrentCity.length() == 0)
+		if(TextUtils.isEmpty(sCurrentCity))
 			return;
-		if(m_sCurrentCity != null && m_sCurrentCity.equals(sCurrentCity))
+		if(!TextUtils.isEmpty(m_sCurrentCity) && m_sCurrentCity.equals(sCurrentCity))
 			return;
-		
 		if(!m_moRouteMetadata.containsKey(sCurrentCity))
 			return;
+
 		m_sCurrentCity = sCurrentCity;
-		
 		GraphDataItem item = m_moRouteMetadata.get(m_sCurrentCity);
-		if(item != null){
+
+        if (item != null)
 			m_sCurrentCityName = item.GetLocaleName();
-		}
 		
 		m_bIsValid = false;
 		
@@ -658,7 +656,7 @@ public class MAGraph {
 			return;
 		if(!LoadPortals())
 			return;
-		if(!LoadIntercharges())
+		if(!LoadInterchanges())
 			return;
 		if(!LoadGraph())
 			return;
@@ -689,8 +687,8 @@ public class MAGraph {
 			JSONObject oJSONMetaRemote = new JSONObject(sJSONData);
 			
 			//save remote meta to file
-            File file = new File(m_oExternalDir, MainActivity.GetRemoteMetaFile());
-            MainActivity.writeToFile(file, sJSONData);
+            File file = new File(m_oExternalDir, REMOTE_METAFILE);
+			FileUtil.writeToFile(file, sJSONData);
 
             final JSONArray jsonArray = oJSONMetaRemote.getJSONArray("packages");
 
@@ -746,17 +744,13 @@ public class MAGraph {
 	public List<Path> GetShortestPaths(int nDepartureStationId, int nArrivalStationId, int nMaxRouteCount){
 		return m_oYenAlg.get_shortest_paths(m_oGraph.get_vertex(nDepartureStationId), m_oGraph.get_vertex(nArrivalStationId), nMaxRouteCount);
 	}
-	
-	public boolean IsEmpty(){
-		return m_moRouteMetadata.isEmpty();
-	}
-	
+
 	public Map<String, GraphDataItem> GetRouteMetadata(){
 		return m_moRouteMetadata;
 	}
 	
 	public String GetCurrentRouteDataPath(){
-		File oRouteDataDir = new File(m_oExternalDir, MainActivity.GetRouteDataDir());
+		File oRouteDataDir = new File(m_oExternalDir, ROUTE_DATA_DIR);
 		File oCurrentRouteDataDir = new File(oRouteDataDir, GetCurrentCity());
 		return oCurrentRouteDataDir.getAbsolutePath();
 	}

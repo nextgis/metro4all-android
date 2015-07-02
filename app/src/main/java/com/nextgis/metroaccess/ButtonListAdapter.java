@@ -39,16 +39,17 @@ import android.widget.TextView;
 
 import com.nextgis.metroaccess.data.PortalItem;
 import com.nextgis.metroaccess.data.StationItem;
+import com.nextgis.metroaccess.util.Constants;
 
 import java.io.File;
 
-import static com.nextgis.metroaccess.Constants.ARRIVAL_RESULT;
-import static com.nextgis.metroaccess.Constants.BUNDLE_PORTALID_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_STATIONID_KEY;
-import static com.nextgis.metroaccess.Constants.DEPARTURE_RESULT;
-import static com.nextgis.metroaccess.Constants.PARAM_PORTAL_DIRECTION;
-import static com.nextgis.metroaccess.Constants.PARAM_ROOT_ACTIVITY;
-import static com.nextgis.metroaccess.Constants.PARAM_SCHEME_PATH;
+import static com.nextgis.metroaccess.util.Constants.ARRIVAL_RESULT;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_PORTALID_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_STATIONID_KEY;
+import static com.nextgis.metroaccess.util.Constants.DEPARTURE_RESULT;
+import static com.nextgis.metroaccess.util.Constants.PARAM_PORTAL_DIRECTION;
+import static com.nextgis.metroaccess.util.Constants.PARAM_ROOT_ACTIVITY;
+import static com.nextgis.metroaccess.util.Constants.PARAM_SCHEME_PATH;
 import static com.nextgis.metroaccess.MainActivity.getBitmapFromSVG;
 
 public class ButtonListAdapter extends BaseAdapter {
@@ -106,12 +107,12 @@ public class ButtonListAdapter extends BaseAdapter {
 
         if (isFromPane) {
             paneTitle = R.string.sFromStation;
-            gaPane = Analytics.FROM;
+            gaPane = Constants.FROM;
 //            requestCode = PORTAL_MAP_MAIN_FROM_RESULT;
             requestCode = DEPARTURE_RESULT;
         } else {
             paneTitle = R.string.sToStation;
-            gaPane = Analytics.TO;
+            gaPane = Constants.TO;
 //            requestCode = PORTAL_MAP_MAIN_TO_RESULT;
             requestCode = ARRIVAL_RESULT;
         }
@@ -122,7 +123,7 @@ public class ButtonListAdapter extends BaseAdapter {
         ImageView ivMetroIconRight = (ImageView) convertView.findViewById(R.id.ivMetroIconRight);
         ImageView ivSmallIcon = (ImageView) convertView.findViewById(R.id.ivSmallIcon);
 
-        File schemaFile = new File(MainActivity.GetGraph().GetCurrentRouteDataPath() + "/schemes", "" + station.GetNode() + ".png");
+        File schemaFile = new File(MetroApp.getGraph().GetCurrentRouteDataPath() + "/schemes", "" + station.GetNode() + ".png");
         final Bundle bundle = new Bundle();
         bundle.putInt(BUNDLE_STATIONID_KEY, station.GetId());
         bundle.putInt(BUNDLE_PORTALID_KEY, portal.GetId());
@@ -161,7 +162,7 @@ public class ButtonListAdapter extends BaseAdapter {
                     itemMap.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ((Analytics) ((Activity) m_oContext).getApplication()).addEvent(Analytics.SCREEN_MAIN, Analytics.BTN_MAP, gaPane + " " + Analytics.PANE);
+                            ((MetroApp) ((Activity) m_oContext).getApplication()).addEvent(Constants.SCREEN_MAIN, Constants.BTN_MAP, gaPane + " " + Constants.PANE);
 
                             mDropdown.dismiss();
                             Intent intent = new Intent(m_oContext, StationMapActivity.class);
@@ -175,7 +176,7 @@ public class ButtonListAdapter extends BaseAdapter {
                     itemLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ((Analytics) ((Activity) m_oContext).getApplication()).addEvent(Analytics.SCREEN_MAIN, Analytics.BTN_LAYOUT, gaPane + " " + Analytics.PANE);
+                            ((MetroApp) ((Activity) m_oContext).getApplication()).addEvent(Constants.SCREEN_MAIN, Constants.BTN_LAYOUT, gaPane + " " + Constants.PANE);
 
                             mDropdown.dismiss();
                             Intent intent = new Intent(m_oContext, StationImageView.class);
@@ -191,9 +192,9 @@ public class ButtonListAdapter extends BaseAdapter {
             });
 
             // set selected line icon, entrance metro icon and arrow icon
-            Bitmap metroIcon = getBitmapFromSVG(MainActivity.GetGraph().GetCurrentRouteDataPath() + "/icons/metro.svg");
+            Bitmap metroIcon = getBitmapFromSVG(MetroApp.getGraph().GetCurrentRouteDataPath() + "/icons/metro.svg");
             Bitmap arrowIcon = getBitmapFromSVG(m_oContext, R.raw.arrow, m_oContext.getResources().getColor(R.color.grey_dark));
-            String color = MainActivity.GetGraph().GetLineColor(station.GetLine());
+            String color = MetroApp.getGraph().GetLineColor(station.GetLine());
             Bitmap lineIcon = getBitmapFromSVG(m_oContext, R.raw._0, color);
 
             if (isFromPane) {   // from pane > rotate arrow 180 degree

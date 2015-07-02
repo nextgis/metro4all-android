@@ -40,16 +40,17 @@ import com.nextgis.metroaccess.data.BarrierItem;
 import com.nextgis.metroaccess.data.PortalItem;
 import com.nextgis.metroaccess.data.RouteItem;
 import com.nextgis.metroaccess.data.StationItem;
+import com.nextgis.metroaccess.util.Constants;
 import com.nextgis.metroaccess.util.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.nextgis.metroaccess.Constants.BUNDLE_PATHCOUNT_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_PATH_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_PORTALID_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_WEIGHT_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_PATHCOUNT_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_PATH_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_PORTALID_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_WEIGHT_KEY;
 
 public class StationListView extends ActionBarActivity implements ActionBar.OnNavigationListener {
 	
@@ -91,8 +92,8 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
 	    	mnArrivalPortalId = extras.getInt("arr_" + BUNDLE_PORTALID_KEY);
 	    	
 	    	mnPathCount = extras.getInt(BUNDLE_PATHCOUNT_KEY);
-	    	mmoStations = MainActivity.GetGraph().GetStations();//(Map<Integer, StationItem>) extras.getSerializable(MainActivity.BUNDLE_STATIONMAP_KEY);
-	    	mmoCrosses = MainActivity.GetGraph().GetCrosses();//(Map<String, int[]>) extras.getSerializable(MainActivity.BUNDLE_CROSSESMAP_KEY);
+	    	mmoStations = MetroApp.getGraph().GetStations();//(Map<Integer, StationItem>) extras.getSerializable(MainActivity.BUNDLE_STATIONMAP_KEY);
+	    	mmoCrosses = MetroApp.getGraph().GetCrosses();//(Map<String, int[]>) extras.getSerializable(MainActivity.BUNDLE_CROSSESMAP_KEY);
 
 	    	String[] data = new String[mnPathCount];
 	    	for(int i = 0; i < mnPathCount; i++){
@@ -416,12 +417,12 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
      public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_ROUTING, Analytics.BACK, Analytics.SCREEN_ROUTING);
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_ROUTING, Constants.BACK, Constants.SCREEN_ROUTING);
 
                 finish();
                 return true;
             case R.id.btn_limitations:
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_ROUTING, Analytics.LIMITATIONS, Analytics.MENU);
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_ROUTING, Constants.LIMITATIONS, Constants.MENU);
                 startActivity(new Intent(this, LimitationsActivity.class));
 //                startActivityForResult(new Intent(this, LimitationsActivity.class), PREF_RESULT);
                 return true;
@@ -455,7 +456,7 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
 
     @Override
     public void onBackPressed() {
-        ((Analytics) getApplication()).addEvent(Analytics.SCREEN_ROUTING, Analytics.BACK, Analytics.SCREEN_ROUTING);
+        ((MetroApp) getApplication()).addEvent(Constants.SCREEN_ROUTING, Constants.BACK, Constants.SCREEN_ROUTING);
 
         super.onBackPressed();
     }
@@ -467,7 +468,7 @@ public class StationListView extends ActionBarActivity implements ActionBar.OnNa
         if (firstLaunch)
             firstLaunch = false;
         else
-            ((Analytics) getApplication()).addEvent(Analytics.SCREEN_ROUTING, "Selected option " + itemPosition + 1, Analytics.ACTION_ITEM);
+            ((MetroApp) getApplication()).addEvent(Constants.SCREEN_ROUTING, "Selected option " + itemPosition + 1, Constants.ACTION_ITEM);
 
 	    mExpListView.setAdapter(moAdapters[itemPosition]);
         mTvTime.setText(TimeUtil.formatTime(this, moAdapters[itemPosition].getWeight()));

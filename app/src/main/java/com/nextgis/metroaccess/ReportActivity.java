@@ -62,6 +62,7 @@ import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nextgis.metroaccess.data.StationItem;
+import com.nextgis.metroaccess.util.Constants;
 import com.nextgis.metroaccess.util.FileUtil;
 
 import org.apache.http.Header;
@@ -80,18 +81,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.nextgis.metroaccess.Constants.APP_REPORTS_DIR;
-import static com.nextgis.metroaccess.Constants.APP_REPORTS_PHOTOS_DIR;
-import static com.nextgis.metroaccess.Constants.BUNDLE_ATTACHED_IMAGES;
-import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_X;
-import static com.nextgis.metroaccess.Constants.BUNDLE_IMG_Y;
-import static com.nextgis.metroaccess.Constants.BUNDLE_PATH_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_STATIONID_KEY;
-import static com.nextgis.metroaccess.Constants.CAMERA_REQUEST;
-import static com.nextgis.metroaccess.Constants.DEFINE_AREA_RESULT;
-import static com.nextgis.metroaccess.Constants.PARAM_DEFINE_AREA;
-import static com.nextgis.metroaccess.Constants.PARAM_SCHEME_PATH;
-import static com.nextgis.metroaccess.Constants.PICK_REQUEST;
+import static com.nextgis.metroaccess.util.Constants.APP_REPORTS_DIR;
+import static com.nextgis.metroaccess.util.Constants.APP_REPORTS_PHOTOS_DIR;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_ATTACHED_IMAGES;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_IMG_X;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_IMG_Y;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_PATH_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_STATIONID_KEY;
+import static com.nextgis.metroaccess.util.Constants.CAMERA_REQUEST;
+import static com.nextgis.metroaccess.util.Constants.DEFINE_AREA_RESULT;
+import static com.nextgis.metroaccess.util.Constants.PARAM_DEFINE_AREA;
+import static com.nextgis.metroaccess.util.Constants.PARAM_SCHEME_PATH;
+import static com.nextgis.metroaccess.util.Constants.PICK_REQUEST;
 
 public class ReportActivity extends AppCompatActivity implements View.OnClickListener {
     private final static int IMAGES_PER_ROW_P = 3;
@@ -125,7 +126,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
         mStations = new HashMap<>();
         String stationName = getString(R.string.sNotSet);
 
-        Map<Integer, StationItem> stations = Analytics.getGraph().GetStations();
+        Map<Integer, StationItem> stations = MetroApp.getGraph().GetStations();
         for (Map.Entry<Integer, StationItem> station : stations.entrySet()) {
             mStations.put(station.getValue().GetName(), station.getKey());
 
@@ -157,7 +158,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mStationId = mStations.get(adapter.getItem(i));
-                mStation = mStationId >= 0 ? Analytics.getGraph().GetStation(mStationId) : null;
+                mStation = mStationId >= 0 ? MetroApp.getGraph().GetStation(mStationId) : null;
                 mScreenshot = null;
                 mX = mY = -1;
                 mTvDefine.setVisibility(mStationId == -1 ? View.GONE : View.VISIBLE);
@@ -238,7 +239,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_LAYOUT, Analytics.BACK, Analytics.SCREEN_LAYOUT);
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_LAYOUT, Constants.BACK, Constants.SCREEN_LAYOUT);
                 finish();
                 return true;
             default:
@@ -278,7 +279,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
 
                 Intent intentView = new Intent(this, StationImageView.class);
 
-                File schemaFile = new File(MainActivity.GetGraph().GetCurrentRouteDataPath() + "/schemes", mStation.GetNode() + ".png");
+                File schemaFile = new File(MetroApp.getGraph().GetCurrentRouteDataPath() + "/schemes", mStation.GetNode() + ".png");
                 final Bundle bundle = new Bundle();
                 bundle.putInt(BUNDLE_STATIONID_KEY, mStation.GetId());
                 bundle.putString(PARAM_SCHEME_PATH, schemaFile.getPath());
@@ -293,7 +294,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                     return;
                 }
 
-                if (TextUtils.isEmpty(Analytics.getGraph().GetCurrentCity())) {
+                if (TextUtils.isEmpty(MetroApp.getGraph().GetCurrentCity())) {
                     Toast.makeText(this, R.string.sReportCityNotNull, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -315,9 +316,9 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
         try {
             jsonObject.accumulate("time", System.currentTimeMillis());
 
-            jsonObject.accumulate("city_name", Analytics.getGraph().GetCurrentCity());
-            jsonObject.accumulate("package_version", Analytics.getGraph().GetCurrentCityDataVersion());
-            jsonObject.accumulate("lang_data", Analytics.getGraph().GetLocale());
+            jsonObject.accumulate("city_name", MetroApp.getGraph().GetCurrentCity());
+            jsonObject.accumulate("package_version", MetroApp.getGraph().GetCurrentCityDataVersion());
+            jsonObject.accumulate("lang_data", MetroApp.getGraph().GetLocale());
             jsonObject.accumulate("lang_device", Locale.getDefault().getLanguage());
             jsonObject.accumulate("text", mEtText.getText().toString().trim());
             jsonObject.accumulate("cat_id", mSpCategories.getSelectedItemId());
@@ -416,7 +417,7 @@ public class ReportActivity extends AppCompatActivity implements View.OnClickLis
                     }
                 };
 
-                Analytics.postJSON(getParent(), jsonResult, handler);
+                MetroApp.postJSON(getParent(), jsonResult, handler);
             }
 
             mProgressDialog.dismiss();

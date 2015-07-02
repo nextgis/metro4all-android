@@ -60,25 +60,23 @@ import android.widget.Toast;
 import com.caverock.androidsvg.SVG;
 import com.caverock.androidsvg.SVGParseException;
 import com.google.android.gms.analytics.GoogleAnalytics;
-import com.nextgis.metroaccess.data.DownloadData;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nextgis.metroaccess.data.GraphDataItem;
 import com.nextgis.metroaccess.data.MAGraph;
 import com.nextgis.metroaccess.data.PortalItem;
 import com.nextgis.metroaccess.data.RouteItem;
 import com.nextgis.metroaccess.data.StationItem;
+import com.nextgis.metroaccess.util.Constants;
+import com.nextgis.metroaccess.util.FileUtil;
 
+import org.apache.http.Header;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.IMyLocationConsumer;
 import org.osmdroid.views.overlay.mylocation.IMyLocationProvider;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -86,43 +84,38 @@ import java.util.List;
 import edu.asu.emit.qyan.alg.model.Path;
 import edu.asu.emit.qyan.alg.model.abstracts.BaseVertex;
 
-import static com.nextgis.metroaccess.Constants.ARRIVAL_RESULT;
-import static com.nextgis.metroaccess.Constants.BUNDLE_CITY_CHANGED;
-import static com.nextgis.metroaccess.Constants.BUNDLE_ENTRANCE_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_ERRORMARK_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_EVENTSRC_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_MSG_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_PATHCOUNT_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_PATH_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_PAYLOAD_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_PORTALID_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_STATIONID_KEY;
-import static com.nextgis.metroaccess.Constants.BUNDLE_WEIGHT_KEY;
-import static com.nextgis.metroaccess.Constants.DEPARTURE_RESULT;
-import static com.nextgis.metroaccess.Constants.ICONS_RAW;
-import static com.nextgis.metroaccess.Constants.LOCATING_TIMEOUT;
-import static com.nextgis.metroaccess.Constants.META;
-import static com.nextgis.metroaccess.Constants.PREF_RESULT;
-import static com.nextgis.metroaccess.Constants.REMOTE_METAFILE;
-import static com.nextgis.metroaccess.Constants.ROUTE_DATA_DIR;
-import static com.nextgis.metroaccess.Constants.SERVER;
-import static com.nextgis.metroaccess.Constants.STATUS_FINISH_LOCATING;
-import static com.nextgis.metroaccess.Constants.STATUS_INTERRUPT_LOCATING;
-import static com.nextgis.metroaccess.Constants.TAG;
+import static com.nextgis.metroaccess.util.Constants.ARRIVAL_RESULT;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_CITY_CHANGED;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_ENTRANCE_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_EVENTSRC_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_PATHCOUNT_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_PATH_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_PORTALID_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_STATIONID_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_WEIGHT_KEY;
+import static com.nextgis.metroaccess.util.Constants.DEPARTURE_RESULT;
+import static com.nextgis.metroaccess.util.Constants.ICONS_RAW;
+import static com.nextgis.metroaccess.util.Constants.LOCATING_TIMEOUT;
+import static com.nextgis.metroaccess.util.Constants.META;
+import static com.nextgis.metroaccess.util.Constants.PREF_RESULT;
+import static com.nextgis.metroaccess.util.Constants.REMOTE_METAFILE;
+import static com.nextgis.metroaccess.util.Constants.SERVER;
+import static com.nextgis.metroaccess.util.Constants.STATUS_FINISH_LOCATING;
+import static com.nextgis.metroaccess.util.Constants.STATUS_INTERRUPT_LOCATING;
+import static com.nextgis.metroaccess.util.Constants.TAG;
 import static com.nextgis.metroaccess.PreferencesActivity.clearRecent;
 
 //https://code.google.com/p/k-shortest-paths/
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MetroApp.DownloadProgressListener {
     public static MAGraph mGraph;
-
-    protected static Handler m_oGetJSONHandler;
-    protected List<DownloadData> m_asDownloadData;
+    private AsyncHttpResponseHandler mMetaHandler;
 
     protected boolean m_bInterfaceLoaded;
     protected ButtonListAdapter m_laListButtons;
     protected ListView m_lvListButtons;
     protected Button m_oSearchButton;
+    protected ImageView mBtnLimitations;
     private GpsMyLocationProvider mGpsMyLocationProvider;
     private SharedPreferences mPreferences;
     private Menu menu;
@@ -136,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.empty_activity_main);
 
         mGpsMyLocationProvider = new GpsMyLocationProvider(this);
-        mGraph = Analytics.getGraph();
+        mGraph = MetroApp.getGraph();
 
         m_bInterfaceLoaded = false;
 
@@ -148,103 +141,82 @@ public class MainActivity extends AppCompatActivity {
         m_nDeparturePortalId = mPreferences.getInt("dep_" + BUNDLE_PORTALID_KEY, -1);
         m_nArrivalPortalId = mPreferences.getInt("arr_" + BUNDLE_PORTALID_KEY, -1);
 
-        // TODO
-		//create downloading queue empty initially
-		m_asDownloadData = new ArrayList<>();
-		CreateHandler();
+		createHandler();
+        getRemoteMeta();
 
-		//check for data exist
-		if(IsRoutingDataExist()){
-			//else check for updates
-			CheckForUpdates();
-		}
-		else{
-			//ask to download data
-			GetRoutingData();
+        // check for data exist
+        if (isRoutingDataExists()) {
+            // then load main interface
+            loadInterface();
 		}
 
+        // initialize google analytics
         boolean disableGA = mPreferences.getBoolean(PreferencesActivity.KEY_PREF_GA, true);
-        ((Analytics) getApplication()).reload(disableGA);
+        ((MetroApp) getApplication()).reload(disableGA);
         GoogleAnalytics.getInstance(this).setDryRun(true);
 	}
 
-    protected void CreateHandler(){
+    @SuppressWarnings("deprecation")
+    protected void createHandler(){
+        mMetaHandler = new AsyncHttpResponseHandler() {
+            private String mPayload = "";
 
-		m_oGetJSONHandler = new Handler() {
-            public void handleMessage(Message msg) {
-            	super.handleMessage(msg);
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                getPayload(responseBody);
+            }
 
-            	Bundle resultData = msg.getData();
-            	boolean bHaveErr = resultData.getBoolean(BUNDLE_ERRORMARK_KEY);
-            	int nEventSource = resultData.getInt(BUNDLE_EVENTSRC_KEY);
-            	String sPayload = resultData.getString(BUNDLE_PAYLOAD_KEY);
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                int info = statusCode == 0 ? R.string.sNetworkUnreachErr : R.string.sNetworkGetErr;
+                showToast(info);
+                getPayload(responseBody);
+            }
 
-            	if(bHaveErr){
-            		MainActivity.this.ErrMessage(resultData.getString(BUNDLE_MSG_KEY));
-	            	switch(nEventSource){
-	            	case 1://get remote meta
-	            		File file = new File(getExternalFilesDir(null), REMOTE_METAFILE);
-	            		sPayload = readFromFile(file);
-	            		break;
-	            	case 2:
-	            		if(IsRoutingDataExist())
-	                    	LoadInterface();
-	            		break;
-            		default:
-            			return;
-	            	}
-            	}
+            @Override
+            public void onFinish() {
+                super.onFinish();
 
-            	switch(nEventSource){
-            	case 1://get remote meta
-            		if(IsRoutingDataExist()){
-            			//check if updates available
-            			CheckUpdatesAvailable(sPayload);
-            		}
-            		else{
-            			AskForDownloadData(sPayload);
-            		}
-            		break;
-            	case 2:
-            		if(m_asDownloadData.isEmpty()){
-            			mGraph.FillRouteMetadata();
-            			LoadInterface();
-            		}
-            		else{
-            			OnDownloadData();
-            		}
-            		break;
-            	}
+                askToDownloadData(mPayload, isRoutingDataExists());
+            }
+
+            private void getPayload(byte[] body) {
+                if (body != null)
+                    mPayload = new String(body);
+                else {
+                    File file = new File(getExternalFilesDir(null), REMOTE_METAFILE);
+                    mPayload = FileUtil.readFromFile(file);
+                }
             }
         };
 	}
 
-	protected void LoadInterface(){
-        String sCurrentCity = mPreferences.getString(PreferencesActivity.KEY_PREF_CITY, mGraph.GetCurrentCity());
+	protected void loadInterface() {
+        String currentCity = mPreferences.getString(PreferencesActivity.KEY_PREF_CITY, mGraph.GetCurrentCity());
 
-        if (sCurrentCity == null)
+        if (currentCity == null)
             return;
 
-        if(sCurrentCity.length() < 2){
+        if (currentCity.length() < 2) {
         	//find first city and load it
         	mGraph.SetFirstCityAsCurrent();
-        }
-        else{
-        	mGraph.SetCurrentCity( sCurrentCity );
+        } else {
+        	mGraph.SetCurrentCity(currentCity);
         }
 
-        if(!mGraph.IsValid())
-        	return;
+        if(!mGraph.IsValid()) {
+            showToast(mGraph.GetLastError());
+            return;
+        }
 
 		m_bInterfaceLoaded = true;
 		setContentView(R.layout.activity_main);
 
-        View view = findViewById(R.id.ivLimitations);
-
-        view.setOnClickListener(new View.OnClickListener() {
+        mBtnLimitations = (ImageView) findViewById(R.id.ivLimitations);
+        mBtnLimitations.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAIN, Analytics.LIMITATIONS, Analytics.SCREEN_MAIN);
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_MAIN, Constants.LIMITATIONS, Constants.SCREEN_MAIN);
                 onSettings(true);
             }
         });
@@ -261,52 +233,98 @@ public class MainActivity extends AppCompatActivity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 	        	switch(position){
 	        	case 0: //from
-                    ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAIN, Analytics.FROM, Analytics.PANE);
+                    ((MetroApp) getApplication()).addEvent(Constants.SCREEN_MAIN, Constants.FROM, Constants.PANE);
 	        		onSelectDepatrure();
 	        		break;
 	        	case 1: //to
-                    ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAIN, Analytics.TO, Analytics.PANE);
+                    ((MetroApp) getApplication()).addEvent(Constants.SCREEN_MAIN, Constants.TO, Constants.PANE);
 	        		onSelectArrival();
 	        		break;
 	        	}
 	        }
 	    });
 
-
-		m_oSearchButton = (Button) findViewById(R.id.btSearch);
-		m_oSearchButton.setOnClickListener(new View.OnClickListener() {
+        m_oSearchButton = (Button) findViewById(R.id.btSearch);
+        m_oSearchButton.setEnabled(false);
+        m_oSearchButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAIN, "Search route", Analytics.SCREEN_MAIN);
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_MAIN, "Search route", Constants.SCREEN_MAIN);
                 onSearch();
             }
         });
-		m_oSearchButton.setEnabled(false);
 
-    	if(m_oSearchButton != null)
-    		m_oSearchButton.setEnabled(false);
-
-    	if(!mGraph.IsValid()){
-    		MainActivity.this.ErrMessage( mGraph.GetLastError());
-    	}
-    	else{
-    		UpdateUI();
-    	}
-
+    	updateInterface();
 	}
+
+    protected void updateInterface(){
+        setLimitationsColor(getLimitationsColor());
+
+        boolean isCorrectStationsAndPortals = m_nDepartureStationId != m_nArrivalStationId && m_nDepartureStationId != -1 &&
+                m_nArrivalStationId != -1 && m_nDeparturePortalId != -1 && m_nArrivalPortalId != -1;
+
+        if(m_oSearchButton != null)
+            m_oSearchButton.setEnabled(isCorrectStationsAndPortals);
+
+        if (mGraph.HasStations()) {
+            if (m_laListButtons == null)
+                return;
+
+            StationItem station = mGraph.GetStation(m_nDepartureStationId);
+            PortalItem portal;
+            if (station != null) {
+                m_laListButtons.setFromStation(station);
+                m_laListButtons.setFromPortal(m_nDeparturePortalId);
+
+                portal = station.GetPortal(m_nDeparturePortalId);
+                if (portal == null)
+                    m_nDeparturePortalId = -1;
+            } else {
+                m_laListButtons.setFromStation(null);
+                m_laListButtons.setFromPortal(0);
+                m_nDepartureStationId = -1;
+            }
+
+            station = mGraph.GetStation(m_nArrivalStationId);
+            if(station != null && m_laListButtons != null){
+                m_laListButtons.setToStation(station);
+                m_laListButtons.setToPortal(m_nArrivalPortalId);
+
+                portal = station.GetPortal(m_nArrivalPortalId);
+                if (portal == null)
+                    m_nArrivalPortalId = -1;
+            } else {
+                m_laListButtons.setToStation(null);
+                m_laListButtons.setToPortal(0);
+                m_nArrivalStationId = -1;
+            }
+
+            m_laListButtons.notifyDataSetChanged();
+        }
+    }
+
+    private void resetInterface() {
+        setContentView(R.layout.empty_activity_main);
+        m_bInterfaceLoaded = false;
+        m_laListButtons = null;
+        m_lvListButtons = null;
+        m_oSearchButton = null;
+    }
 
     private int getLimitationsColor() {
         return LimitationsActivity.hasLimitations(this) ? getResources().getColor(android.R.color.white) : getResources().getColor(R.color.metro_material_dark);
     }
 
     private void setLimitationsColor(int color) {
-        if (LimitationsActivity.hasLimitations(this))
-            findViewById(R.id.ivLimitations).setBackgroundResource(R.drawable.btn_selector);
-        else
-            findViewById(R.id.ivLimitations).setBackgroundResource(R.drawable.btn_limitations_off_selector);
+        if (mBtnLimitations == null)
+            return;
 
-        ImageView iv = (ImageView) findViewById(R.id.ivLimitations);
+        if (LimitationsActivity.hasLimitations(this))
+            mBtnLimitations.setBackgroundResource(R.drawable.btn_selector);
+        else
+            mBtnLimitations.setBackgroundResource(R.drawable.btn_limitations_off_selector);
+
         Bitmap bitmap = getBitmapFromSVG(this, R.raw.wheelchair_icon, color);
-        iv.setImageBitmap(bitmap);
+        mBtnLimitations.setImageBitmap(bitmap);
     }
 
     protected void onSettings(boolean isLimitations) {
@@ -338,11 +356,11 @@ public class MainActivity extends AppCompatActivity {
             // app icon in action bar clicked; go home
             return false;
         case R.id.btn_settings:
-            ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAIN, Analytics.MENU_SETTINGS, Analytics.MENU);
+            ((MetroApp) getApplication()).addEvent(Constants.SCREEN_MAIN, Constants.MENU_SETTINGS, Constants.MENU);
             onSettings(false);
             return true;
         case R.id.btn_limitations:
-            ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAIN, Analytics.LIMITATIONS, Analytics.MENU);
+            ((MetroApp) getApplication()).addEvent(Constants.SCREEN_MAIN, Constants.LIMITATIONS, Constants.MENU);
             onSettings(true);
             return true;
         case R.id.btn_report:
@@ -351,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intentReport);
             return true;
         case R.id.btn_about:
-            ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAIN, Analytics.MENU_ABOUT, Analytics.MENU);
+            ((MetroApp) getApplication()).addEvent(Constants.SCREEN_MAIN, Constants.MENU_ABOUT, Constants.MENU);
             Intent intentAbout = new Intent(this, AboutActivity.class);
             intentAbout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intentAbout);
@@ -360,11 +378,11 @@ public class MainActivity extends AppCompatActivity {
             if (!item.isEnabled()) return true;
 
             if (!m_bInterfaceLoaded) {
-                Toast.makeText(this, R.string.sLocationNoCitySelected, Toast.LENGTH_SHORT).show();
+                showToast(R.string.sLocationNoCitySelected);
                 return true;
             }
 
-            ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAIN, "Locate closest entrance", Analytics.ACTION_BAR);
+            ((MetroApp) getApplication()).addEvent(Constants.SCREEN_MAIN, "Locate closest entrance", Constants.ACTION_BAR);
 
             final Context context = this;
             if (isProviderDisabled(context, false)) {
@@ -372,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (isProviderDisabled(context, true))
-                            Toast.makeText(context, R.string.sLocationFail, Toast.LENGTH_LONG).show();
+                            showToast(R.string.sLocationFail);
                         else
                             locateClosestEntrance();
                     }
@@ -381,6 +399,9 @@ public class MainActivity extends AppCompatActivity {
                 locateClosestEntrance();
             break;
         case R.id.btn_reverse:
+            if (!m_bInterfaceLoaded)
+                showToast(R.string.sLocationNoCitySelected);
+
             swapStations();
             break;
         }
@@ -395,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
         m_nDepartureStationId = m_nArrivalStationId;
         m_nArrivalStationId = t;
 
-        UpdateUI();
+        updateInterface();
     }
 
     public static void showLocationInfoDialog(final Context context, DialogInterface.OnClickListener onNegativeButtonClicked) {
@@ -444,7 +465,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void locateClosestEntrance() {
         menu.findItem(R.id.btn_locate).setEnabled(false);
-        Toast.makeText(this, R.string.sLocationStart, Toast.LENGTH_SHORT).show();
+        showToast(R.string.sLocationStart);
 
         final Handler h = new Handler(){
             private boolean isLocationFound = false;
@@ -524,44 +545,27 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-	protected void CheckForUpdates(){
-		final MetaDownloader uploader = new MetaDownloader(MainActivity.this, getResources().getString(R.string.sDownLoading), m_oGetJSONHandler, true);
-		uploader.execute(SERVER + META);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                uploader.Abort();
-                LoadInterface();
-            }
-        }, 3000);
-	}
-
-	protected void GetRoutingData(){
-		MetaDownloader loader = new MetaDownloader(MainActivity.this, getResources().getString(R.string.sDownLoading), m_oGetJSONHandler, true);
-		loader.execute(SERVER + META);
+    protected void getRemoteMeta(){
+        MetroApp.get(this, SERVER + META, mMetaHandler);
 	}
 
 	//check if data for routing is downloaded
-	protected boolean IsRoutingDataExist(){
+	protected boolean isRoutingDataExists(){
 		return mGraph.IsRoutingDataExist();
 	}
 
-	protected void CheckUpdatesAvailable(String sJSON){
-
-		mGraph.OnUpdateMeta(sJSON, true);
+	protected void askToDownloadData(String sJSON, boolean isUpdate){
+		mGraph.OnUpdateMeta(sJSON, isUpdate);
 		final List<GraphDataItem> items = mGraph.HasChanges();
         Collections.sort(items);
 
 		int count = items.size();
-		if(count < 1){
-			LoadInterface();
+		if (count == 0)
 			return;
-		}
+
 		final boolean[] checkedItems = new boolean[count];
-	    for(int i = 0; i < count; i++){
-	    	checkedItems[i] = true;
-	    }
+	    for (int i = 0; i < count; i++)
+	    	checkedItems[i] = isUpdate;
 
 	    final CharSequence[] checkedItemStrings = new CharSequence[count];
 	    for(int i = 0; i < count; i++){
@@ -569,7 +573,7 @@ public class MainActivity extends AppCompatActivity {
 	    }
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(R.string.sUpdateAvaliable)
+		builder.setTitle(isUpdate ? R.string.sUpdateAvaliable : R.string.sSelectDataToDownload)
 		.setMultiChoiceItems(checkedItemStrings, checkedItems,
                 new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
@@ -581,136 +585,28 @@ public class MainActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-
-                        m_asDownloadData.clear();
+                        List<GraphDataItem> itemsToDownload = new ArrayList<>();
 
                         for (int i = 0; i < checkedItems.length; i++) {
                             if (checkedItems[i]) {
-                                m_asDownloadData.add(new DownloadData(MainActivity.this, items.get(i), SERVER + items.get(i).GetPath() + ".zip",
-                                        m_oGetJSONHandler));
+                                itemsToDownload.add(items.get(i));
                             }
                         }
 
-                        OnDownloadData();
-
+                        MetroApp.downloadData(MainActivity.this, itemsToDownload, MainActivity.this);
                     }
                 })
+		.setNegativeButton(R.string.sCancel, null);
 
-		.setNegativeButton(R.string.sCancel,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        LoadInterface();
-                        dialog.cancel();
-                    }
-                });
 		builder.create();
 		builder.show();
     }
 
-	protected void AskForDownloadData(String sJSON){
-		//ask user for download
-		mGraph.OnUpdateMeta(sJSON, false);
-		final List<GraphDataItem> items = mGraph.HasChanges();
-        Collections.sort(items);
-
-	    int count = items.size();
-	    if(count == 0)
-	    	return;
-
-	    final boolean[] checkedItems = new boolean[count];
-	    for(int i = 0; i < count; i++){
-	    	checkedItems[i] = false;
-	    }
-
-	    final CharSequence[] checkedItemStrings = new CharSequence[count];
-	    for(int i = 0; i < count; i++){
-	    	checkedItemStrings[i] = items.get(i).GetFullName();
-	    }
-
-	    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(R.string.sSelectDataToDownload)
-			   .setMultiChoiceItems(checkedItemStrings, checkedItems,
-						new DialogInterface.OnMultiChoiceClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-								checkedItems[which] = isChecked;
-							}
-						})
-				.setPositiveButton(R.string.sDownload,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int id) {
-
-								m_asDownloadData.clear();
-
-								for (int i = 0; i < checkedItems.length; i++) {
-									if (checkedItems[i]){
-										m_asDownloadData.add(new DownloadData(MainActivity.this, items.get(i), SERVER + items.get(i).GetPath() + ".zip",
-                                                m_oGetJSONHandler));
-									}
-								}
-								OnDownloadData();
-							}
-						})
-
-				.setNegativeButton(R.string.sCancel,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int id) {
-								dialog.cancel();
-
-							}
-						});
-		builder.create();
-		builder.show();
-	}
-
-	protected void OnDownloadData(){
-		if(m_asDownloadData.isEmpty())
-			return;
-		DownloadData data = m_asDownloadData.get(0);
-		m_asDownloadData.remove(0);
-
-		data.OnDownload();
-	}
-
-	public static boolean writeToFile(File filePath, String sData){
-		try{
-			FileOutputStream os = new FileOutputStream(filePath, false);
-			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(os);
-	        outputStreamWriter.write(sData);
-	        outputStreamWriter.close();
-	        return true;
-		}
-		catch(IOException e){
-			return false;
-		}
-	}
-
-	public static String readFromFile(File filePath) {
-
-	    String ret = "";
-
-	    try {
-	    	FileInputStream inputStream = new FileInputStream(filePath);
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String receiveString;
-            StringBuilder stringBuilder = new StringBuilder();
-
-            while ((receiveString = bufferedReader.readLine()) != null) {
-                stringBuilder.append(receiveString);
-            }
-
-            inputStream.close();
-            ret = stringBuilder.toString();
-        } catch (IOException e) {
-	    	e.printStackTrace();
-	    }
-
-	    return ret;
-	}
+    @Override
+    public void onDownloadFinished() {
+        if (isRoutingDataExists() && !m_bInterfaceLoaded)
+            loadInterface();
+    }
 
 	@Override
 	protected void onPause() {
@@ -721,33 +617,27 @@ public class MainActivity extends AppCompatActivity {
 		edit.putInt("arr_" + BUNDLE_STATIONID_KEY, m_nArrivalStationId);
 		edit.putInt("dep_" + BUNDLE_PORTALID_KEY, m_nDeparturePortalId);
 		edit.putInt("arr_" + BUNDLE_PORTALID_KEY, m_nArrivalPortalId);
-
 		edit.apply();
 
 		super.onPause();
 	}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-	    m_nDepartureStationId = mPreferences.getInt("dep_" + BUNDLE_STATIONID_KEY, -1);
-	    m_nArrivalStationId = mPreferences.getInt("arr_" + BUNDLE_STATIONID_KEY, -1);
-	    m_nDeparturePortalId = mPreferences.getInt("dep_" + BUNDLE_PORTALID_KEY, -1);
-	    m_nArrivalPortalId = mPreferences.getInt("arr_" + BUNDLE_PORTALID_KEY, -1);
-
-		//check if routing data changed
-		mGraph.FillRouteMetadata();
-
-		if(m_bInterfaceLoaded){
-			if(mGraph.IsEmpty()){
-				if(IsRoutingDataExist()){
-					LoadInterface();
-				}
-			}
-			UpdateUI();
-		}
-    }
+//	@Override
+//	protected void onResume() {
+//		super.onResume();
+//
+//	    m_nDepartureStationId = mPreferences.getInt("dep_" + BUNDLE_STATIONID_KEY, -1);
+//	    m_nArrivalStationId = mPreferences.getInt("arr_" + BUNDLE_STATIONID_KEY, -1);
+//	    m_nDeparturePortalId = mPreferences.getInt("dep_" + BUNDLE_PORTALID_KEY, -1);
+//	    m_nArrivalPortalId = mPreferences.getInt("arr_" + BUNDLE_PORTALID_KEY, -1);
+//
+//        if (!isRoutingDataExists())
+//            resetInterface();
+//        else if (m_bInterfaceLoaded)
+//            updateInterface();
+//        else
+//            loadInterface();
+//    }
 
 	protected void 	onSelectDepatrure(){
 	    Intent intent = new Intent(this, SelectStationActivity.class);
@@ -775,10 +665,6 @@ public class MainActivity extends AppCompatActivity {
 
 	@Override
 	  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    /*if (resultCode != RESULT_OK) {
-	    	return;
-	    }*/
-
     	int nStationId = -1;
     	int nPortalId = -1;
         boolean isCityChanged = false;
@@ -820,6 +706,7 @@ public class MainActivity extends AppCompatActivity {
 
             break;
 	    case PREF_RESULT:
+            isCityChanged = !isRoutingDataExists();
 	    	break;
     	default:
     		break;
@@ -832,67 +719,18 @@ public class MainActivity extends AppCompatActivity {
             clearRecent(mPreferences);
         }
 
-        edit.putInt("dep_"+BUNDLE_STATIONID_KEY, m_nDepartureStationId);
-        edit.putInt("dep_"+BUNDLE_PORTALID_KEY, m_nDeparturePortalId);
-        edit.putInt("arr_"+BUNDLE_STATIONID_KEY, m_nArrivalStationId);
-        edit.putInt("arr_"+BUNDLE_PORTALID_KEY, m_nArrivalPortalId);
-
+        edit.putInt("dep_" + BUNDLE_STATIONID_KEY, m_nDepartureStationId);
+        edit.putInt("dep_" + BUNDLE_PORTALID_KEY, m_nDeparturePortalId);
+        edit.putInt("arr_" + BUNDLE_STATIONID_KEY, m_nArrivalStationId);
+        edit.putInt("arr_" + BUNDLE_PORTALID_KEY, m_nArrivalPortalId);
 	    edit.apply();
 
-	    if (m_bInterfaceLoaded)
-	    	UpdateUI();
+        if (!isRoutingDataExists())
+            resetInterface();
+        else if (m_bInterfaceLoaded)
+            updateInterface();
         else
-	    	LoadInterface();
-	}
-
-	protected void UpdateUI(){
-		if(mGraph.HasStations()){
-	    	StationItem dep_sit = mGraph.GetStation(m_nDepartureStationId);
-
-	    	if(dep_sit != null && m_laListButtons != null){
-                m_laListButtons.setFromStation(dep_sit);
-                m_laListButtons.setFromPortal(m_nDeparturePortalId);
-
-	    		PortalItem pit = dep_sit.GetPortal(m_nDeparturePortalId);
-
-	    		if(pit == null)
-                    m_nDeparturePortalId = -1;
-	    	} else {
-                m_laListButtons.setFromStation(null);
-                m_laListButtons.setFromPortal(0);
-	    		m_nDepartureStationId = -1;
-	    	}
-
-	    	StationItem arr_sit = mGraph.GetStation(m_nArrivalStationId);
-
-	    	if(arr_sit != null && m_laListButtons != null){
-                m_laListButtons.setToStation(arr_sit);
-                m_laListButtons.setToPortal(m_nArrivalPortalId);
-
-	    		PortalItem pit = arr_sit.GetPortal(m_nArrivalPortalId);
-
-	    		if(pit == null)
-                    m_nArrivalPortalId = -1;
-	    	} else {
-                m_laListButtons.setToStation(null);
-                m_laListButtons.setToPortal(0);
-	    		m_nArrivalStationId = -1;
-	    	}
-		}
-
-	    if(m_nDepartureStationId != m_nArrivalStationId && m_nDepartureStationId != -1 && m_nArrivalStationId != -1 && m_nDeparturePortalId != -1 && m_nArrivalPortalId != -1){
-	    	if(m_oSearchButton != null)
-	    		m_oSearchButton.setEnabled(true);
-	    }
-	    else{
-	    	if(m_oSearchButton != null)
-	    		m_oSearchButton.setEnabled(false);
-	    }
-
-	    if(m_laListButtons != null)
-	    	m_laListButtons.notifyDataSetChanged();
-
-        setLimitationsColor(getLimitationsColor());
+            loadInterface();
 	}
 
 	protected void onSearch(){
@@ -943,7 +781,7 @@ public class MainActivity extends AppCompatActivity {
 				List<Path> shortest_paths_list = mGraph.GetShortestPaths(m_nDepartureStationId, m_nArrivalStationId, nMaxRouteCount);
 
 				if(shortest_paths_list.size() == 0){
-					//MainActivity.this.ErrMessage(R.string.sCannotGetPath);
+					//MainActivity.this.showToast(R.string.sCannotGetPath);
 					//Toast.makeText(MainActivity.this, R.string.sCannotGetPath, Toast.LENGTH_SHORT).show();
 					Log.d(TAG, MainActivity.this.getString(R.string.sCannotGetPath));
 				}
@@ -989,31 +827,12 @@ public class MainActivity extends AppCompatActivity {
 
 	}
 
-	public static String GetRouteDataDir(){
-		return ROUTE_DATA_DIR;
+	public void showToast(String message) {
+		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 	}
 
-	public static String GetMetaFileName(){
-		return META;
-	}
-
-	public static String GetRemoteMetaFile(){
-		return REMOTE_METAFILE;
-	}
-
-	public static MAGraph GetGraph(){
-        if (mGraph == null)
-            mGraph = Analytics.getGraph();
-
-		return mGraph;
-	}
-
-	public void ErrMessage(String sErrMsg){
-		Toast.makeText(this, sErrMsg, Toast.LENGTH_SHORT).show();
-	}
-
-	public void ErrMessage(int nErrMsg){
-		Toast.makeText(this, getString(nErrMsg), Toast.LENGTH_SHORT).show();
+	public void showToast(int resource) {
+		Toast.makeText(this, getString(resource), Toast.LENGTH_SHORT).show();
 	}
 
     /**
@@ -1125,14 +944,14 @@ public class MainActivity extends AppCompatActivity {
      * @return          Bitmap
      */
     public static Bitmap getBitmapFromSVG(Context context, RouteItem entry, boolean subItem) {
-        String color = MainActivity.GetGraph().GetLineColor(entry.GetLine());
+        String color = MetroApp.getGraph().GetLineColor(entry.GetLine());
         Bitmap bitmap = null;
         int type = subItem ? 8 : entry.GetType();
 
         switch (type) {
             case 6:
             case 7:
-                bitmap = getBitmapFromSVG(MainActivity.GetGraph().GetCurrentRouteDataPath() + "/icons/metro.svg");
+                bitmap = getBitmapFromSVG(MetroApp.getGraph().GetCurrentRouteDataPath() + "/icons/metro.svg");
                 break;
             default:
                 try {

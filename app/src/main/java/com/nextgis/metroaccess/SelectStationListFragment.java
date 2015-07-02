@@ -1,7 +1,7 @@
 /******************************************************************************
  * Project:  Metro4All
  * Purpose:  Routing in subway.
- * Authors:  Stanislav Petriakov
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  ******************************************************************************
  *   Copyright (C) 2015 NextGIS
  *
@@ -37,8 +37,9 @@ import android.widget.Toast;
 
 import com.nextgis.metroaccess.data.PortalItem;
 import com.nextgis.metroaccess.data.StationItem;
+import com.nextgis.metroaccess.util.Constants;
 
-import static com.nextgis.metroaccess.Constants.TAG;
+import static com.nextgis.metroaccess.util.Constants.TAG;
 
 public abstract class SelectStationListFragment extends Fragment {
     protected StationExpandableListView m_oExpListView;
@@ -59,7 +60,7 @@ public abstract class SelectStationListFragment extends Fragment {
         m_oExpListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                ((Analytics) getActivity().getApplication()).addEvent(Analytics.SCREEN_SELECT_STATION + " " + getDirection(), Analytics.PORTAL, mTab);
+                ((MetroApp) getActivity().getApplication()).addEvent(Constants.SCREEN_SELECT_STATION + " " + getDirection(), Constants.PORTAL, mTab);
 
                 final PortalItem selected = (PortalItem) m_oExpListAdapter.getChild(groupPosition, childPosition);
                 SelectStationActivity parentActivity = (SelectStationActivity) getActivity();
@@ -75,7 +76,7 @@ public abstract class SelectStationListFragment extends Fragment {
                 imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
                 if (m_oExpListAdapter.getGroup(groupPosition).isSection()) {
-                    ((Analytics) getActivity().getApplication()).addEvent(Analytics.SCREEN_SELECT_STATION + " " + getDirection(), Analytics.HEADER, mTab);
+                    ((MetroApp) getActivity().getApplication()).addEvent(Constants.SCREEN_SELECT_STATION + " " + getDirection(), Constants.HEADER, mTab);
 
                     int scrollTo = groupPosition;
 
@@ -96,7 +97,7 @@ public abstract class SelectStationListFragment extends Fragment {
             @Override
             public void onGroupExpand(int i) {
                 if (!m_oExpListAdapter.getGroup(i).isSection())
-                    ((Analytics) getActivity().getApplication()).addEvent(Analytics.SCREEN_SELECT_STATION + " " + getDirection(), Analytics.STATION_EXPAND, mTab);
+                    ((MetroApp) getActivity().getApplication()).addEvent(Constants.SCREEN_SELECT_STATION + " " + getDirection(), Constants.STATION_EXPAND, mTab);
             }
         });
 
@@ -104,7 +105,7 @@ public abstract class SelectStationListFragment extends Fragment {
             @Override
             public void onGroupCollapse(int i) {
                 if (!m_oExpListAdapter.getGroup(i).isSection())
-                    ((Analytics) getActivity().getApplication()).addEvent(Analytics.SCREEN_SELECT_STATION + " " + getDirection(), Analytics.STATION_COLLAPSE, mTab);
+                    ((MetroApp) getActivity().getApplication()).addEvent(Constants.SCREEN_SELECT_STATION + " " + getDirection(), Constants.STATION_COLLAPSE, mTab);
             }
         });
 
@@ -132,7 +133,7 @@ public abstract class SelectStationListFragment extends Fragment {
     }
 
     private String getDirection() { // for GA
-        return ((SelectStationActivity) getActivity()).IsIn() ? Analytics.FROM : Analytics.TO;
+        return ((SelectStationActivity) getActivity()).IsIn() ? Constants.FROM : Constants.TO;
     }
 
     public void Update(){

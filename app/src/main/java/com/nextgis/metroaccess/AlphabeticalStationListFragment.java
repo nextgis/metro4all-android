@@ -1,7 +1,8 @@
 /******************************************************************************
  * Project:  Metro Access
  * Purpose:  Routing in subway for disabled.
- * Authors:  Baryshnikov Dmitriy aka Bishop (polimax@mail.ru), Stanislav Petriakov
+ * Author:   Baryshnikov Dmitriy aka Bishop (polimax@mail.ru)
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  ******************************************************************************
  *   Copyright (C) 2013-2015 NextGIS
  *
@@ -29,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.SectionIndexer;
 
 import com.nextgis.metroaccess.data.StationItem;
+import com.nextgis.metroaccess.util.Constants;
 import com.nhaarman.supertooltips.ToolTip;
 import com.nhaarman.supertooltips.ToolTipRelativeLayout;
 import com.nhaarman.supertooltips.ToolTipView;
@@ -44,7 +46,7 @@ public class AlphabeticalStationListFragment extends SelectStationListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View result = super.onCreateView(inflater, container, savedInstanceState);
 
-        mTab = Analytics.TAB_AZ;
+        mTab = Constants.TAB_AZ;
         SelectStationActivity parentActivity = (SelectStationActivity) getActivity();
         m_oExpListAdapter = new AlphabeticalExpandableListAdapter(parentActivity, parentActivity.GetStationList());
         m_oExpListView.setAdapter(m_oExpListAdapter);

@@ -1,7 +1,8 @@
 /******************************************************************************
  * Project:  Metro Access
  * Purpose:  Routing in subway for disabled.
- * Authors:  Baryshnikov Dmitriy aka Bishop (polimax@mail.ru), Stanislav Petriakov
+ * Author:   Baryshnikov Dmitriy aka Bishop (polimax@mail.ru)
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  ******************************************************************************
 *   Copyright (C) 2013-2015 NextGIS
 *
@@ -29,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.nextgis.metroaccess.data.StationItem;
+import com.nextgis.metroaccess.util.Constants;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,7 +44,7 @@ public class RecentStationListFragment extends SelectStationListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View result = super.onCreateView(inflater, container, savedInstanceState);
 
-        mTab = Analytics.TAB_RECENT;
+        mTab = Constants.TAB_RECENT;
      	SelectStationActivity parentActivity = (SelectStationActivity) getActivity();
     	m_oExpListAdapter = new RecentExpandableListAdapter(parentActivity);
         m_oExpListView.setAdapter(m_oExpListAdapter);
@@ -69,7 +71,7 @@ public class RecentStationListFragment extends SelectStationListFragment {
             mStationList.clear();
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-            Map<Integer, StationItem> omStations = MainActivity.GetGraph().GetStations();
+            Map<Integer, StationItem> omStations = MetroApp.getGraph().GetStations();
             JSONArray stationsIds = getRecentStations(prefs, m_bIn);
 
             if (stationsIds != null)

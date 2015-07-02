@@ -1,7 +1,7 @@
 /******************************************************************************
  * Project:  Metro4All
  * Purpose:  Routing in subway.
- * Authors:  Stanislav Petriakov
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  ******************************************************************************
 *   Copyright (C) 2014,2015 NextGIS
 *
@@ -20,10 +20,13 @@
  ****************************************************************************/
 package com.nextgis.metroaccess;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -32,6 +35,8 @@ import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.nextgis.metroaccess.data.DataDownloader;
+import com.nextgis.metroaccess.data.GraphDataItem;
 import com.nextgis.metroaccess.data.MAGraph;
 import com.nextgis.metroaccess.util.FileUtil;
 
@@ -42,52 +47,29 @@ import org.json.JSONArray;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Locale;
 
-import static com.nextgis.metroaccess.Constants.APP_VERSION;
-import static com.nextgis.metroaccess.Constants.KEY_PREF_RECENT_ARR_STATIONS;
-import static com.nextgis.metroaccess.Constants.KEY_PREF_RECENT_DEP_STATIONS;
+import static com.nextgis.metroaccess.util.Constants.APP_VERSION;
+import static com.nextgis.metroaccess.util.Constants.KEY_PREF_RECENT_ARR_STATIONS;
+import static com.nextgis.metroaccess.util.Constants.KEY_PREF_RECENT_DEP_STATIONS;
+import static com.nextgis.metroaccess.util.Constants.ROUTE_DATA_DIR;
+import static com.nextgis.metroaccess.util.Constants.SERVER;
 import static com.nextgis.metroaccess.SelectStationActivity.getRecentStations;
 import static com.nextgis.metroaccess.SelectStationActivity.indexOf;
 
-public class Analytics extends Application {
+public class MetroApp extends Application {
 //    private static final String PROPERTY_ID = "UA-57998948-1";
-    final static String PANE = "Pane";
-    final static String MENU = "Menu";
-    final static String PREFERENCE = "Preference";
-    final static String ACTION_BAR = "ActionBar";
-    final static String ACTION_ITEM = "List Item";
 
-    final static String SCREEN_MAIN = "Main Screen";
-    final static String SCREEN_PREFERENCE = "Preferences Screen";
-    final static String SCREEN_MAP = "Map Screen";
-    final static String SCREEN_LAYOUT = "Layout Screen";
-    final static String SCREEN_SELECT_STATION = "Select Station Screen";
-    final static String SCREEN_ROUTING = "Routing Screen";
-    final static String SCREEN_LIMITATIONS = "Limitations Screen";
-
-    final static String FROM = "From";
-    final static String TO = "To";
-    final static String TAB_AZ = "Tab A...Z";
-    final static String TAB_LINES = "Tab Lines";
-    final static String TAB_RECENT = "Tab Recent";
-
-    final static String BTN_MAP = "Map";
-    final static String BTN_LAYOUT = "Layout";
-    final static String MENU_ABOUT = "About";
-    final static String MENU_SETTINGS = "Settings";
-    final static String BACK = "Back";
-    final static String LIMITATIONS = "Limitations";
-    final static String PORTAL = "Portal selected";
-    final static String HEADER = "Header clicked";
-    final static String STATION_EXPAND = "Station expanded";
-    final static String STATION_COLLAPSE = "Station collapsed";
-    final static String LEGEND = "Legend";
-    final static String HELP_LINK = "Help link";
-
-    private Tracker tracker;
+    private Tracker mTracker;
     private static MAGraph mGraph;
-    private static AsyncHttpClient client = new AsyncHttpClient();
+    private static AsyncHttpClient mClient = new AsyncHttpClient();
+    private static DataDownloader mDataHandler;
+    private static DownloadProgressListener mListener;
+
+    public interface DownloadProgressListener {
+        void onDownloadFinished();
+    }
 
     @Override
     public void onCreate() {
@@ -99,6 +81,7 @@ public class Analytics extends Application {
         String sCurrentCity = prefs.getString(PreferencesActivity.KEY_PREF_CITY, "");
         String sCurrentCityLang = prefs.getString(PreferencesActivity.KEY_PREF_CITYLANG, Locale.getDefault().getLanguage());
         mGraph = new MAGraph(this, sCurrentCity, getExternalFilesDir(null), sCurrentCityLang);
+        mDataHandler = new DataDownloader();
     }
 
     public static MAGraph getGraph(){
@@ -106,14 +89,14 @@ public class Analytics extends Application {
 	}
 
     synchronized Tracker getTracker() {
-        if (tracker == null) {
+        if (mTracker == null) {
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
             analytics.getLogger().setLogLevel(Logger.LogLevel.WARNING);
-            tracker = analytics.newTracker(R.xml.app_tracker);
-            tracker.enableAdvertisingIdCollection(true);
+            mTracker = analytics.newTracker(R.xml.app_tracker);
+            mTracker.enableAdvertisingIdCollection(true);
         }
 
-        return tracker;
+        return mTracker;
     }
 
     public void reload(boolean disableGA) {
@@ -142,11 +125,44 @@ public class Analytics extends Application {
         try {
             se = new StringEntity(json, "UTF-8");
             se.setContentType("application/json;charset=UTF-8");
-            se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,"application/json;charset=UTF-8"));
+            se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json;charset=UTF-8"));
         } catch (UnsupportedEncodingException ignored) {
         }
 
-        client.post(context, ConstantsSecured.REPORT_SERVER, se, "application/json", handler);
+        mClient.post(context, ConstantsSecured.REPORT_SERVER, se, "application/json", handler);
+    }
+
+    public static void get(Context context, String URL, AsyncHttpResponseHandler handler) {
+        mClient.get(context, URL, handler);
+    }
+
+    public static void downloadData(Context context, List<GraphDataItem> items, DownloadProgressListener listener) {
+        if (items == null || items.isEmpty())
+            return;
+
+        int currentOrientation = ActivityInfo.SCREEN_ORIENTATION_NOSENSOR;
+        if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            currentOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+        }
+
+        ((Activity) context).setRequestedOrientation(currentOrientation);
+
+        mListener = listener;
+        mDataHandler.reload(context, items);
+        get(context, SERVER + items.get(0).GetPath() + ".zip", mDataHandler);
+    }
+
+    public static void downloadFinish() {
+        mGraph.FillRouteMetadata();
+
+        if (mListener != null)
+            mListener.onDownloadFinished();
+
+        mListener = null;
+    }
+
+    public static void cancel(Context context) {
+        mClient.cancelRequests(context, true);
     }
 
     private void updateApplicationStructure(SharedPreferences prefs) {
@@ -157,7 +173,7 @@ public class Analytics extends Application {
             switch (savedVersionCode) {
                 case 0:
                     // ==========Improvement==========
-                    File oDataFolder = getExternalFilesDir(MainActivity.GetRouteDataDir());
+                    File oDataFolder = getExternalFilesDir(ROUTE_DATA_DIR);
                     FileUtil.deleteRecursive(oDataFolder);
                     // ==========End Improvement==========
                 case 14:
