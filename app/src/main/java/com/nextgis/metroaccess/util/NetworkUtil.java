@@ -22,29 +22,26 @@
 package com.nextgis.metroaccess.util;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.telephony.TelephonyManager;
 
-import com.nextgis.metroaccess.R;
+public class NetworkUtil {
+    public static boolean isNetworkAvailable(Context context)
+    {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-public class TimeUtil {
-
-    /**
-     * Format time in minutes to "HH h MM min" or "HH h" or "MM min".
-     *
-     * @param context The context.
-     * @param time Time in minutes.
-     * @return Formatted string.
-     */
-    public static String formatTime(Context context, int time) {
-        String min = context.getString(R.string.sTimeUnitMinute), hour = context.getString(R.string.sTimeUnitHour);
-        String result = time + " " + min;
-
-        if (time >= 60) {
-            result = String.format("%d%s", time / 60, hour);
-
-            if (time % 60 != 0)
-                result = String.format("%s %d%s", result, time % 60, min);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+        if (info != null){
+            int netType = info.getType();
+            if (netType == ConnectivityManager.TYPE_WIFI) {
+                return info.isConnected();
+            }
+            else if (netType == ConnectivityManager.TYPE_MOBILE && !tm.isNetworkRoaming()){
+                return info.isConnected();
+            }
         }
-
-        return result;
+        return false;
     }
 }

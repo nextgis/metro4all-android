@@ -22,6 +22,9 @@ package com.nextgis.metroaccess;
 
 import android.content.Context;
 import android.widget.Toast;
+
+import com.nextgis.metroaccess.util.NetworkUtil;
+
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -61,7 +64,7 @@ public class StationMapView extends MapView {
     protected void onWindowVisibilityChanged(int visibility) {
         if (visibility == VISIBLE) {
             Context mContext = getContext();
-            boolean isNotNetwork = !MetaDownloader.IsNetworkAvailable(mContext);
+            boolean isNotNetwork = !NetworkUtil.isNetworkAvailable(mContext);
 
             if (isNotNetwork)
                 Toast.makeText(mContext, mContext.getString(R.string.sNetworkUnreachErr),
