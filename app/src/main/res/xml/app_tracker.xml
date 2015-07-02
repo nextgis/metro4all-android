@@ -22,31 +22,31 @@
     tools:ignore="TypographyDashes">
     <integer name="ga_sessionTimeout">300</integer>
     <bool name="ga_autoActivityTracking">true</bool>
-    <screenName name="com.nextgis.metroaccess.MainActivity">
+    <screenName name="com.nextgis.metroaccess.ui.activity.MainActivity">
         Main Screen
     </screenName>
-    <screenName name="com.nextgis.metroaccess.SelectStationActivity">
+    <screenName name="com.nextgis.metroaccess.ui.activity.SelectStationActivity">
         Select Station Screen
     </screenName>
-    <screenName name="com.nextgis.metroaccess.StationMapActivity">
+    <screenName name="com.nextgis.metroaccess.ui.activity.StationMapActivity">
         Station Map Screen
     </screenName>
-    <screenName name="com.nextgis.metroaccess.StationImageView">
+    <screenName name="com.nextgis.metroaccess.ui.activity.StationImageActivity">
         Station Layout Screen
     </screenName>
-    <screenName name="com.nextgis.metroaccess.StationListView">
+    <screenName name="com.nextgis.metroaccess.ui.activity.RoutingActivity">
         Route Screen
     </screenName>
-    <screenName name="com.nextgis.metroaccess.AboutActivity">
+    <screenName name="com.nextgis.metroaccess.ui.activity.AboutActivity">
         About Screen
     </screenName>
-    <screenName name="com.nextgis.metroaccess.PreferencesActivity">
+    <screenName name="com.nextgis.metroaccess.ui.activity.PreferencesActivity">
         Preferences Screen
     </screenName>
-    <screenName name="com.nextgis.metroaccess.LimitationsActivity">
+    <screenName name="com.nextgis.metroaccess.ui.activity.LimitationsActivity">
         Limitations Screen
     </screenName>
-    <screenName name="com.nextgis.metroaccess.ReportActivity">
+    <screenName name="com.nextgis.metroaccess.ui.activity.ReportActivity">
         Report Screen
     </screenName>
 

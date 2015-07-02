@@ -60,7 +60,7 @@
             <!--android:title="@string/sLimits">-->
             <!--<intent-->
                 <!--android:targetPackage="com.nextgis.metroaccess"-->
-                <!--android:targetClass="com.nextgis.metroaccess.LimitationsActivity"/>-->
+                <!--android:targetClass="com.nextgis.metroaccess.ui.activity.LimitationsActivity"/>-->
         <!--</Preference>-->
 
         <CheckBoxPreference

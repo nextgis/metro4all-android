@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nextgis.metroaccess.MetroApp;
 import com.nextgis.metroaccess.R;
+import com.nextgis.metroaccess.data.metro.GraphDataItem;
 import com.nextgis.metroaccess.util.FileUtil;
 
 import org.apache.http.Header;

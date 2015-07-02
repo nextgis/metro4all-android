@@ -38,7 +38,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="com.nextgis.metroaccess.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -48,31 +48,31 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.nextgis.metroaccess.AboutActivity"
+            android:name=".ui.activity.AboutActivity"
             android:label="@string/sAbout" />
         <activity
-            android:name="com.nextgis.metroaccess.StationListView"
+            android:name=".ui.activity.RoutingActivity"
             android:label="@string/sRoute" />
         <activity
-            android:name="com.nextgis.metroaccess.StationImageView"
+            android:name=".ui.activity.StationImageActivity"
             android:label="@string/sLayout" />
         <activity
-            android:name="com.nextgis.metroaccess.SelectStationActivity"
+            android:name=".ui.activity.SelectStationActivity"
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.nextgis.metroaccess.PreferencesActivity"
+            android:name=".ui.activity.PreferencesActivity"
             android:label="@string/sPrefTitle"
             android:theme="@style/Theme.Settings" />
         <activity
-            android:name="com.nextgis.metroaccess.LimitationsActivity"
+            android:name=".ui.activity.LimitationsActivity"
             android:label="@string/sLimits"
             android:theme="@style/Theme.Settings.Limitations" />
         <activity
-            android:name="com.nextgis.metroaccess.StationMapActivity"
+            android:name=".ui.activity.StationMapActivity"
             android:label="@string/sMap" />
         <activity
-            android:name="com.nextgis.metroaccess.ReportActivity"
+            android:name=".ui.activity.ReportActivity"
             android:label="@string/sReportMenu"
             android:windowSoftInputMode="stateHidden" />
 

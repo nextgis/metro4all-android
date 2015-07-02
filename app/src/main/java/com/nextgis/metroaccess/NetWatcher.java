@@ -30,6 +30,7 @@ import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.nextgis.metroaccess.ui.activity.PreferencesActivity;
 
 import org.apache.http.Header;
 

@@ -36,7 +36,7 @@
         android:key="wheel_width"
         android:summary="@string/sPrefWheelBaseSizeSummary"
         android:title="@string/sPrefWheelBaseSize"/>
-    <com.nextgis.metroaccess.InfoPreference
+    <com.nextgis.metroaccess.ui.view.InfoPreference
         android:selectable="false"
         android:enabled="true"
         android:summary="@string/sLimitationsInfo"/>

@@ -36,8 +36,10 @@ import com.google.android.gms.analytics.Tracker;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nextgis.metroaccess.data.DataDownloader;
-import com.nextgis.metroaccess.data.GraphDataItem;
-import com.nextgis.metroaccess.data.MAGraph;
+import com.nextgis.metroaccess.data.metro.GraphDataItem;
+import com.nextgis.metroaccess.data.metro.MAGraph;
+import com.nextgis.metroaccess.ui.activity.PreferencesActivity;
+import com.nextgis.metroaccess.util.ConstantsSecured;
 import com.nextgis.metroaccess.util.FileUtil;
 
 import org.apache.http.entity.StringEntity;
@@ -55,8 +57,8 @@ import static com.nextgis.metroaccess.util.Constants.KEY_PREF_RECENT_ARR_STATION
 import static com.nextgis.metroaccess.util.Constants.KEY_PREF_RECENT_DEP_STATIONS;
 import static com.nextgis.metroaccess.util.Constants.ROUTE_DATA_DIR;
 import static com.nextgis.metroaccess.util.Constants.SERVER;
-import static com.nextgis.metroaccess.SelectStationActivity.getRecentStations;
-import static com.nextgis.metroaccess.SelectStationActivity.indexOf;
+import static com.nextgis.metroaccess.ui.activity.SelectStationActivity.getRecentStations;
+import static com.nextgis.metroaccess.ui.activity.SelectStationActivity.indexOf;
 
 public class MetroApp extends Application {
 //    private static final String PROPERTY_ID = "UA-57998948-1";
@@ -88,7 +90,7 @@ public class MetroApp extends Application {
 		return mGraph;
 	}
 
-    synchronized Tracker getTracker() {
+    public synchronized Tracker getTracker() {
         if (mTracker == null) {
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
             analytics.getLogger().setLogLevel(Logger.LogLevel.WARNING);
