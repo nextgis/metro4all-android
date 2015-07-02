@@ -105,6 +105,7 @@ import static com.nextgis.metroaccess.Constants.META;
 import static com.nextgis.metroaccess.Constants.PREF_RESULT;
 import static com.nextgis.metroaccess.Constants.REMOTE_METAFILE;
 import static com.nextgis.metroaccess.Constants.ROUTE_DATA_DIR;
+import static com.nextgis.metroaccess.Constants.SERVER;
 import static com.nextgis.metroaccess.Constants.STATUS_FINISH_LOCATING;
 import static com.nextgis.metroaccess.Constants.STATUS_INTERRUPT_LOCATING;
 import static com.nextgis.metroaccess.Constants.TAG;
@@ -113,53 +114,43 @@ import static com.nextgis.metroaccess.PreferencesActivity.clearRecent;
 //https://code.google.com/p/k-shortest-paths/
 
 public class MainActivity extends AppCompatActivity {
+    public static MAGraph mGraph;
 
-	protected boolean m_bInterfaceLoaded;
+    protected static Handler m_oGetJSONHandler;
+    protected List<DownloadData> m_asDownloadData;
 
-	protected static Handler m_oGetJSONHandler;
-
-	protected Button m_oSearchButton;
-	protected MenuItem m_oSearchMenuItem;
-
-	protected int m_nDepartureStationId, m_nArrivalStationId;
-	protected int m_nDeparturePortalId, m_nArrivalPortalId;
-
-	protected List<DownloadData> m_asDownloadData;
-
-	public static String m_sUrl = "http://metro4all.org/data/v2.7/";
-	public static MAGraph m_oGraph;
-
-	protected ListView m_lvListButtons;
+    protected boolean m_bInterfaceLoaded;
     protected ButtonListAdapter m_laListButtons;
+    protected ListView m_lvListButtons;
+    protected Button m_oSearchButton;
+    private GpsMyLocationProvider mGpsMyLocationProvider;
+    private SharedPreferences mPreferences;
+    private Menu menu;
 
-    GpsMyLocationProvider gpsMyLocationProvider;
-
-    Menu menu;
+    protected int m_nDepartureStationId, m_nArrivalStationId;
+    protected int m_nDeparturePortalId, m_nArrivalPortalId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        setContentView(R.layout.empty_activity_main);
 
-        gpsMyLocationProvider = new GpsMyLocationProvider(this);
-		setContentView(R.layout.empty_activity_main);
+        mGpsMyLocationProvider = new GpsMyLocationProvider(this);
+        mGraph = Analytics.getGraph();
 
-		m_bInterfaceLoaded = false;
+        m_bInterfaceLoaded = false;
 
         // initialize the default settings
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        m_nDepartureStationId = prefs.getInt("dep_"+BUNDLE_STATIONID_KEY, -1);
-        m_nArrivalStationId = prefs.getInt("arr_"+BUNDLE_STATIONID_KEY, -1);
-        m_nDeparturePortalId = prefs.getInt("dep_"+BUNDLE_PORTALID_KEY, -1);
-        m_nArrivalPortalId = prefs.getInt("arr_"+BUNDLE_PORTALID_KEY, -1);
+		mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        m_nDepartureStationId = mPreferences.getInt("dep_" + BUNDLE_STATIONID_KEY, -1);
+        m_nArrivalStationId = mPreferences.getInt("arr_" + BUNDLE_STATIONID_KEY, -1);
+        m_nDeparturePortalId = mPreferences.getInt("dep_" + BUNDLE_PORTALID_KEY, -1);
+        m_nArrivalPortalId = mPreferences.getInt("arr_" + BUNDLE_PORTALID_KEY, -1);
 
-        m_sUrl = prefs.getString(PreferencesActivity.KEY_PREF_DOWNLOAD_PATH, m_sUrl);
-
-        m_oGraph = Analytics.getGraph();
-
+        // TODO
 		//create downloading queue empty initially
 		m_asDownloadData = new ArrayList<>();
-
 		CreateHandler();
 
 		//check for data exist
@@ -172,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
 			GetRoutingData();
 		}
 
-        boolean disableGA = prefs.getBoolean(PreferencesActivity.KEY_PREF_GA, true);
+        boolean disableGA = mPreferences.getBoolean(PreferencesActivity.KEY_PREF_GA, true);
         ((Analytics) getApplication()).reload(disableGA);
         GoogleAnalytics.getInstance(this).setDryRun(true);
 	}
@@ -216,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
             		break;
             	case 2:
             		if(m_asDownloadData.isEmpty()){
-            			m_oGraph.FillRouteMetadata();
+            			mGraph.FillRouteMetadata();
             			LoadInterface();
             		}
             		else{
@@ -229,22 +220,20 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	protected void LoadInterface(){
-
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String sCurrentCity = prefs.getString(PreferencesActivity.KEY_PREF_CITY, m_oGraph.GetCurrentCity());
+        String sCurrentCity = mPreferences.getString(PreferencesActivity.KEY_PREF_CITY, mGraph.GetCurrentCity());
 
         if (sCurrentCity == null)
             return;
 
         if(sCurrentCity.length() < 2){
         	//find first city and load it
-        	m_oGraph.SetFirstCityAsCurrent();
+        	mGraph.SetFirstCityAsCurrent();
         }
         else{
-        	m_oGraph.SetCurrentCity( sCurrentCity );
+        	mGraph.SetCurrentCity( sCurrentCity );
         }
 
-        if(!m_oGraph.IsValid())
+        if(!mGraph.IsValid())
         	return;
 
 		m_bInterfaceLoaded = true;
@@ -288,18 +277,16 @@ public class MainActivity extends AppCompatActivity {
 		m_oSearchButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 ((Analytics) getApplication()).addEvent(Analytics.SCREEN_MAIN, "Search route", Analytics.SCREEN_MAIN);
-            	onSearch();
-             }
+                onSearch();
+            }
         });
 		m_oSearchButton.setEnabled(false);
 
     	if(m_oSearchButton != null)
     		m_oSearchButton.setEnabled(false);
-    	if(m_oSearchMenuItem != null)
-    		m_oSearchMenuItem.setEnabled(false);
 
-    	if(!m_oGraph.IsValid()){
-    		MainActivity.this.ErrMessage( m_oGraph.GetLastError());
+    	if(!mGraph.IsValid()){
+    		MainActivity.this.ErrMessage( mGraph.GetLastError());
     	}
     	else{
     		UpdateUI();
@@ -331,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
 
         //intentSet.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);        
         //Bundle bundle = new Bundle();
-        //bundle.putParcelable(BUNDLE_METAMAP_KEY, m_oGraph);
+        //bundle.putParcelable(BUNDLE_METAMAP_KEY, mGraph);
         //intentSet.putExtras(bundle);
 	}
 
@@ -468,7 +455,7 @@ public class MainActivity extends AppCompatActivity {
                         if(!isLocationFound)
                             Toast.makeText(getApplicationContext(), R.string.sLocationFail, Toast.LENGTH_LONG).show();
                     case STATUS_FINISH_LOCATING:
-                        gpsMyLocationProvider.stopLocationProvider();
+                        mGpsMyLocationProvider.stopLocationProvider();
                         isLocationFound = true;
                         menu.findItem(R.id.btn_locate).setEnabled(true);
                         break;
@@ -483,7 +470,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }, LOCATING_TIMEOUT);
 
-        gpsMyLocationProvider.startLocationProvider(new IMyLocationConsumer() {
+        mGpsMyLocationProvider.startLocationProvider(new IMyLocationConsumer() {
             StationItem stationClosest = null;
             PortalItem portalClosest = null;
 
@@ -494,7 +481,7 @@ public class MainActivity extends AppCompatActivity {
 
                 float shortest = Float.MAX_VALUE;
                 float distance[] = new float[1];
-                List<StationItem> stations = new ArrayList<>(m_oGraph.GetStations().values());
+                List<StationItem> stations = new ArrayList<>(mGraph.GetStations().values());
 
                 for (int i = 0; i < stations.size(); i++) {  // find closest station first
                     Location.distanceBetween(currentLat, currentLon, stations.get(i).GetLatitude(), stations.get(i).GetLongitude(), distance);
@@ -539,7 +526,7 @@ public class MainActivity extends AppCompatActivity {
 
 	protected void CheckForUpdates(){
 		final MetaDownloader uploader = new MetaDownloader(MainActivity.this, getResources().getString(R.string.sDownLoading), m_oGetJSONHandler, true);
-		uploader.execute(GetDownloadURL() + META);
+		uploader.execute(SERVER + META);
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -552,18 +539,18 @@ public class MainActivity extends AppCompatActivity {
 
 	protected void GetRoutingData(){
 		MetaDownloader loader = new MetaDownloader(MainActivity.this, getResources().getString(R.string.sDownLoading), m_oGetJSONHandler, true);
-		loader.execute(GetDownloadURL() + META);
+		loader.execute(SERVER + META);
 	}
 
 	//check if data for routing is downloaded
 	protected boolean IsRoutingDataExist(){
-		return m_oGraph.IsRoutingDataExist();
+		return mGraph.IsRoutingDataExist();
 	}
 
 	protected void CheckUpdatesAvailable(String sJSON){
 
-		m_oGraph.OnUpdateMeta(sJSON, true);
-		final List<GraphDataItem> items = m_oGraph.HasChanges();
+		mGraph.OnUpdateMeta(sJSON, true);
+		final List<GraphDataItem> items = mGraph.HasChanges();
         Collections.sort(items);
 
 		int count = items.size();
@@ -599,7 +586,8 @@ public class MainActivity extends AppCompatActivity {
 
                         for (int i = 0; i < checkedItems.length; i++) {
                             if (checkedItems[i]) {
-                                m_asDownloadData.add(new DownloadData(MainActivity.this, items.get(i), GetDownloadURL() + items.get(i).GetPath() + ".zip", m_oGetJSONHandler));
+                                m_asDownloadData.add(new DownloadData(MainActivity.this, items.get(i), SERVER + items.get(i).GetPath() + ".zip",
+                                        m_oGetJSONHandler));
                             }
                         }
 
@@ -622,8 +610,8 @@ public class MainActivity extends AppCompatActivity {
 
 	protected void AskForDownloadData(String sJSON){
 		//ask user for download
-		m_oGraph.OnUpdateMeta(sJSON, false);
-		final List<GraphDataItem> items = m_oGraph.HasChanges();
+		mGraph.OnUpdateMeta(sJSON, false);
+		final List<GraphDataItem> items = mGraph.HasChanges();
         Collections.sort(items);
 
 	    int count = items.size();
@@ -658,7 +646,8 @@ public class MainActivity extends AppCompatActivity {
 
 								for (int i = 0; i < checkedItems.length; i++) {
 									if (checkedItems[i]){
-										m_asDownloadData.add(new DownloadData(MainActivity.this, items.get(i), GetDownloadURL() + items.get(i).GetPath() + ".zip", m_oGetJSONHandler));
+										m_asDownloadData.add(new DownloadData(MainActivity.this, items.get(i), SERVER + items.get(i).GetPath() + ".zip",
+                                                m_oGetJSONHandler));
 									}
 								}
 								OnDownloadData();
@@ -725,10 +714,9 @@ public class MainActivity extends AppCompatActivity {
 
 	@Override
 	protected void onPause() {
-		final SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(this).edit();
+		final SharedPreferences.Editor edit = mPreferences.edit();
 
 		//store departure and arrival
-
 		edit.putInt("dep_" + BUNDLE_STATIONID_KEY, m_nDepartureStationId);
 		edit.putInt("arr_" + BUNDLE_STATIONID_KEY, m_nArrivalStationId);
 		edit.putInt("dep_" + BUNDLE_PORTALID_KEY, m_nDeparturePortalId);
@@ -742,18 +730,17 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-	    m_nDepartureStationId = prefs.getInt("dep_"+BUNDLE_STATIONID_KEY, -1);
-	    m_nArrivalStationId = prefs.getInt("arr_"+BUNDLE_STATIONID_KEY, -1);
-	    m_nDeparturePortalId = prefs.getInt("dep_"+BUNDLE_PORTALID_KEY, -1);
-	    m_nArrivalPortalId = prefs.getInt("arr_"+BUNDLE_PORTALID_KEY, -1);
+	    m_nDepartureStationId = mPreferences.getInt("dep_" + BUNDLE_STATIONID_KEY, -1);
+	    m_nArrivalStationId = mPreferences.getInt("arr_" + BUNDLE_STATIONID_KEY, -1);
+	    m_nDeparturePortalId = mPreferences.getInt("dep_" + BUNDLE_PORTALID_KEY, -1);
+	    m_nArrivalPortalId = mPreferences.getInt("arr_" + BUNDLE_PORTALID_KEY, -1);
 
 		//check if routing data changed
-		m_oGraph.FillRouteMetadata();
+		mGraph.FillRouteMetadata();
 
 		if(m_bInterfaceLoaded){
-			if(m_oGraph.IsEmpty()){
+			if(mGraph.IsEmpty()){
 				if(IsRoutingDataExist()){
 					LoadInterface();
 				}
@@ -813,7 +800,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        final SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        final SharedPreferences.Editor edit = mPreferences.edit();
 
 	    switch(requestCode) {
 	    case DEPARTURE_RESULT:
@@ -842,7 +829,7 @@ public class MainActivity extends AppCompatActivity {
             if (nStationId == -1)
                 m_nArrivalPortalId = m_nDeparturePortalId = m_nDepartureStationId = m_nArrivalStationId = -1;
 
-            clearRecent(PreferenceManager.getDefaultSharedPreferences(this));
+            clearRecent(mPreferences);
         }
 
         edit.putInt("dep_"+BUNDLE_STATIONID_KEY, m_nDepartureStationId);
@@ -859,8 +846,8 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	protected void UpdateUI(){
-		if(m_oGraph.HasStations()){
-	    	StationItem dep_sit = m_oGraph.GetStation(m_nDepartureStationId);
+		if(mGraph.HasStations()){
+	    	StationItem dep_sit = mGraph.GetStation(m_nDepartureStationId);
 
 	    	if(dep_sit != null && m_laListButtons != null){
                 m_laListButtons.setFromStation(dep_sit);
@@ -876,7 +863,7 @@ public class MainActivity extends AppCompatActivity {
 	    		m_nDepartureStationId = -1;
 	    	}
 
-	    	StationItem arr_sit = m_oGraph.GetStation(m_nArrivalStationId);
+	    	StationItem arr_sit = mGraph.GetStation(m_nArrivalStationId);
 
 	    	if(arr_sit != null && m_laListButtons != null){
                 m_laListButtons.setToStation(arr_sit);
@@ -896,14 +883,10 @@ public class MainActivity extends AppCompatActivity {
 	    if(m_nDepartureStationId != m_nArrivalStationId && m_nDepartureStationId != -1 && m_nArrivalStationId != -1 && m_nDeparturePortalId != -1 && m_nArrivalPortalId != -1){
 	    	if(m_oSearchButton != null)
 	    		m_oSearchButton.setEnabled(true);
-    		if(m_oSearchMenuItem != null)
-	    		m_oSearchMenuItem.setEnabled(true);
 	    }
 	    else{
 	    	if(m_oSearchButton != null)
 	    		m_oSearchButton.setEnabled(false);
-	    	if(m_oSearchMenuItem != null)
-	    		m_oSearchMenuItem.setEnabled(false);
 	    }
 
 	    if(m_laListButtons != null)
@@ -956,10 +939,8 @@ public class MainActivity extends AppCompatActivity {
 
 				//YenTopKShortestPaths
 
-			    final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-			    int nMaxRouteCount = prefs.getInt(PreferencesActivity.KEY_PREF_MAX_ROUTE_COUNT, 3);
-
-				List<Path> shortest_paths_list = m_oGraph.GetShortestPaths(m_nDepartureStationId, m_nArrivalStationId, nMaxRouteCount);
+			    int nMaxRouteCount = mPreferences.getInt(PreferencesActivity.KEY_PREF_MAX_ROUTE_COUNT, 3);
+				List<Path> shortest_paths_list = mGraph.GetShortestPaths(m_nDepartureStationId, m_nArrivalStationId, nMaxRouteCount);
 
 				if(shortest_paths_list.size() == 0){
 					//MainActivity.this.ErrMessage(R.string.sCannotGetPath);
@@ -978,12 +959,12 @@ public class MainActivity extends AppCompatActivity {
 			        for (Path path : shortest_paths_list) {
 						ArrayList<Integer> IndexPath = new  ArrayList<>();
                         double time = path.get_weight();
-                        time += m_oGraph.GetStation(m_nDepartureStationId).GetPortal(m_nDeparturePortalId).GetTime();
-                        time += m_oGraph.GetStation(m_nArrivalStationId).GetPortal(m_nArrivalPortalId).GetTime();
+                        time += mGraph.GetStation(m_nDepartureStationId).GetPortal(m_nDeparturePortalId).GetTime();
+                        time += mGraph.GetStation(m_nArrivalStationId).GetPortal(m_nArrivalPortalId).GetTime();
 						Log.d(TAG, "Route# " + nCounter + " weight: " + time);
 			            for (BaseVertex v : path.get_vertices()) {
 			            	IndexPath.add(v.get_id());
-			            	Log.d(TAG, "<" + m_oGraph.GetStation(v.get_id()));
+			            	Log.d(TAG, "<" + mGraph.GetStation(v.get_id()));
 			            }
 			            intentView.putIntegerArrayListExtra(BUNDLE_PATH_KEY + nCounter, IndexPath);
 			            intentView.putExtra(BUNDLE_WEIGHT_KEY + nCounter, time);
@@ -1008,10 +989,6 @@ public class MainActivity extends AppCompatActivity {
 
 	}
 
-	public static String GetDownloadURL(){
-		return m_sUrl;
-	}
-
 	public static String GetRouteDataDir(){
 		return ROUTE_DATA_DIR;
 	}
@@ -1025,14 +1002,10 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	public static MAGraph GetGraph(){
-        if (m_oGraph == null)
-            m_oGraph = Analytics.getGraph();
+        if (mGraph == null)
+            mGraph = Analytics.getGraph();
 
-		return m_oGraph;
-	}
-
-	public static void SetDownloadURL(String sURL){
-		m_sUrl = sURL;
+		return mGraph;
 	}
 
 	public void ErrMessage(String sErrMsg){

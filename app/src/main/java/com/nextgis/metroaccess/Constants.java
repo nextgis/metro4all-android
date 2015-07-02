@@ -22,59 +22,59 @@ package com.nextgis.metroaccess;
 
 
 public interface Constants {
-//    public final static int[] ICONS_RAW = { R.raw._0, R.raw._1, R.raw._2, R.raw._3, R.raw._4, R.raw._5, R.raw._6, R.raw._7, R.raw._8, R.raw._9 };
-    public final static int[] ICONS_RAW = { R.raw._0, R.raw._5, R.raw._5, R.raw._3, R.raw._4, R.raw._5, R.raw._6, R.raw._7, R.raw._8, R.raw._9 };
+    int[] ICONS_RAW = { R.raw._0, R.raw._5, R.raw._5, R.raw._3, R.raw._4, R.raw._5, R.raw._6, R.raw._7, R.raw._8, R.raw._9 };
 
-    public final static String TAG = "metro4all";
+    String TAG = "metro4all";
+    String SERVER = "http://metro4all.org/data/v2.7/";
 
-    public final static String META = "meta.json";
-    final static String REMOTE_METAFILE = "remotemeta_v2.3.json";
-    final static String ROUTE_DATA_DIR = "rdata_v2.3";
-    final static String APP_VERSION = "app_version";
-    final static String APP_REPORTS_DIR = "reports";
-    final static String APP_REPORTS_PHOTOS_DIR = "Metro4All";
-    final static String APP_REPORTS_SCREENSHOT = "screenshot.jpg";
+    String META = "meta.json";
+    String REMOTE_METAFILE = "remotemeta_v2.3.json";
+    String ROUTE_DATA_DIR = "rdata_v2.3";
+    String APP_VERSION = "app_version";
+    String APP_REPORTS_DIR = "reports";
+    String APP_REPORTS_PHOTOS_DIR = "Metro4All";
+    String APP_REPORTS_SCREENSHOT = "screenshot.jpg";
 
-    public final static String CSV_CHAR = ";";
+    String CSV_CHAR = ";";
 
-    final static String BUNDLE_MSG_KEY = "msg";
-    final static String BUNDLE_PAYLOAD_KEY = "json";
-    final static String BUNDLE_ERRORMARK_KEY = "error";
-    final static String BUNDLE_EVENTSRC_KEY = "eventsrc";
-    final static String BUNDLE_ENTRANCE_KEY = "in";
-    final static String BUNDLE_PATHCOUNT_KEY = "pathcount";
-    final static String BUNDLE_PATH_KEY = "path_";
-    final static String BUNDLE_WEIGHT_KEY = "weight_";
-    final static String BUNDLE_STATIONMAP_KEY = "stationmap";
-    final static String BUNDLE_CROSSESMAP_KEY = "crossmap";
-    final static String BUNDLE_STATIONID_KEY = "stationid";
-    final static String BUNDLE_PORTALID_KEY = "portalid";
-    final static String BUNDLE_METAMAP_KEY = "metamap";
-    final static String BUNDLE_CITY_CHANGED = "city_changed";
-    final static String BUNDLE_IMG_X = "coord_x";
-    final static String BUNDLE_IMG_Y = "coord_y";
-    final static String BUNDLE_ATTACHED_IMAGES = "attached_images";
+    String BUNDLE_MSG_KEY = "msg";
+    String BUNDLE_PAYLOAD_KEY = "json";
+    String BUNDLE_ERRORMARK_KEY = "error";
+    String BUNDLE_EVENTSRC_KEY = "eventsrc";
+    String BUNDLE_ENTRANCE_KEY = "in";
+    String BUNDLE_PATHCOUNT_KEY = "pathcount";
+    String BUNDLE_PATH_KEY = "path_";
+    String BUNDLE_WEIGHT_KEY = "weight_";
+    String BUNDLE_STATIONMAP_KEY = "stationmap";
+    String BUNDLE_CROSSESMAP_KEY = "crossmap";
+    String BUNDLE_STATIONID_KEY = "stationid";
+    String BUNDLE_PORTALID_KEY = "portalid";
+    String BUNDLE_METAMAP_KEY = "metamap";
+    String BUNDLE_CITY_CHANGED = "city_changed";
+    String BUNDLE_IMG_X = "coord_x";
+    String BUNDLE_IMG_Y = "coord_y";
+    String BUNDLE_ATTACHED_IMAGES = "attached_images";
 
-    public final static int DEPARTURE_RESULT = 1;
-    public final static int ARRIVAL_RESULT = 2;
-    public final static int PREF_RESULT = 3;
-    public final static int SUBSCREEN_PORTAL_RESULT = 4;
-    public final static int DEFINE_AREA_RESULT = 5;
-    public final static int CAMERA_REQUEST = 6;
-    public final static int PICK_REQUEST = 7;
-    public final static int MAX_RECENT_ITEMS = 10;
+    int DEPARTURE_RESULT = 1;
+    int ARRIVAL_RESULT = 2;
+    int PREF_RESULT = 3;
+    int SUBSCREEN_PORTAL_RESULT = 4;
+    int DEFINE_AREA_RESULT = 5;
+    int CAMERA_REQUEST = 6;
+    int PICK_REQUEST = 7;
+    int MAX_RECENT_ITEMS = 10;
 
-    public final static String PARAM_PORTAL_DIRECTION = "PORTAL_DIRECTION";
-    public final static String PARAM_SCHEME_PATH = "image_path";
-    public final static String PARAM_ROOT_ACTIVITY = "root_activity";
-    public final static String PARAM_ACTIVITY_FOR_RESULT = "NEED_RESULT";
-    public final static String PARAM_DEFINE_AREA = "define_area";
+    String PARAM_PORTAL_DIRECTION = "PORTAL_DIRECTION";
+    String PARAM_SCHEME_PATH = "image_path";
+    String PARAM_ROOT_ACTIVITY = "root_activity";
+    String PARAM_ACTIVITY_FOR_RESULT = "NEED_RESULT";
+    String PARAM_DEFINE_AREA = "define_area";
 
-    public static final String KEY_PREF_RECENT_DEP_STATIONS = "recent_dep_stations";
-    public static final String KEY_PREF_RECENT_ARR_STATIONS = "recent_arr_stations";
-    public static final String KEY_PREF_TOOLTIPS = "tooltips_showed";
+    String KEY_PREF_RECENT_DEP_STATIONS = "recent_dep_stations";
+    String KEY_PREF_RECENT_ARR_STATIONS = "recent_arr_stations";
+    String KEY_PREF_TOOLTIPS = "tooltips_showed";
 
-    public final int STATUS_INTERRUPT_LOCATING = 0;
-    public final int STATUS_FINISH_LOCATING = 1;
-    public final int LOCATING_TIMEOUT = 15000;
+    int STATUS_INTERRUPT_LOCATING = 0;
+    int STATUS_FINISH_LOCATING = 1;
+    int LOCATING_TIMEOUT = 15000;
 }

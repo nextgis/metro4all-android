@@ -64,12 +64,12 @@ import static com.nextgis.metroaccess.Constants.BUNDLE_MSG_KEY;
 import static com.nextgis.metroaccess.Constants.BUNDLE_PAYLOAD_KEY;
 import static com.nextgis.metroaccess.Constants.KEY_PREF_RECENT_ARR_STATIONS;
 import static com.nextgis.metroaccess.Constants.KEY_PREF_RECENT_DEP_STATIONS;
+import static com.nextgis.metroaccess.Constants.SERVER;
 
 public class PreferencesActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 	public static final String KEY_CAT_DATA = "data_cat";
 
 	public static final String KEY_PREF_USER_TYPE = "user_type";
-	public static final String KEY_PREF_DOWNLOAD_PATH = "download_path";
 	public static final String KEY_PREF_UPDROUTEDATA = "update_route_data";
 	public static final String KEY_PREF_CHANGE_CITY_BASES = "change_city_bases";
 	public static final String KEY_PREF_DATA_LOCALE = "data_loc";
@@ -181,15 +181,12 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                         .setTitle(R.string.sQuestion)
                         .setPositiveButton(R.string.sYes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(PreferencesActivity.this);
-                                String sUrl = sharedPref.getString(KEY_PREF_DOWNLOAD_PATH, MainActivity.GetDownloadURL());
-
                                 m_asDownloadData.clear();
-
                                 MAGraph oGraph = MainActivity.GetGraph();
 
                                 for (GraphDataItem oItem : oGraph.GetRouteMetadata().values()) {
-                                    m_asDownloadData.add(new DownloadData(PreferencesActivity.this, oItem, sUrl + oItem.GetPath() + ".zip", m_oGetJSONHandler));
+                                    m_asDownloadData.add(new DownloadData(PreferencesActivity.this, oItem, SERVER + oItem.GetPath() + ".zip",
+											m_oGetJSONHandler));
                                 }
 
                                 OnDownloadData();
@@ -277,7 +274,8 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                                             //else if(i < new_items.size()){
         									else if(i >= exist_items.size()){  // add
                                                 //m_asDownloadData.add(new DownloadData(PreferencesActivity.this, new_items.get(i), MainActivity.GetDownloadURL() + new_items.get(i).GetPath() + ".zip", m_oGetJSONHandler));
-        										m_asDownloadData.add(new DownloadData(PreferencesActivity.this, new_items.get(i - exist_items.size()), MainActivity.GetDownloadURL() + new_items.get(i - exist_items.size()).GetPath() + ".zip", m_oGetJSONHandler));
+        										m_asDownloadData.add(new DownloadData(PreferencesActivity.this, new_items.get(i - exist_items.size()),
+                                                        SERVER + new_items.get(i - exist_items.size()).GetPath() + ".zip", m_oGetJSONHandler));
         									}
         									//2. item is checked and was checked
                                             //else if (checkedItems[i] && i >= new_items.size()){
@@ -421,13 +419,6 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
             	mlsNaviType.setSummary((String) mlsNaviType.getEntries()[index]);
             }
         }*/
-		else if(key.equals(KEY_PREF_DOWNLOAD_PATH)){
-			String sUrl = sharedPreferences.getString(key, MainActivity.GetDownloadURL());			
-    		if(sUrl.length() > 0){
-            	Pref.setSummary(sUrl);	
-            	MainActivity.SetDownloadURL(sUrl);
-    		}
-		}
 	}
 
 	protected void OnDownloadData(){
