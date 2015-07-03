@@ -20,41 +20,23 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="fill_parent"
-             android:layout_height="fill_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <RelativeLayout
+    <com.nextgis.metroaccess.ui.view.StationExpandableListView
+        android:id="@+id/lvStationList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
 
-        <EditText
-            android:id="@+id/etStationFilterEdit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:hint="@string/stationFilterHintText"
-            android:imeOptions="actionSearch"
-            android:maxLines="1"
-            android:singleLine="true">
+        <requestFocus/>
+    </com.nextgis.metroaccess.ui.view.StationExpandableListView>
 
-        </EditText>
-
-        <com.nextgis.metroaccess.ui.view.StationExpandableListView
-            android:id="@+id/lvStationList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/etStationFilterEdit">
-
-            <requestFocus/>
-        </com.nextgis.metroaccess.ui.view.StationExpandableListView>
-
-        <com.nhaarman.supertooltips.ToolTipRelativeLayout
-            android:id="@+id/ttSelectStation"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            />
-    </RelativeLayout>
-
-</FrameLayout>
+    <com.nhaarman.supertooltips.ToolTipRelativeLayout
+        android:id="@+id/ttSelectStation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        />
+</RelativeLayout>

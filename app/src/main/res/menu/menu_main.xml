@@ -22,6 +22,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+    <item
+        android:id="@+id/search"
+        android:orderInCategory="0"
+        android:title="@android:string/search_go"
+        android:visible="false"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/btn_reverse"
         android:icon="@drawable/ic_swap_vert_white_24dp"
@@ -36,23 +44,23 @@
         app:showAsAction="always"/>
     <item
         android:id="@+id/btn_settings"
-        android:title="@string/sSettings"
         android:orderInCategory="20"
+        android:title="@string/sSettings"
         app:showAsAction="never"/>
     <item
         android:id="@+id/btn_limitations"
-        android:title="@string/sLimits"
         android:orderInCategory="30"
+        android:title="@string/sLimits"
         app:showAsAction="never"/>
     <item
         android:id="@+id/btn_report"
-        android:title="@string/sReportMenu"
         android:orderInCategory="40"
+        android:title="@string/sReportMenu"
         app:showAsAction="never"/>
     <item
         android:id="@+id/btn_about"
-        android:title="@string/sAbout"
         android:orderInCategory="50"
+        android:title="@string/sAbout"
         app:showAsAction="never"/>
 
 </menu>

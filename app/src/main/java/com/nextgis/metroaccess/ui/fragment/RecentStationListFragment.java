@@ -30,9 +30,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.nextgis.metroaccess.MetroApp;
-import com.nextgis.metroaccess.R;
-import com.nextgis.metroaccess.data.metro.StationItem;
 import com.nextgis.metroaccess.data.adapter.StationExpandableListAdapter;
+import com.nextgis.metroaccess.data.metro.StationItem;
 import com.nextgis.metroaccess.ui.activity.SelectStationActivity;
 import com.nextgis.metroaccess.util.Constants;
 
@@ -52,12 +51,11 @@ public class RecentStationListFragment extends SelectStationListFragment {
      	SelectStationActivity parentActivity = (SelectStationActivity) getActivity();
     	m_oExpListAdapter = new RecentExpandableListAdapter(parentActivity);
         m_oExpListView.setAdapter(m_oExpListAdapter);
-        result.findViewById(R.id.etStationFilterEdit).setVisibility(View.GONE);
         
         return result;
     }
 
-    public void Update(){
+    public void update(){
 		if(m_oExpListAdapter != null){
 			m_oExpListAdapter.Update();
 			m_oExpListAdapter.notifyDataSetChanged();

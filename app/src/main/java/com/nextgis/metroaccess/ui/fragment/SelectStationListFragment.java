@@ -24,14 +24,10 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
@@ -44,13 +40,10 @@ import com.nextgis.metroaccess.ui.activity.SelectStationActivity;
 import com.nextgis.metroaccess.ui.view.StationExpandableListView;
 import com.nextgis.metroaccess.util.Constants;
 
-import static com.nextgis.metroaccess.util.Constants.TAG;
-
 public abstract class SelectStationListFragment extends Fragment {
     protected StationExpandableListView m_oExpListView;
     protected StationExpandableListAdapter m_oExpListAdapter;
     protected String mTab;
-    private EditText etFilter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,7 +62,7 @@ public abstract class SelectStationListFragment extends Fragment {
 
                 final PortalItem selected = (PortalItem) m_oExpListAdapter.getChild(groupPosition, childPosition);
                 SelectStationActivity parentActivity = (SelectStationActivity) getActivity();
-                parentActivity.Finish(selected.GetStationId(), selected.GetId());
+                parentActivity.finish(selected.GetStationId(), selected.GetId());
                 return true;
             }
         });
@@ -90,8 +83,7 @@ public abstract class SelectStationListFragment extends Fragment {
                             scrollTo += m_oExpListAdapter.getChildrenCount(i);
 
                     m_oExpListView.smoothScrollToPositionFromTop(scrollTo);
-                }
-                else if (((StationItem) m_oExpListAdapter.getGroup(groupPosition)).GetPortalsCount() == 0)
+                } else if (((StationItem) m_oExpListAdapter.getGroup(groupPosition)).GetPortalsCount() == 0)
                     Toast.makeText(getActivity(), getString(R.string.sNoPortals), Toast.LENGTH_SHORT).show();
 
                 return false;
@@ -114,35 +106,18 @@ public abstract class SelectStationListFragment extends Fragment {
             }
         });
 
-        etFilter = (EditText) view.findViewById(R.id.etStationFilterEdit);
-        TextWatcher searchTextWatcher = new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ignore
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // ignore
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Log.d(TAG, "*** Search value changed: " + s.toString());
-                m_oExpListAdapter.getFilter().filter(s.toString());
-            }
-        };
-        etFilter.addTextChangedListener(searchTextWatcher);
-
         return view;
     }
 
-    private String getDirection() { // for GA
-        return ((SelectStationActivity) getActivity()).IsIn() ? Constants.FROM : Constants.TO;
+    public void filter(String text) {
+        m_oExpListAdapter.getFilter().filter(text);
     }
 
-    public void Update(){
-        etFilter.setText("");
+    private String getDirection() { // for GA
+        return ((SelectStationActivity) getActivity()).isIn() ? Constants.FROM : Constants.TO;
+    }
+
+    public void update() {
     }
 
     public void expandStation(int stationId) {

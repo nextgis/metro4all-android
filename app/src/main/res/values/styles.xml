@@ -19,6 +19,7 @@
         <item name="colorPrimaryDark">@color/metro_material_status</item>
         <item name="colorAccent">@color/metro_material_dark</item>
         <item name="android:textColorLink">@color/metro_material_main</item>
+        <item name="android:textColorHint">@color/grey</item>
 
         <item name="toolbarNavigationButtonStyle">@style/Widget.Toolbar.NavButton</item>
         <item name="actionOverflowButtonStyle">@style/Widget.Toolbar.Overflow</item>

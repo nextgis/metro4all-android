@@ -92,7 +92,7 @@ public abstract class StationExpandableListAdapter extends BaseExpandableListAda
         loadPreferences();
 
         SelectStationActivity act = (SelectStationActivity) mContext;
-        m_bIn = act.IsIn();
+        m_bIn = act.isIn();
         mIsHintNotShowed = act.isHintNotShowed();
         mHintScreenName = act.getHintScreenName();
     }
@@ -222,7 +222,7 @@ public abstract class StationExpandableListAdapter extends BaseExpandableListAda
         final Bundle bundle = new Bundle();
         bundle.putString(PARAM_SCHEME_PATH, schemaFile.getPath());
         bundle.putBoolean(PARAM_ROOT_ACTIVITY, true);
-        bundle.putBoolean(PARAM_PORTAL_DIRECTION, parentActivity.IsIn());
+        bundle.putBoolean(PARAM_PORTAL_DIRECTION, parentActivity.isIn());
         bundle.putInt(BUNDLE_STATIONID_KEY, entry.GetId());
 
         android.support.v7.app.ActionBar ab = parentActivity.getSupportActionBar();
@@ -232,7 +232,7 @@ public abstract class StationExpandableListAdapter extends BaseExpandableListAda
             i = ab.getSelectedNavigationIndex();
 
         final String gaParent = i == 0 ? Constants.TAB_AZ : i == 1 ? Constants.TAB_LINES : Constants.TAB_RECENT;
-        final String direction = parentActivity.IsIn() ? Constants.FROM : Constants.TO;
+        final String direction = parentActivity.isIn() ? Constants.FROM : Constants.TO;
 
         ibtnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -334,7 +334,6 @@ public abstract class StationExpandableListAdapter extends BaseExpandableListAda
     @Override
     public Filter getFilter() {
         return new Filter() {
-
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 final FilterResults oReturn = new FilterResults();

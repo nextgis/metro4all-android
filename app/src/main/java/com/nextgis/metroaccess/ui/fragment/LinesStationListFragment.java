@@ -46,18 +46,18 @@ public class LinesStationListFragment extends SelectStationListFragment {
 
         mTab = Constants.TAB_LINES;
         SelectStationActivity parentActivity = (SelectStationActivity) getActivity();
-        m_oExpListAdapter = new LinesExpandableListAdapter(parentActivity, parentActivity.GetStationList(), MetroApp.getGraph().GetLines());
+        m_oExpListAdapter = new LinesExpandableListAdapter(parentActivity, parentActivity.getStationList(), MetroApp.getGraph().GetLines());
         m_oExpListView.setAdapter(m_oExpListAdapter);
 
         return result;
     }
 
-    public void Update() {
-        super.Update();
+    public void update() {
+        super.update();
 
         if (m_oExpListAdapter != null) {
             SelectStationActivity parentActivity = (SelectStationActivity) getActivity();
-            ((LinesExpandableListAdapter) m_oExpListAdapter).Update(parentActivity.GetStationList());
+            ((LinesExpandableListAdapter) m_oExpListAdapter).Update(parentActivity.getStationList());
             m_oExpListAdapter.notifyDataSetChanged();
         }
     }

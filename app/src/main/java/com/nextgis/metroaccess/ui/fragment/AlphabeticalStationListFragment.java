@@ -51,7 +51,7 @@ public class AlphabeticalStationListFragment extends SelectStationListFragment {
 
         mTab = Constants.TAB_AZ;
         SelectStationActivity parentActivity = (SelectStationActivity) getActivity();
-        m_oExpListAdapter = new AlphabeticalExpandableListAdapter(parentActivity, parentActivity.GetStationList());
+        m_oExpListAdapter = new AlphabeticalExpandableListAdapter(parentActivity, parentActivity.getStationList());
         m_oExpListView.setAdapter(m_oExpListAdapter);
 
         if (parentActivity.isHintNotShowed())
@@ -60,12 +60,12 @@ public class AlphabeticalStationListFragment extends SelectStationListFragment {
         return result;
     }
 
-    public void Update() {
-        super.Update();
+    public void update() {
+        super.update();
 
         if (m_oExpListAdapter != null) {
             SelectStationActivity parentActivity = (SelectStationActivity) getActivity();
-            ((StationIndexedExpandableListAdapter) m_oExpListAdapter).Update(parentActivity.GetStationList());
+            ((StationIndexedExpandableListAdapter) m_oExpListAdapter).Update(parentActivity.getStationList());
             m_oExpListAdapter.notifyDataSetChanged();
         }
     }

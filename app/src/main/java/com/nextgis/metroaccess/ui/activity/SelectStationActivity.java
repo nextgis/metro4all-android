@@ -1,24 +1,26 @@
-/******************************************************************************
+/**
+ * ***************************************************************************
  * Project:  Metro Access
  * Purpose:  Routing in subway for disabled.
  * Author:   Baryshnikov Dmitriy aka Bishop (polimax@mail.ru)
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
- ******************************************************************************
- *   Copyright (C) 2013-2015 NextGIS
+ * *****************************************************************************
+ * Copyright (C) 2013-2015 NextGIS
  *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ****************************************************************************/
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * **************************************************************************
+ */
 package com.nextgis.metroaccess.ui.activity;
 
 import android.content.Intent;
@@ -29,10 +31,12 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -78,18 +82,21 @@ public class SelectStationActivity extends AppCompatActivity {
 
     private TextView tvNotes;
 
-    protected static AlphabeticalStationListFragment mAlphaStListFragment;
-    protected static LinesStationListFragment mLinesStListFragment;
-    protected static RecentStationListFragment mRecentStListFragment;
+    private ViewPager mPager;
+    private FragmentRollAdapter mAdapter;
+    private static AlphabeticalStationListFragment mAlphaStListFragment;
+    private static LinesStationListFragment mLinesStListFragment;
+    private static RecentStationListFragment mRecentStListFragment;
 
-    protected boolean m_bIn, isCityChanged = false;
-    protected boolean mIsLimitations;
+    private boolean m_bIn, isCityChanged = false;
+    private boolean mIsLimitations;
     private int mStationId, mPortalId;
     private Intent resultIntent;
 
     private SharedPreferences prefs;
     private boolean mIsKeyboardShown = false;
     private int mHeightDifference;
+    private String mFilter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,9 +116,9 @@ public class SelectStationActivity extends AppCompatActivity {
 
         mIsLimitations = LimitationsActivity.hasLimitations(this);
 
-        FragmentRollAdapter mAdapter = new FragmentRollAdapter(getSupportFragmentManager());
+        mAdapter = new FragmentRollAdapter(getSupportFragmentManager());
         mAdapter.setActionBar(actionBar);
-        ViewPager mPager = (ViewPager) findViewById(R.id.pager);
+        mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
         mPager.setOnPageChangeListener(new OnPageChangeListener() {
 
@@ -124,6 +131,7 @@ public class SelectStationActivity extends AppCompatActivity {
             public void onPageSelected(int arg0) {
                 Log.d(TAG, "onPageSelected: " + arg0);
                 actionBar.getTabAt(arg0).select();
+                filter(mPager.getCurrentItem());
             }
         });
 
@@ -223,9 +231,8 @@ public class SelectStationActivity extends AppCompatActivity {
         mIsLimitations = LimitationsActivity.hasLimitations(this);
 
         if (was != mIsLimitations) {
-            FragmentRollAdapter mAdapter = new FragmentRollAdapter(getSupportFragmentManager());
+            mAdapter = new FragmentRollAdapter(getSupportFragmentManager());
             mAdapter.setActionBar(getSupportActionBar());
-            ViewPager mPager = (ViewPager) findViewById(R.id.pager);
 
             int current = mPager.getCurrentItem();
             mPager.setAdapter(mAdapter);
@@ -235,7 +242,7 @@ public class SelectStationActivity extends AppCompatActivity {
         }
     }
 
-    public boolean IsIn() {
+    public boolean isIn() {
         return m_bIn;
     }
 
@@ -247,7 +254,7 @@ public class SelectStationActivity extends AppCompatActivity {
         return getClass().getSimpleName();
     }
 
-    public List<StationItem> GetStationList() {
+    public List<StationItem> getStationList() {
         return new ArrayList<>(MetroApp.getGraph().GetStations().values());
     }
 
@@ -298,13 +305,13 @@ public class SelectStationActivity extends AppCompatActivity {
             switch (arg0) {
                 case 0:
                     mAlphaStListFragment = new AlphabeticalStationListFragment();
-                    return mAlphaStListFragment;//
+                    return mAlphaStListFragment;
                 case 1:
                     mLinesStListFragment = new LinesStationListFragment();
-                    return mLinesStListFragment;//
+                    return mLinesStListFragment;
                 case 2:
                     mRecentStListFragment = new RecentStationListFragment();
-                    return mRecentStListFragment;//
+                    return mRecentStListFragment;
                 default:
                     return null;
             }
@@ -317,7 +324,56 @@ public class SelectStationActivity extends AppCompatActivity {
         menu.findItem(R.id.btn_locate).setVisible(false);
         menu.findItem(R.id.btn_report).setVisible(false);
         menu.findItem(R.id.btn_reverse).setVisible(false);
+
+        final SearchView search = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search).setVisible(true));
+        search.setQueryHint(getString(R.string.stationFilterHintText));
+        search.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                search.requestFocus();
+            }
+        });
+
+        search.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                mFilter = null;
+                filter(mPager.getCurrentItem());
+                return false;
+            }
+        });
+
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mFilter = newText.trim();
+                filter(mPager.getCurrentItem());
+                return true;
+            }
+        });
         return true;
+    }
+
+    private void filter(int fragment) {
+        if (mFilter == null)
+            return;
+
+        switch (fragment) {
+            case 0:
+                if (mAlphaStListFragment != null)
+                    mAlphaStListFragment.filter(mFilter);
+            case 1:
+                if (mLinesStListFragment != null)
+                    mLinesStListFragment.filter(mFilter);
+            case 2:
+                if (mRecentStListFragment != null)
+                    mRecentStListFragment.filter(mFilter);
+        }
     }
 
     @Override
@@ -362,9 +418,9 @@ public class SelectStationActivity extends AppCompatActivity {
         return i == 0 ? Constants.TAB_AZ : i == 1 ? Constants.TAB_LINES : Constants.TAB_RECENT;
     }
 
-    public void Finish(int nStationId, int nPortalId) {
-        JSONArray stationsIds = getRecentStations(prefs, IsIn());
-        String direction = IsIn() ? KEY_PREF_RECENT_DEP_STATIONS : KEY_PREF_RECENT_ARR_STATIONS;
+    public void finish(int nStationId, int nPortalId) {
+        JSONArray stationsIds = getRecentStations(prefs, isIn());
+        String direction = isIn() ? KEY_PREF_RECENT_DEP_STATIONS : KEY_PREF_RECENT_ARR_STATIONS;
         int index = indexOf(stationsIds, nStationId);
 
         if (index == -1 && stationsIds.length() == MAX_RECENT_ITEMS) {
@@ -412,17 +468,17 @@ public class SelectStationActivity extends AppCompatActivity {
                 }
 
                 if (mAlphaStListFragment != null)
-                    mAlphaStListFragment.Update();
+                    mAlphaStListFragment.update();
                 if (mLinesStListFragment != null)
-                    mLinesStListFragment.Update();
+                    mLinesStListFragment.update();
                 if (mRecentStListFragment != null)
-                    mRecentStListFragment.Update();
+                    mRecentStListFragment.update();
                 break;
             case SUBSCREEN_PORTAL_RESULT:
                 if (resultCode == RESULT_OK) {
                     int stationID = data.getIntExtra(BUNDLE_STATIONID_KEY, 0);
                     int portalID = data.getIntExtra(BUNDLE_PORTALID_KEY, 0);
-                    Finish(stationID, portalID);
+                    finish(stationID, portalID);
                 }
                 break;
             default:
