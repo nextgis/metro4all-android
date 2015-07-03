@@ -708,7 +708,6 @@ public class MainActivity extends AppCompatActivity implements MetroApp.Download
 
             break;
 	    case PREF_RESULT:
-            isCityChanged = !isRoutingDataExists();
 	    	break;
     	default:
     		break;

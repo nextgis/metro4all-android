@@ -74,14 +74,17 @@ public class AlphabeticalStationListFragment extends SelectStationListFragment {
         m_oExpListView.post(new Runnable() {
             @Override
             public void run() {
-                View c = m_oExpListView.getChildAtPosition(3);
+                int counter = m_oExpListView.getFirstVisiblePosition();
+                View button = null, child = null;
 
-                View button = c.findViewById(R.id.ibtnMenu);
-                int counter = 3;
+                while (child == null || counter < m_oExpListView.getLastVisiblePosition()) {
+                    child = m_oExpListView.getChildAtPosition(counter++);
+                    if (child == null)
+                        continue;
 
-                while (button == null && counter < m_oExpListView.getCount()) {
-                    c = m_oExpListView.getChildAtPosition(++counter);
-                    button = c.findViewById(R.id.ibtnMenu);
+                    button = child.findViewById(R.id.ibtnMenu);
+                    if (button != null)
+                        break;
                 }
 
                 if (button == null)
@@ -97,11 +100,11 @@ public class AlphabeticalStationListFragment extends SelectStationListFragment {
                 if (Build.VERSION.SDK_INT <= 10)
                     toolTip.withAnimationType(ToolTip.AnimationType.NONE);
 
-                final View b = button;
+                final View view = button;
                 button.post(new Runnable() {
                     @Override
                     public void run() {
-                        ToolTipView hint = toolTipOverlay.showToolTipForView(toolTip, b);
+                        ToolTipView hint = toolTipOverlay.showToolTipForView(toolTip, view);
                         hint.setPadding(0, 44, 0, 0);
                         hint.setOnToolTipViewClickedListener(new ToolTipView.OnToolTipViewClickedListener() {
                             @Override
