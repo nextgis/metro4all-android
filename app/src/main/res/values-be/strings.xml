@@ -50,7 +50,7 @@
 	<string name="sFromStation">Адкуль</string>
 	<string name="sToStation">Куды</string>
 	<string name="sRoute">Варыянт</string>
-	<string name="sRoutingInfo">%1$s → Платформа: %2$s\r\nВ поезде и на пересадках: %3$s\r\nПлатформа → %4$s: %5$s</string>
+	<string name="sRoutingInfo">%1$s → Платформа: %2$s\r\nУ цягніку і на перасадках: %3$s\r\nПлатформа → %4$s: %5$s</string>
 	<string name="sSchema">%1$s ст. %2$s</string>
 	<string name="sLayout">Макет</string>
     <string name="sLegend">Умоўныя абазначэнні</string>
