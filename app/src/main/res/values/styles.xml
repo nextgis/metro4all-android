@@ -24,7 +24,7 @@
         <item name="toolbarNavigationButtonStyle">@style/Widget.Toolbar.NavButton</item>
         <item name="actionOverflowButtonStyle">@style/Widget.Toolbar.Overflow</item>
 
-        <item name="editTextColor">@android:color/black</item>
+        <!--<item name="editTextColor">@android:color/white</item>-->
         <item name="android:spinnerItemStyle">@style/Theme.Application.Spinner</item>
         <item name="android:spinnerDropDownItemStyle">@style/Widget.AppCompat.Light.DropDownItem.Spinner</item>
         <!--<item name="android:spinnerDropDownItemStyle">@style/Theme.Application.Spinner.DropDown</item>-->
