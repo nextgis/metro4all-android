@@ -25,10 +25,12 @@ package com.nextgis.metroaccess.ui.activity;
 
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -194,7 +196,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                 for (int i = 0; i < new_items.size(); i++)
                     checkedItemStrings[i + exist_items.size()] = new_items.get(i).GetFullName();
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(PreferencesActivity.this);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(PreferencesActivity.this);
                 builder.setTitle(R.string.sPrefChangeCityBasesTitle)
                         .setMultiChoiceItems(checkedItemStrings, checkedItems,
                                 new DialogInterface.OnMultiChoiceClickListener() {
@@ -208,7 +210,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                                     @Override
                                     public void onClick(DialogInterface dialog, int id) {
                                         List<GraphDataItem> itemsToDownload = new ArrayList<>();
-                                        List<File> itemsToDelete = new ArrayList<>();
+                                        final List<File> itemsToDelete = new ArrayList<>();
 
                                         for (int i = 0; i < checkedItems.length; i++)
                                             if (!(!checkedItems[i] && i >= exist_items.size() || checkedItems[i] && i < exist_items.size())) {
@@ -220,15 +222,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                                                 }
                                             }
 
-                                        if (!itemsToDelete.isEmpty()) {
-                                            for (File cityDir : itemsToDelete)
-                                                FileUtil.deleteRecursive(cityDir);
-
-                                            mGraph.FillRouteMetadata();
-                                            updateCityList();
-                                        }
-
-                                        MetroApp.downloadData(PreferencesActivity.this, itemsToDownload, PreferencesActivity.this);
+                                        new ChangeCitiesTask(itemsToDelete, itemsToDownload).execute();
                                     }
                                 })
                         .setNegativeButton(R.string.sCancel,
@@ -383,6 +377,55 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         } else {
             mPrefCity.setEnabled(false);
             mPrefCity.setSummary(null);
+        }
+    }
+
+    private class ChangeCitiesTask extends AsyncTask<Void, Void, Void> {
+        private List<File> mItemsToDelete;
+        private List<GraphDataItem> mItemsToDownload;
+        private ProgressDialog mDeleteDialog;
+
+        public ChangeCitiesTask(List<File> itemsToDelete, List<GraphDataItem> itemsToDownload) {
+            this.mItemsToDelete = itemsToDelete;
+            this.mItemsToDownload = itemsToDownload;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            if (hasItemsToDelete()) {
+                mDeleteDialog = new ProgressDialog(PreferencesActivity.this);
+                mDeleteDialog.setMessage(getString(R.string.sDeleting));
+                mDeleteDialog.setIndeterminate(true);
+                mDeleteDialog.setCancelable(false);
+                mDeleteDialog.show();
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            for (File cityDir : mItemsToDelete)
+                FileUtil.deleteRecursive(cityDir);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            if (hasItemsToDelete()) {
+                mGraph.FillRouteMetadata();
+                updateCityList();
+                mDeleteDialog.dismiss();
+            }
+
+            MetroApp.downloadData(PreferencesActivity.this, mItemsToDownload, PreferencesActivity.this);
+        }
+
+        private boolean hasItemsToDelete() {
+            return !mItemsToDelete.isEmpty();
         }
     }
 

@@ -85,6 +85,7 @@
 	<string name="sMaxAngle">Maksymalne nachylenie szyn/rampy</string>
 	<string name="sDownloadData">Ściągnąć nowe dane?</string>
 	<string name="sDeleteData">Usunąć istniejące dane?</string>
+	<string name="sDeleting">Usuwanie…</string>
 	<string name="sConflictNotes">Wyjścia, które mogą być niedostępne przy ustawionych ograniczeniach są zaznaczone na czerwono</string>
 	<string name="sLimits">Moje ograniczenia</string>	
 	<string name="sLimitsSet">Ustaw moje ograniczenia</string>

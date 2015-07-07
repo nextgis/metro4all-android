@@ -85,6 +85,7 @@
 	<string name="sMaxAngle">Макс. угол наклона</string>
 	<string name="sDownloadData">Загрузить данные по маршрутам?</string>
 	<string name="sDeleteData">Удалить данные по маршрутам?</string>
+	<string name="sDeleting">Удаление…</string>
 	<string name="sConflictNotes">Входы, конфликтующие с вашими ограничениями, отмечены красным</string>
 	<string name="sLimits">Мои ограничения</string>
 	<string name="sLimitsSet">Установить мои ограничения</string>

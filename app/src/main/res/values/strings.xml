@@ -86,6 +86,7 @@
 	<string name="sMaxAngle">Max slope</string>
 	<string name="sDownloadData">Download new data?</string>
 	<string name="sDeleteData">Delete existing data?</string>
+	<string name="sDeleting">Deleting…</string>
 	<string name="sConflictNotes">Exits that conflict with set limitations are shown in red</string>
 	<string name="sLimits">My mobility requirements</string>
 	<string name="sLimitsSet">Set my mobility requirements</string>

@@ -85,6 +85,7 @@
 	<string name="sMaxAngle">Максімальны нахіл</string>
 	<string name="sDownloadData">Запампаваць новыя дадзеныя?</string>
 	<string name="sDeleteData">Выдаліць існуючыя адзеныя?</string>
+	<string name="sDeleting">Выдаленне…</string>
 	<string name="sConflictNotes">Канфлікт з зададзенымі абмежаваннямі паказваецца чырвоным</string>
 	<string name="sLimits">Мае абмежаванні</string>	
 	<string name="sLimitsSet">Задаць мае абмежаванні</string>
