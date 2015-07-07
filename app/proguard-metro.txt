@@ -10,6 +10,9 @@
 -dontwarn com.caverock.androidsvg.**
 -dontwarn com.osmdroid.contributor.**
 -dontwarn org.apache.http.entity.**
+-dontwarn android.support.**
+
+-keep class android.support.v7.widget.** { *; }
 
 -printseeds seeds.txt
 -printusage unused.txt

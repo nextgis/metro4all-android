@@ -1,8 +1,18 @@
+## v.2.8 (08.07.2015)
++ Add time panel to routing screen
++ Add switch departure/arrival stations button
++ Add email remembering to report screen
++ Bugfixing
+
++ UI changes:
+	* Add landscape orientation to report screen
+	* Delete cities progress dialog at settings
+	* Search moved to ToolBar on Select station screen
+
 ## v.2.7.1 (25.04.2015)
 + Add feedback form
 + Add Ukranian language support
 + Bugfixing
-
 
 ## v. 2.7 (01.03.2015)
 + Added official assistance service info

@@ -28,7 +28,7 @@ public interface Constants {
     int[] ICONS_RAW = { R.raw._0, R.raw._5, R.raw._5, R.raw._3, R.raw._4, R.raw._5, R.raw._6, R.raw._7, R.raw._8, R.raw._9 };
 
     String TAG = "metro4all";
-    String SERVER = "http://metro4all.org/data/v0.0/";
+    String SERVER = "http://metro4all.org/data/v2.7/";
 
     String META = "meta.json";
     String REMOTE_METAFILE = "remotemeta_v2.3.json";
