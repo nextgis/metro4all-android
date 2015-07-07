@@ -42,6 +42,9 @@ import static com.nextgis.metroaccess.util.Constants.APP_REPORTS_SCREENSHOT;
 
 @SuppressWarnings("deprecation")
 public class NetWatcher extends BroadcastReceiver {
+    // http://stackoverflow.com/a/8413512/2088273
+    private static boolean mFirstConnect = true;
+
     @SuppressWarnings("TryFinallyCanBeTryWithResources")
     @Override
     public void onReceive(Context context, Intent i) {
@@ -52,9 +55,10 @@ public class NetWatcher extends BroadcastReceiver {
             boolean onWiFiOnly = preferences.getBoolean(PreferencesActivity.KEY_PREF_REPORT_WIFI, false);
 
             if (info != null && info.isConnected()) {
-                if (onWiFiOnly && info.getType() != ConnectivityManager.TYPE_WIFI)
+                if (onWiFiOnly && info.getType() != ConnectivityManager.TYPE_WIFI || !mFirstConnect)
                     return;
 
+                mFirstConnect = false;
                 File file = new File(context.getExternalFilesDir(null), APP_REPORTS_DIR);
                 if (file.exists() && file.isDirectory()) {
                     for (final File report : file.listFiles()) {
@@ -87,7 +91,8 @@ public class NetWatcher extends BroadcastReceiver {
                         }
                     }
                 }
-            }
+            } else
+                mFirstConnect = true;
         } catch (Exception ignored) { }
     }
 }
