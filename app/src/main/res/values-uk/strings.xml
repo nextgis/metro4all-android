@@ -12,13 +12,13 @@
 
     <string name="sSettings">Налаштування</string>
 	<string name="sAbout">Про додаток</string>
-	<string name="sNetworkGetErr">Помилка отримання даних. Попробуйте обновить позже.</string>
+	<string name="sNetworkGetErr">Помилка отримання даних. Спробуйте оновити пізніше.</string>
 	<string name="sNetworkUnreachErr">Немає підключення до мережі</string>
     <string name="sDownLoading">"Завантажується: "</string>
-	<string name="sDownLoadingCancelled">Загрузка отменена</string>
+	<string name="sDownLoadingCancelled">Завантаження скасовано</string>
     <string name="sSearching">Пошук…</string>
     <string name="sZipExtractionProcess">Розпакування…</string>
-	<string name="sNetworkInvalidData">Помилка в даних. Попробуйте перезагрузить данные.</string>
+	<string name="sNetworkInvalidData">Помилка в даних. Спробуйте перезавантажити дані.</string>
 	<string name="sFileNotFound">Файл не знайдено</string>
 	<string name="sCannotReadFile">Не можу прочитати файл</string>
 	<string name="sCannotGetPath">Не знайдено шлях</string>
@@ -50,7 +50,7 @@
 	<string name="sFromStation">Звідки</string>
 	<string name="sToStation">Куди</string>
 	<string name="sRoute">Варіант</string>
-	<string name="sRoutingInfo">%1$s → Платформа: %2$s\r\nВ поезде и на пересадках: %3$s\r\nПлатформа → %4$s: %5$s</string>
+	<string name="sRoutingInfo">%1$s → Платформа: %2$s\r\nВ поїзді та на пересадках: %3$s\r\nПлатформа → %4$s: %5$s</string>
 	<string name="sSchema">%1$s ст. %2$s</string>
     <string name="sLayout">Схема</string>
     <string name="sLegend">Умовні позначення</string>
@@ -168,8 +168,8 @@
 	<string name="sReportCatInfo">Інформація</string>
 	<string name="sReportCatError">Помилка</string>
 	<string name="sReportCatMobReq">Проблеми доступності</string>
-	<string name="sReportSaveEmail">Запомнить</string>
-	<string name="sReportIncorrectEmail">Некорректный адрес почты!</string>
+	<string name="sReportSaveEmail">Запам'ятати</string>
+	<string name="sReportIncorrectEmail">Некоректна адреса електронної пошти!</string>
 
 	<string name="sIOError">Пам\'ять пристрою тимчасово недоступна</string>
 
