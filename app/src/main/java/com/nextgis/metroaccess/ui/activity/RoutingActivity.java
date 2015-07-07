@@ -53,6 +53,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.nextgis.metroaccess.util.Constants.BUNDLE_PATHCOUNT_KEY;
@@ -490,7 +491,7 @@ public class RoutingActivity extends AppCompatActivity implements ActionBar.OnNa
         int minutes = moAdapters[itemPosition].getWeight() + mEntry + mExit;
         Calendar eta = (Calendar) mNow.clone();
         eta.add(Calendar.MINUTE, minutes);
-        DateFormat time = SimpleDateFormat.getTimeInstance(DateFormat.SHORT);
+        SimpleDateFormat time = new SimpleDateFormat("HH:mm", Locale.getDefault());
         mTvTime.setText(TimeUtil.formatTime(this, minutes) + " (" + time.format(mNow.getTime()) + " - " + time.format(eta.getTime()) + ")");
 
 		return true;
