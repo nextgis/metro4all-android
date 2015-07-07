@@ -83,7 +83,7 @@ public class MetroApp extends Application {
         String sCurrentCity = prefs.getString(PreferencesActivity.KEY_PREF_CITY, "");
         String sCurrentCityLang = prefs.getString(PreferencesActivity.KEY_PREF_CITYLANG, Locale.getDefault().getLanguage());
         mGraph = new MAGraph(this, sCurrentCity, getExternalFilesDir(null), sCurrentCityLang);
-        mDataHandler = new DataDownloader();
+        mDataHandler = new DataDownloader(this);
     }
 
     public static MAGraph getGraph(){

@@ -28,10 +28,9 @@ import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
 import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.FileAsyncHttpResponseHandler;
 import com.nextgis.metroaccess.MetroApp;
 import com.nextgis.metroaccess.R;
 import com.nextgis.metroaccess.data.metro.GraphDataItem;
@@ -57,12 +56,15 @@ import static com.nextgis.metroaccess.util.Constants.ROUTE_DATA_DIR;
 import static com.nextgis.metroaccess.util.Constants.SERVER;
 
 @SuppressWarnings("deprecation")
-public class DataDownloader extends AsyncHttpResponseHandler {
+public class DataDownloader extends FileAsyncHttpResponseHandler {
     private ProgressDialog mDownloadDialog;
     private GraphDataItem mDataItem;
     private List<GraphDataItem> mDownloadData;
-    private String mTmpOutFile;
     private Context mContext;
+
+    public DataDownloader(Context context) {
+        super(context);
+    }
 
     public void reload(Context context, List<GraphDataItem> items) {
         mContext = context;
@@ -73,10 +75,6 @@ public class DataDownloader extends AsyncHttpResponseHandler {
     public void onStart() {
         super.onStart();
         mDataItem = mDownloadData.get(0);
-
-        File dir = mContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
-        File zipFile = new File(dir, mDataItem.GetPath() + ".zip");
-        mTmpOutFile = zipFile.getAbsolutePath();
 
         mDownloadDialog = new ProgressDialog(mContext);
         mDownloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -97,27 +95,33 @@ public class DataDownloader extends AsyncHttpResponseHandler {
     }
 
     @Override
-    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+    public void onSuccess(int statusCode, Header[] headers, File file) {
         mDownloadDialog.dismiss();
 
         try {
             if (mDownloadData == null || mDownloadData.isEmpty())
                 throw new IOException("Bad ZipArchive");
 
-            unzip(responseBody);
+            mDownloadDialog = new ProgressDialog(mContext);
+            mDownloadDialog.setMessage(getString(R.string.sZipExtractionProcess));
+            mDownloadDialog.setIndeterminate(true);
+            mDownloadDialog.setCancelable(false);
+            mDownloadDialog.show();
+
+            new UnZipTask(mDataItem, mContext.getExternalFilesDir(ROUTE_DATA_DIR) + File.separator + mDataItem.GetPath()).execute(file);
         } catch (IOException e) {
             Toast.makeText(mContext, R.string.sNetworkInvalidData, Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+    public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
         int info = statusCode == 0 ? R.string.sNetworkUnreachErr : R.string.sNetworkGetErr;
         abort(info);
     }
 
     @Override
-    public void onProgress(int bytesWritten, int totalSize) {
+    public void onProgress(long bytesWritten, long totalSize) {
         super.onProgress(bytesWritten, totalSize);
 
         if (mDownloadDialog.isIndeterminate()) // connection established
@@ -126,10 +130,10 @@ public class DataDownloader extends AsyncHttpResponseHandler {
                 mDownloadDialog.setProgressNumberFormat("%1d / %2d Kb");
 
             mDownloadDialog.setIndeterminate(false); // turn off indeterminate
-            mDownloadDialog.setMax(totalSize / 1024); // max value in kb
+            mDownloadDialog.setMax((int) (totalSize / 1024)); // max value in kb
         }
 
-        mDownloadDialog.setProgress(bytesWritten / 1024);
+        mDownloadDialog.setProgress((int) (bytesWritten / 1024));
     }
 
     private void abort(int info) {
@@ -138,25 +142,11 @@ public class DataDownloader extends AsyncHttpResponseHandler {
         mDownloadData.clear();
     }
 
-    private void unzip(byte[] data) throws IOException {
-        mDownloadDialog = new ProgressDialog(mContext);
-        mDownloadDialog.setMessage(getString(R.string.sZipExtractionProcess));
-        mDownloadDialog.setIndeterminate(true);
-        mDownloadDialog.setCancelable(false);
-        mDownloadDialog.show();
-
-        OutputStream output = new FileOutputStream(mTmpOutFile);
-        output.write(data);
-        output.close();
-
-        new UnZipTask(mDataItem, mContext.getExternalFilesDir(ROUTE_DATA_DIR) + File.separator + mDataItem.GetPath()).execute(mTmpOutFile);
-    }
-
     private String getString(int id) {
         return mContext.getString(id);
     }
 
-    private class UnZipTask extends AsyncTask<String, Void, Boolean> {
+    private class UnZipTask extends AsyncTask<File, Void, Boolean> {
         private GraphDataItem mDataItem;
         private String mPath;
 
@@ -167,9 +157,8 @@ public class DataDownloader extends AsyncHttpResponseHandler {
         }
 
         @Override
-        protected Boolean doInBackground(String... params) {
-            String filePath = params[0];
-            File archive = new File(filePath);
+        protected Boolean doInBackground(File... params) {
+            File archive = params[0];;
             try {
                 ZipFile zipfile = new ZipFile(archive);
                 if (zipfile.size() > 0) {
