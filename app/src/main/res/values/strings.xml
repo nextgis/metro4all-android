@@ -51,7 +51,7 @@
 	<string name="sFromStation">From</string>
 	<string name="sToStation">To</string>
 	<string name="sRoute">Option</string>
-	<string name="sRoutingInfo">%1$s → Platform: %2$s\r\nTrains and interchanges: %3$s\r\nPlatform → %4$s: %5$s</string>
+	<string name="sRoutingInfo">%1$s → Platform: %2$s\r\nTrains and Interchanges: %3$s\r\nPlatform → %4$s: %5$s</string>
 	<string name="sSchema">%1$s of %2$s</string>
 	<string name="sLayout">Layout</string>
     <string name="sLegend">Legend</string>
