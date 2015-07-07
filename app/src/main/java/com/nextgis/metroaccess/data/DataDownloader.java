@@ -67,16 +67,6 @@ public class DataDownloader extends AsyncHttpResponseHandler {
     public void reload(Context context, List<GraphDataItem> items) {
         mContext = context;
         mDownloadData = items;
-        mDownloadDialog = new ProgressDialog(mContext);
-        mDownloadDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                abort(R.string.sDownLoadingCancelled);
-                MetroApp.cancel(mContext);
-                sendCancelMessage();
-                DataDownloader.this.onCancel();
-            }
-        });
     }
 
     @Override
@@ -88,25 +78,33 @@ public class DataDownloader extends AsyncHttpResponseHandler {
         File zipFile = new File(dir, mDataItem.GetPath() + ".zip");
         mTmpOutFile = zipFile.getAbsolutePath();
 
+        mDownloadDialog = new ProgressDialog(mContext);
         mDownloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mDownloadDialog.setIndeterminate(true);
         mDownloadDialog.setMessage(getString(R.string.sDownLoading) + mDataItem.GetLocaleName());
         mDownloadDialog.setCanceledOnTouchOutside(false);
         mDownloadDialog.setCancelable(true);
+        mDownloadDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                abort(R.string.sDownLoadingCancelled);
+                MetroApp.cancel(mContext);
+                sendCancelMessage();
+                DataDownloader.this.onCancel();
+            }
+        });
         mDownloadDialog.show();
     }
 
     @Override
     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-        if (mDownloadData == null || mDownloadData.isEmpty())
-            return;
+        mDownloadDialog.dismiss();
 
         try {
-            OutputStream output = new FileOutputStream(mTmpOutFile);
-            output.write(responseBody);
-            output.close();
-            mDownloadDialog.hide();
-            unzip();
+            if (mDownloadData == null || mDownloadData.isEmpty())
+                throw new IOException("Bad ZipArchive");
+
+            unzip(responseBody);
         } catch (IOException e) {
             Toast.makeText(mContext, R.string.sNetworkInvalidData, Toast.LENGTH_SHORT).show();
         }
@@ -140,17 +138,17 @@ public class DataDownloader extends AsyncHttpResponseHandler {
         mDownloadData.clear();
     }
 
-    private void unzip() throws IOException {
+    private void unzip(byte[] data) throws IOException {
+        mDownloadDialog = new ProgressDialog(mContext);
         mDownloadDialog.setMessage(getString(R.string.sZipExtractionProcess));
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) { // set format for api 11+
-            mDownloadDialog.setProgressNumberFormat(null);
-            mDownloadDialog.setProgressPercentFormat(null);
-        }
-
         mDownloadDialog.setIndeterminate(true);
         mDownloadDialog.setCancelable(false);
         mDownloadDialog.show();
+
+        OutputStream output = new FileOutputStream(mTmpOutFile);
+        output.write(data);
+        output.close();
+
         new UnZipTask(mDataItem, mContext.getExternalFilesDir(ROUTE_DATA_DIR) + File.separator + mDataItem.GetPath()).execute(mTmpOutFile);
     }
 
@@ -205,7 +203,7 @@ public class DataDownloader extends AsyncHttpResponseHandler {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            mDownloadDialog.hide();
+            mDownloadDialog.dismiss();
 
             if (result && !mDownloadData.isEmpty()) {
                 mDownloadData.remove(0);
@@ -216,8 +214,6 @@ public class DataDownloader extends AsyncHttpResponseHandler {
                     ((Activity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                     MetroApp.downloadFinish();
                 }
-
-                mDownloadDialog.dismiss();
             } else
                 abort(R.string.sIOError);
         }
