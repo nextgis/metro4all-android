@@ -12,13 +12,13 @@
 
     <string name="sSettings">Ustawienia</string>
 	<string name="sAbout">O aplikacji</string>
-	<string name="sNetworkGetErr">Wystąpił błąd pobierania danych. Try to reload later.</string>
+	<string name="sNetworkGetErr">Wystąpił błąd pobierania danych. Spróbuj później.</string>
 	<string name="sNetworkUnreachErr">Brak połączenia z internetem</string>
     <string name="sDownLoading">"Pobieranie: "</string>
 	<string name="sDownLoadingCancelled">Downloading cancelled</string>
     <string name="sZipExtractionProcess">Wypakowywanie…</string>
     <string name="sSearching">Wyszukiwanie…</string>
-	<string name="sNetworkInvalidData">Otrzymano niepoprawne dane. Please try to reload.</string>
+	<string name="sNetworkInvalidData">Otrzymano niepoprawne dane. Spróbuj jeszcze raz.</string>
 	<string name="sFileNotFound">Nie znaleziono pliku</string>
 	<string name="sCannotReadFile">Nie można odczytać pliku</string>
 	<string name="sCannotGetPath">Błędna ścieżka do pliku</string>
@@ -50,7 +50,7 @@
 	<string name="sFromStation">Stacja początkowa</string>
 	<string name="sToStation">Stacja końcowa</string>
 	<string name="sRoute">Wariant</string>
-	<string name="sRoutingInfo">%1$s → Platform: %2$s\r\nTrains and interchanges: %3$s\r\nPlatform → %4$s: %5$s</string>
+	<string name="sRoutingInfo">%1$s → Platforma: %2$s\r\nPrzejazd: %3$s\r\nPlatforma → %4$s: %5$s</string>
 	<string name="sSchema">%1$s st. %2$s</string>
     <string name="sLayout">Schemat</string>
     <string name="sLegend">Legenda do schematów</string>
@@ -91,7 +91,7 @@
 	<string name="sLimitsHave">Moje ograniczenia</string>
 	<string name="sSummary">Podsumowanie podróży</string>		
 	<string name="sSummaryClick">Kliknij, aby zobaczyć szczegóły</string>	
-	<string name="sNoPortals">Wszystkie wyjścia lub wejścia tej stacji są okresowo zamkniete.</string>
+	<string name="sNoPortals">Wszystkie wyjścia lub wejścia tej stacji są okresowo zamknięte.</string>
 	<string name="sToolTipPortalFromLayout">Wybierz %1$s za pomocą meetkodu</string>
 	<string name="sToolTipPopupMapLayout">Przejdź do Mapie i Schematu</string>
 	<!-- tabs -->
@@ -130,8 +130,8 @@
     <string name="sPrefGASum">Zbieranie danych w celu poprawy jakości aplikacji</string>
     <string name="sPrefReportWiFi">Wysyłaj raporty wyłącznie po WiFi</string>
     <string name="sLimitationsInfo">Włącz ten tryb aby zobaczyć dodatkowe informacje o barierach w układach trasy i stacji</string>
-    <string name="sLimitationsHelp">Wsparcie oficjalne</string>
-    <string name="sLimitationsHelpDialog">Wsparcie oficjalne dla %s</string>
+    <string name="sLimitationsHelp">Oficjalne wsparcie</string>
+    <string name="sLimitationsHelpDialog">Oficjalne wsparcie dla %s</string>
     <string name="sLimitationsPhone">Telefon:</string>
     <string name="sLimitationsService">Godziny obsługi: %s</string>
     <string name="sLimitationsWork">Godziny pracy: %s</string>
@@ -168,8 +168,8 @@
     <string name="sReportCatInfo">Informacja</string>
     <string name="sReportCatError">Błąd</string>
     <string name="sReportCatMobReq">Problem dostępności</string>
-	<string name="sReportSaveEmail">Remember</string>
-	<string name="sReportIncorrectEmail">Email is incorrect!</string>
+    <string name="sReportSaveEmail">Zapamiętaj</string>
+    <string name="sReportIncorrectEmail">Email jest niepoprawny!</string>
 
     <string name="sIOError">Brak miejsca w pamięci telefonu</string>
 
