@@ -574,7 +574,7 @@ public class MainActivity extends AppCompatActivity implements MetroApp.Download
 	    	checkedItemStrings[i] = items.get(i).GetFullName();
 	    }
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 		builder.setTitle(isUpdate ? R.string.sUpdateAvaliable : R.string.sSelectDataToDownload)
 		.setMultiChoiceItems(checkedItemStrings, checkedItems,
                 new DialogInterface.OnMultiChoiceClickListener() {
@@ -798,8 +798,8 @@ public class MainActivity extends AppCompatActivity implements MetroApp.Download
 			        for (Path path : shortest_paths_list) {
 						ArrayList<Integer> IndexPath = new  ArrayList<>();
                         double time = path.get_weight();
-                        time += mGraph.GetStation(m_nDepartureStationId).GetPortal(m_nDeparturePortalId).GetTime();
-                        time += mGraph.GetStation(m_nArrivalStationId).GetPortal(m_nArrivalPortalId).GetTime();
+//                        time += mGraph.GetStation(m_nDepartureStationId).GetPortal(m_nDeparturePortalId).GetTime();
+//                        time += mGraph.GetStation(m_nArrivalStationId).GetPortal(m_nArrivalPortalId).GetTime();
 						Log.d(TAG, "Route# " + nCounter + " weight: " + time);
 			            for (BaseVertex v : path.get_vertices()) {
 			            	IndexPath.add(v.get_id());

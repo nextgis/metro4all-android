@@ -17,8 +17,8 @@
 	<string name="sNetworkUnreachErr">Network is not available</string>
     <string name="sDownLoading">"Downloading: "</string>
     <string name="sDownLoadingCancelled">Downloading cancelled</string>
-    <string name="sZipExtractionProcess">Extracting &#8230;</string>
-    <string name="sSearching">Searching &#8230;</string>
+    <string name="sZipExtractionProcess">Extracting…</string>
+    <string name="sSearching">Searching…</string>
 	<string name="sNetworkInvalidData">Data is invalid. Please try to reload.</string>
 	<string name="sFileNotFound">File not found</string>
 	<string name="sCannotReadFile">Cannot read file</string>
@@ -51,6 +51,7 @@
 	<string name="sFromStation">From</string>
 	<string name="sToStation">To</string>
 	<string name="sRoute">Option</string>
+	<string name="sRoutingInfo">%1$s → Platform: %2$s\r\nTrains and interchanges: %3$s\r\nPlatform → %4$s: %5$s</string>
 	<string name="sSchema">%1$s of %2$s</string>
 	<string name="sLayout">Layout</string>
     <string name="sLegend">Legend</string>
@@ -95,7 +96,7 @@
 	<string name="sToolTipPortalFromLayout">Select %1$s by meetcode</string>
 	<string name="sToolTipPopupMapLayout">Go to Map and Layout</string>
 	<!-- tabs -->
-	<string name="sSelAlphabeticalTab">A&#8230;Z</string>
+	<string name="sSelAlphabeticalTab">A…Z</string>
 	<string name="sSelLinesTab">Lines</string>
 	<string name="sSelRecentTab">Recent</string>
 	<!-- dialogs -->

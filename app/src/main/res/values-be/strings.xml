@@ -16,8 +16,8 @@
 	<string name="sNetworkUnreachErr">Сетка недасяжная</string>
     <string name="sDownLoading">"Спампаванне: "</string>
 	<string name="sDownLoadingCancelled">Загрузка отменена</string>
-    <string name="sZipExtractionProcess">Выманне &#8230;</string>
-    <string name="sSearching">Пошук &#8230;</string>
+    <string name="sZipExtractionProcess">Выманне…</string>
+    <string name="sSearching">Пошук…</string>
 	<string name="sNetworkInvalidData">Памылковыя дадзеныя. Паспрабуйце перезагрузіць дадзеныя.</string>
 	<string name="sFileNotFound">Файл не знойдзены</string>
 	<string name="sCannotReadFile">Немагчыма прачытаць файл</string>
@@ -50,6 +50,7 @@
 	<string name="sFromStation">Адкуль</string>
 	<string name="sToStation">Куды</string>
 	<string name="sRoute">Варыянт</string>
+	<string name="sRoutingInfo">%1$s → Платформа: %2$s\r\nВ поезде и на пересадках: %3$s\r\nПлатформа → %4$s: %5$s</string>
 	<string name="sSchema">%1$s ст. %2$s</string>
 	<string name="sLayout">Макет</string>
     <string name="sLegend">Умоўныя абазначэнні</string>
@@ -65,7 +66,7 @@
 	<string name="sNotSet">Не ўсталявана</string>
 	<string name="sSelFromStation">Абярыце станцыю адпраўлення</string>
 	<string name="sSelToStation">Абярыце станцыю прыбыцця</string>
-	<string name="sBarriersExist">Націсніце, каб пабачыць перашкоду&#8230;</string>
+	<string name="sBarriersExist">Націсніце, каб пабачыць перашкоду…</string>
 	<string name="sBarriersConflict">Канфлікт параметраў</string>
 	<string name="sMaxWCWidth">Мін. шырыня праходу</string>
 	<string name="sStairsCount">Усяго прыступак</string>
@@ -94,7 +95,7 @@
 	<string name="sToolTipPortalFromLayout">Выберы %1$s з дапамогай миткода</string>
     <string name="sToolTipPopupMapLayout">Хуткі пераход да карце і макету</string>
 	<!-- tabs -->
-	<string name="sSelAlphabeticalTab">A&#8230;Я</string>
+	<string name="sSelAlphabeticalTab">A…Я</string>
 	<string name="sSelLinesTab">Лініі</string>
 	<string name="sSelRecentTab">Апошняе</string>
 	<!-- dialogs -->

@@ -22,6 +22,7 @@
 
 package com.nextgis.metroaccess.ui.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,6 +33,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
@@ -46,7 +48,10 @@ import com.nextgis.metroaccess.data.metro.StationItem;
 import com.nextgis.metroaccess.util.Constants;
 import com.nextgis.metroaccess.util.TimeUtil;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +59,7 @@ import static com.nextgis.metroaccess.util.Constants.BUNDLE_PATHCOUNT_KEY;
 import static com.nextgis.metroaccess.util.Constants.BUNDLE_PATH_KEY;
 import static com.nextgis.metroaccess.util.Constants.BUNDLE_PORTALID_KEY;
 import static com.nextgis.metroaccess.util.Constants.BUNDLE_WEIGHT_KEY;
+import static com.nextgis.metroaccess.util.Constants.STATION_STOP_TIME;
 
 public class RoutingActivity extends AppCompatActivity implements ActionBar.OnNavigationListener {
 	protected int mnType;
@@ -63,6 +69,8 @@ public class RoutingActivity extends AppCompatActivity implements ActionBar.OnNa
 	protected int mnPathCount, mnDeparturePortalId, mnArrivalPortalId;
 	protected boolean m_bHaveLimits;
 	protected boolean firstLaunch = true;   // fix for GA, first item selected onCreate by default
+    protected int mEntry, mExit;
+    protected Calendar mNow = Calendar.getInstance();
 
 	protected Map<Integer, StationItem> mmoStations;
 	protected Map<String, int[]> mmoCrosses;
@@ -75,9 +83,9 @@ public class RoutingActivity extends AppCompatActivity implements ActionBar.OnNa
         //mbFilled = false;
         setContentView(R.layout.activity_routing);
 
-	    ActionBar actionBar = getSupportActionBar();
+	    final ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
-        Context context = actionBar.getThemedContext();
+        final Context context = actionBar.getThemedContext();
         
 	    actionBar.setHomeButtonEnabled(true);
 	    actionBar.setDisplayHomeAsUpEnabled(true);
@@ -129,18 +137,37 @@ public class RoutingActivity extends AppCompatActivity implements ActionBar.OnNa
 
         mTvTime = (TextView) findViewById(R.id.tv_time);
         mTvTime.bringToFront();
+        mTvTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog builder = new AlertDialog.Builder(context)
+                        .setMessage(String.format(getString(R.string.sRoutingInfo), getString(R.string.sEntranceName),
+                                TimeUtil.formatTime(context, mEntry),
+                                TimeUtil.formatTime(context, moAdapters[actionBar.getSelectedNavigationIndex()].getWeight()),
+                                getString(R.string.sExitName),
+                                TimeUtil.formatTime(context, mExit)))
+                        .setPositiveButton(android.R.string.ok, null).create();
+                builder.show();
+            }
+        });
     }
 
     private void fillAdapter() {
         Bundle extras = getIntent().getExtras();
 
-        if (extras != null && moAdapters != null)
-            for(int i = 0; i < mnPathCount; i++){
-                List<Integer> list = extras.getIntegerArrayList(BUNDLE_PATH_KEY + i);
+        if (extras != null && moAdapters != null) {
+            List<Integer> list;
+            int weight;
+
+            for (int i = 0; i < mnPathCount; i++) {
+                list = extras.getIntegerArrayList(BUNDLE_PATH_KEY + i);
                 moAdapters[i] = CreateAndFillAdapter(list);
-                int weight = (int) extras.getDouble(BUNDLE_WEIGHT_KEY + i);
-                moAdapters[i].setWeight((weight + 25 * (list.size() - 1)) / 60);
+                weight = (int) extras.getDouble(BUNDLE_WEIGHT_KEY + i);
+                moAdapters[i].setWeight((int) Math.floor((weight + STATION_STOP_TIME * (list.size() - 1)) / 60.0));
+                mEntry = (int) Math.floor(MetroApp.getGraph().GetStation(list.get(0)).GetPortal(mnDeparturePortalId).GetTime() / 60.0);
+                mExit = (int) Math.floor(MetroApp.getGraph().GetStation(list.get(list.size() - 1)).GetPortal(mnArrivalPortalId).GetTime() / 60.0);
             }
+        }
     }
 
     protected RouteExpandableListAdapter CreateAndFillAdapter(List<Integer> list) {
@@ -459,7 +486,11 @@ public class RoutingActivity extends AppCompatActivity implements ActionBar.OnNa
             ((MetroApp) getApplication()).addEvent(Constants.SCREEN_ROUTING, "Selected option " + itemPosition + 1, Constants.ACTION_ITEM);
 
 	    mExpListView.setAdapter(moAdapters[itemPosition]);
-        mTvTime.setText(TimeUtil.formatTime(this, moAdapters[itemPosition].getWeight()));
+        int minutes = moAdapters[itemPosition].getWeight() + mEntry + mExit;
+        Calendar eta = (Calendar) mNow.clone();
+        eta.add(Calendar.MINUTE, minutes);
+        DateFormat time = SimpleDateFormat.getTimeInstance(DateFormat.SHORT);
+        mTvTime.setText(TimeUtil.formatTime(this, minutes) + " (" + time.format(mNow.getTime()) + " - " + time.format(eta.getTime()) + ")");
 
 		return true;
 	}

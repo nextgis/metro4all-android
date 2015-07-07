@@ -16,8 +16,8 @@
 	<string name="sNetworkUnreachErr">Brak połączenia z internetem</string>
     <string name="sDownLoading">"Pobieranie: "</string>
 	<string name="sDownLoadingCancelled">Downloading cancelled</string>
-    <string name="sZipExtractionProcess">Wypakowywanie &#8230;</string>
-    <string name="sSearching">Wyszukiwanie &#8230;</string>
+    <string name="sZipExtractionProcess">Wypakowywanie…</string>
+    <string name="sSearching">Wyszukiwanie…</string>
 	<string name="sNetworkInvalidData">Otrzymano niepoprawne dane. Please try to reload.</string>
 	<string name="sFileNotFound">Nie znaleziono pliku</string>
 	<string name="sCannotReadFile">Nie można odczytać pliku</string>
@@ -50,6 +50,7 @@
 	<string name="sFromStation">Stacja początkowa</string>
 	<string name="sToStation">Stacja końcowa</string>
 	<string name="sRoute">Wariant</string>
+	<string name="sRoutingInfo">%1$s → Platform: %2$s\r\nTrains and interchanges: %3$s\r\nPlatform → %4$s: %5$s</string>
 	<string name="sSchema">%1$s st. %2$s</string>
     <string name="sLayout">Schemat</string>
     <string name="sLegend">Legenda do schematów</string>
@@ -65,7 +66,7 @@
 	<string name="sNotSet">Wybierz</string>
 	<string name="sSelFromStation">Wybierz stację początkową</string>
 	<string name="sSelToStation">Wybierz stację docelową</string>
-	<string name="sBarriersExist">Kliknij, aby zobaczyć bariery&#8230;</string>
+	<string name="sBarriersExist">Kliknij, aby zobaczyć bariery…</string>
 	<string name="sBarriersConflict">Uwaga: występują bariery potencjalnie nie do przejścia</string>
 	<string name="sMaxWCWidth">Minimalna szerokość przejścia</string>
 	<string name="sStairsCount">Ilość schodów</string>
@@ -94,7 +95,7 @@
 	<string name="sToolTipPortalFromLayout">Wybierz %1$s za pomocą meetkodu</string>
 	<string name="sToolTipPopupMapLayout">Przejdź do Mapie i Schematu</string>
 	<!-- tabs -->
-	<string name="sSelAlphabeticalTab">A&#8230;Z</string>
+	<string name="sSelAlphabeticalTab">A…Z</string>
 	<string name="sSelLinesTab">Linie</string>
 	<string name="sSelRecentTab">Ostatnio wybierane</string>	
 	<!-- dialogs -->

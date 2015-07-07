@@ -40,19 +40,13 @@ public interface Constants {
 
     String CSV_CHAR = ";";
 
-    String BUNDLE_MSG_KEY = "msg";
-    String BUNDLE_PAYLOAD_KEY = "json";
-    String BUNDLE_ERRORMARK_KEY = "error";
     String BUNDLE_EVENTSRC_KEY = "eventsrc";
     String BUNDLE_ENTRANCE_KEY = "in";
     String BUNDLE_PATHCOUNT_KEY = "pathcount";
     String BUNDLE_PATH_KEY = "path_";
     String BUNDLE_WEIGHT_KEY = "weight_";
-    String BUNDLE_STATIONMAP_KEY = "stationmap";
-    String BUNDLE_CROSSESMAP_KEY = "crossmap";
     String BUNDLE_STATIONID_KEY = "stationid";
     String BUNDLE_PORTALID_KEY = "portalid";
-    String BUNDLE_METAMAP_KEY = "metamap";
     String BUNDLE_CITY_CHANGED = "city_changed";
     String BUNDLE_IMG_X = "coord_x";
     String BUNDLE_IMG_Y = "coord_y";
@@ -80,6 +74,7 @@ public interface Constants {
     int STATUS_INTERRUPT_LOCATING = 0;
     int STATUS_FINISH_LOCATING = 1;
     int LOCATING_TIMEOUT = 15000;
+    int STATION_STOP_TIME = 30;
 
     // Google Analytics
     String PANE = "Pane";

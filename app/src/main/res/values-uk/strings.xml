@@ -16,8 +16,8 @@
 	<string name="sNetworkUnreachErr">Немає підключення до мережі</string>
     <string name="sDownLoading">"Завантажується: "</string>
 	<string name="sDownLoadingCancelled">Загрузка отменена</string>
-    <string name="sSearching">Пошук &#8230;</string>
-    <string name="sZipExtractionProcess">Розпакування &#8230;</string>
+    <string name="sSearching">Пошук…</string>
+    <string name="sZipExtractionProcess">Розпакування…</string>
 	<string name="sNetworkInvalidData">Помилка в даних. Попробуйте перезагрузить данные.</string>
 	<string name="sFileNotFound">Файл не знайдено</string>
 	<string name="sCannotReadFile">Не можу прочитати файл</string>
@@ -50,6 +50,7 @@
 	<string name="sFromStation">Звідки</string>
 	<string name="sToStation">Куди</string>
 	<string name="sRoute">Варіант</string>
+	<string name="sRoutingInfo">%1$s → Платформа: %2$s\r\nВ поезде и на пересадках: %3$s\r\nПлатформа → %4$s: %5$s</string>
 	<string name="sSchema">%1$s ст. %2$s</string>
     <string name="sLayout">Схема</string>
     <string name="sLegend">Умовні позначення</string>
@@ -94,7 +95,7 @@
     <string name="sToolTipPortalFromLayout">Обери %1$s через миткод</string>
     <string name="sToolTipPopupMapLayout">Швидкий перехід до Карти і Схеми</string>
 		<!-- tabs -->
-	<string name="sSelAlphabeticalTab">А&#8230;Я</string>
+	<string name="sSelAlphabeticalTab">А…Я</string>
 	<string name="sSelLinesTab">Линії</string>
 	<string name="sSelRecentTab">Нещодавні</string>
 	<!-- dialogs -->

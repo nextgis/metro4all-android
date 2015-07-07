@@ -28,7 +28,7 @@
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
+        android:layout_gravity="center_horizontal"
         android:layout_margin="8dp"
         android:background="@color/horizontal_item_fill"
         android:padding="4dp"
@@ -43,7 +43,8 @@
         android:clipToPadding="false"
         android:divider="@null"
         android:dividerHeight="0dp"
-        android:paddingBottom="8dp"/>
+        android:paddingBottom="8dp"
+        android:paddingTop="52dp"/>
 
     <!--
     <View
