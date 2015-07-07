@@ -80,6 +80,7 @@ import org.osmdroid.views.overlay.mylocation.IMyLocationProvider;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -110,17 +111,18 @@ import static com.nextgis.metroaccess.util.Constants.TAG;
 //https://code.google.com/p/k-shortest-paths/
 
 public class MainActivity extends AppCompatActivity implements MetroApp.DownloadProgressListener {
-    public static MAGraph mGraph;
+    private static MAGraph mGraph;
     private AsyncHttpResponseHandler mMetaHandler;
+    private final LocateHandler mLocateHandler = new LocateHandler(this);
 
     protected boolean m_bInterfaceLoaded;
     protected ButtonListAdapter m_laListButtons;
     protected ListView m_lvListButtons;
     protected Button m_oSearchButton;
     protected ImageView mBtnLimitations;
-    private GpsMyLocationProvider mGpsMyLocationProvider;
+    private static GpsMyLocationProvider mGpsMyLocationProvider;
     private SharedPreferences mPreferences;
-    private Menu menu;
+    private Menu mMenu;
 
     protected int m_nDepartureStationId, m_nArrivalStationId;
     protected int m_nDeparturePortalId, m_nArrivalPortalId;
@@ -236,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements MetroApp.Download
 	        	switch(position){
 	        	case 0: //from
                     ((MetroApp) getApplication()).addEvent(Constants.SCREEN_MAIN, Constants.FROM, Constants.PANE);
-	        		onSelectDepatrure();
+	        		onSelectDeparture();
 	        		break;
 	        	case 1: //to
                     ((MetroApp) getApplication()).addEvent(Constants.SCREEN_MAIN, Constants.TO, Constants.PANE);
@@ -335,16 +337,11 @@ public class MainActivity extends AppCompatActivity implements MetroApp.Download
         else {
             startActivityForResult(new Intent(this, PreferencesActivity.class), PREF_RESULT);
         }
-
-        //intentSet.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);        
-        //Bundle bundle = new Bundle();
-        //bundle.putParcelable(BUNDLE_METAMAP_KEY, mGraph);
-        //intentSet.putExtras(bundle);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
+        this.mMenu = menu;
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
         tintIcons(menu, this);
@@ -465,31 +462,18 @@ public class MainActivity extends AppCompatActivity implements MetroApp.Download
         return both ? !isGPSEnabled && !isNetworkEnabled : !isGPSEnabled || !isNetworkEnabled;
     }
 
+    private void setMenuLocate(boolean state) {
+        mMenu.findItem(R.id.btn_locate).setEnabled(state);
+    }
+
     private void locateClosestEntrance() {
-        menu.findItem(R.id.btn_locate).setEnabled(false);
+        setMenuLocate(false);
         showToast(R.string.sLocationStart);
-
-        final Handler h = new Handler(){
-            private boolean isLocationFound = false;
-
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case STATUS_INTERRUPT_LOCATING:
-                        if(!isLocationFound)
-                            Toast.makeText(getApplicationContext(), R.string.sLocationFail, Toast.LENGTH_LONG).show();
-                    case STATUS_FINISH_LOCATING:
-                        mGpsMyLocationProvider.stopLocationProvider();
-                        isLocationFound = true;
-                        menu.findItem(R.id.btn_locate).setEnabled(true);
-                        break;
-                }
-            }
-        };
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                h.sendEmptyMessage(STATUS_INTERRUPT_LOCATING);
+                mLocateHandler.sendEmptyMessage(STATUS_INTERRUPT_LOCATING);
             }
         }, LOCATING_TIMEOUT);
 
@@ -534,7 +518,7 @@ public class MainActivity extends AppCompatActivity implements MetroApp.Download
                     onActivityResult(DEPARTURE_RESULT, RESULT_OK, intent);
                 }
 
-                h.sendEmptyMessage(STATUS_FINISH_LOCATING);
+                mLocateHandler.sendEmptyMessage(STATUS_FINISH_LOCATING);
 
                 if (stationClosest != null && portalClosest != null) {
                     String portalName = portalClosest.GetReadableMeetCode();
@@ -641,11 +625,10 @@ public class MainActivity extends AppCompatActivity implements MetroApp.Download
 //            loadInterface();
 //    }
 
-	protected void 	onSelectDepatrure(){
+	protected void onSelectDeparture(){
 	    Intent intent = new Intent(this, SelectStationActivity.class);
 	    Bundle bundle = new Bundle();
 	    bundle.putInt(BUNDLE_EVENTSRC_KEY, DEPARTURE_RESULT);
-        //bundle.putSerializable(BUNDLE_STATIONMAP_KEY, (Serializable) mmoStations);
         bundle.putBoolean(BUNDLE_ENTRANCE_KEY, true);
         bundle.putInt(BUNDLE_STATIONID_KEY, m_nDepartureStationId);
         bundle.putInt(BUNDLE_PORTALID_KEY, m_nDeparturePortalId);
@@ -657,7 +640,6 @@ public class MainActivity extends AppCompatActivity implements MetroApp.Download
 	    Intent intent = new Intent(this, SelectStationActivity.class);
 	    Bundle bundle = new Bundle();
 	    bundle.putInt(BUNDLE_EVENTSRC_KEY, ARRIVAL_RESULT);
-        //bundle.putSerializable(BUNDLE_STATIONMAP_KEY, (Serializable) mmoStations);
         bundle.putBoolean(BUNDLE_ENTRANCE_KEY, false);
         bundle.putInt(BUNDLE_STATIONID_KEY, m_nArrivalStationId);
         bundle.putInt(BUNDLE_PORTALID_KEY, m_nArrivalPortalId);
@@ -811,13 +793,8 @@ public class MainActivity extends AppCompatActivity implements MetroApp.Download
 			        }
 
 			        bundle.putInt(BUNDLE_PATHCOUNT_KEY, nCounter);
-			        //bundle.putSerializable(BUNDLE_STATIONMAP_KEY, (Serializable) mmoStations);
-			        //bundle.putSerializable(BUNDLE_CROSSESMAP_KEY, (Serializable) mmoCrosses);
-
 					intentView.putExtras(bundle);
-
 			        MainActivity.this.startActivity(intentView);
-
 				}
 
 				progressDialog.dismiss();
@@ -835,6 +812,33 @@ public class MainActivity extends AppCompatActivity implements MetroApp.Download
 	public void showToast(int resource) {
 		Toast.makeText(this, getString(resource), Toast.LENGTH_SHORT).show();
 	}
+
+    // http://www.androiddesignpatterns.com/2013/01/inner-class-handler-memory-leak.html
+    private static class LocateHandler extends Handler {
+        private final WeakReference<MainActivity> mActivity;
+        private boolean isLocationFound = false;
+
+        public LocateHandler(MainActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            MainActivity activity = mActivity.get();
+            if (activity != null) {
+                switch (msg.what) {
+                    case STATUS_INTERRUPT_LOCATING:
+                        if(!isLocationFound)
+                            Toast.makeText(activity, R.string.sLocationFail, Toast.LENGTH_LONG).show();
+                    case STATUS_FINISH_LOCATING:
+                        mGpsMyLocationProvider.stopLocationProvider();
+                        isLocationFound = true;
+                        activity.setMenuLocate(true);
+                        break;
+                }
+            }
+        }
+    }
 
     /**
      * Get bitmap from SVG file
