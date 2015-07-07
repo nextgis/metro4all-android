@@ -109,4 +109,5 @@ public interface Constants {
     String STATION_COLLAPSE = "Station collapsed";
     String LEGEND = "Legend";
     String HELP_LINK = "Help link";
+    String EXTENDED_TIME = "Extended time info";
 }

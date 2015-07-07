@@ -168,7 +168,7 @@
 	<string name="sReportCatInfo">Інформація</string>
 	<string name="sReportCatError">Помилка</string>
 	<string name="sReportCatMobReq">Проблеми доступності</string>
-	<string name="sReportSaveEmail">Запам'ятати</string>
+	<string name="sReportSaveEmail">Запам\'ятати</string>
 	<string name="sReportIncorrectEmail">Некоректна адреса електронної пошти!</string>
 
 	<string name="sIOError">Пам\'ять пристрою тимчасово недоступна</string>

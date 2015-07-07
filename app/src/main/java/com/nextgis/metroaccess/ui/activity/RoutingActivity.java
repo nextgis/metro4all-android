@@ -140,6 +140,7 @@ public class RoutingActivity extends AppCompatActivity implements ActionBar.OnNa
         mTvTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((MetroApp) getApplication()).addEvent(Constants.SCREEN_ROUTING, Constants.EXTENDED_TIME, Constants.SCREEN_ROUTING);
                 AlertDialog builder = new AlertDialog.Builder(context)
                         .setMessage(String.format(getString(R.string.sRoutingInfo), getString(R.string.sEntranceName),
                                 TimeUtil.formatTime(context, mEntry),
