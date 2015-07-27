@@ -175,11 +175,15 @@ public class RoutingActivity extends AppCompatActivity implements ActionBar.OnNa
                 list = extras.getIntegerArrayList(BUNDLE_PATH_KEY + i);
                 moAdapters[i] = CreateAndFillAdapter(list);
                 weight = (int) extras.getDouble(BUNDLE_WEIGHT_KEY + i);
-                moAdapters[i].setWeight((int) Math.floor((weight + STATION_STOP_TIME * (list.size() - 1)) / 60.0));
-                mEntry = (int) Math.floor(MetroApp.getGraph().GetStation(list.get(0)).GetPortal(mnDeparturePortalId).GetTime() / 60.0);
-                mExit = (int) Math.floor(MetroApp.getGraph().GetStation(list.get(list.size() - 1)).GetPortal(mnArrivalPortalId).GetTime() / 60.0);
+                moAdapters[i].setWeight(roundTime((weight + STATION_STOP_TIME * (list.size() - 1))));
+                mEntry = roundTime(MetroApp.getGraph().GetStation(list.get(0)).GetPortal(mnDeparturePortalId).GetTime());
+                mExit = roundTime(MetroApp.getGraph().GetStation(list.get(list.size() - 1)).GetPortal(mnArrivalPortalId).GetTime());
             }
         }
+    }
+
+    private int roundTime(double time) {
+        return (int) Math.ceil(time / 60.0);
     }
 
     protected RouteExpandableListAdapter CreateAndFillAdapter(List<Integer> list) {
