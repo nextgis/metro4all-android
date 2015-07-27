@@ -167,7 +167,11 @@ public class MAGraph {
 			e.printStackTrace();
 			m_sErr = e.getLocalizedMessage();
 			return false;
-		}	
+		} catch (Exception e) {
+			e.printStackTrace();
+			m_sErr = e.getLocalizedMessage();
+			return false;
+		}
     	return true;
 	}
 	
@@ -219,6 +223,10 @@ public class MAGraph {
 			m_sErr = e.getLocalizedMessage();
 			return false;
 		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			m_sErr = e.getLocalizedMessage();
+			return false;
+		} catch (Exception e) {
 			e.printStackTrace();
 			m_sErr = e.getLocalizedMessage();
 			return false;
@@ -340,6 +348,10 @@ public class MAGraph {
             e.printStackTrace();
             m_sErr = e.getLocalizedMessage();
             return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            m_sErr = e.getLocalizedMessage();
+            return false;
         }
         return true;
     }
@@ -400,6 +412,10 @@ public class MAGraph {
 			e.printStackTrace();
 			m_sErr = e.getLocalizedMessage();
 			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			m_sErr = e.getLocalizedMessage();
+			return false;
 		}
     	
     	return true;
@@ -448,6 +464,10 @@ public class MAGraph {
 			m_sErr = e.getLocalizedMessage();
 			return false;
 		} catch (IOException e) {
+			e.printStackTrace();
+			m_sErr = e.getLocalizedMessage();
+			return false;
+		} catch (Exception e) {
 			e.printStackTrace();
 			m_sErr = e.getLocalizedMessage();
 			return false;

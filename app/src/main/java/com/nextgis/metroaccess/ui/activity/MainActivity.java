@@ -225,8 +225,6 @@ public class MainActivity extends AppCompatActivity implements MetroApp.Download
             }
         });
 
-        setLimitationsColor(getLimitationsColor());
-
 		m_lvListButtons = (ListView)findViewById(R.id.lvButtList);
 		m_laListButtons = new ButtonListAdapter(this);
 		// set adapter to list view
@@ -608,22 +606,22 @@ public class MainActivity extends AppCompatActivity implements MetroApp.Download
 		super.onPause();
 	}
 
-//	@Override
-//	protected void onResume() {
-//		super.onResume();
+	@Override
+	protected void onResume() {
+		super.onResume();
 //
 //	    m_nDepartureStationId = mPreferences.getInt("dep_" + BUNDLE_STATIONID_KEY, -1);
 //	    m_nArrivalStationId = mPreferences.getInt("arr_" + BUNDLE_STATIONID_KEY, -1);
 //	    m_nDeparturePortalId = mPreferences.getInt("dep_" + BUNDLE_PORTALID_KEY, -1);
 //	    m_nArrivalPortalId = mPreferences.getInt("arr_" + BUNDLE_PORTALID_KEY, -1);
 //
-//        if (!isRoutingDataExists())
-//            resetInterface();
-//        else if (m_bInterfaceLoaded)
-//            updateInterface();
-//        else
-//            loadInterface();
-//    }
+        if (!isRoutingDataExists())
+            resetInterface();
+        else if (m_bInterfaceLoaded)
+            updateInterface();
+        else
+            loadInterface();
+    }
 
 	protected void onSelectDeparture(){
 	    Intent intent = new Intent(this, SelectStationActivity.class);
