@@ -129,7 +129,8 @@
 	<string name="stationFilterHintText">Zacznij wpisywać nazwę stacji</string>	
     <string name="sPrefGA">Włącz Google Analytics</string>
     <string name="sPrefGASum">Zbieranie danych w celu poprawy jakości aplikacji</string>
-    <string name="sPrefReportWiFi">Wysyłaj raporty wyłącznie po WiFi</string>
+    <string name="sPrefReportWiFi">Raporty po WiFi</string>
+	<string name="sPrefReportWiFiSummary">Wysyłaj raporty wyłącznie po WiFi</string>
     <string name="sLimitationsInfo">Włącz ten tryb aby zobaczyć dodatkowe informacje o barierach w układach trasy i stacji</string>
     <string name="sLimitationsHelp">Oficjalne wsparcie</string>
     <string name="sLimitationsHelpDialog">Oficjalne wsparcie dla %s</string>

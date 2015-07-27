@@ -129,7 +129,8 @@
 	<string name="stationFilterHintText">Пачніце ўвод назвы станцыі</string>
     <string name="sPrefGA">Уключыць Google Analytics</string>
     <string name="sPrefGASum">Збірае дадзеныя для паляпшэння прадуктыўнасці праграмы</string>
-    <string name="sPrefReportWiFi">Отправлять отчеты только по Wi-Fi</string>
+    <string name="sPrefReportWiFi">Отчеты по Wi-Fi</string>
+    <string name="sPrefReportWiFiSummary">Отправлять отчеты только по Wi-Fi</string>
     <string name="sLimitationsInfo">Рэжым абмежаванняў дазваляе ўбачыць дадатковую інфармацыю пра перашкоды на маршруце і схемах станцый</string>
     <string name="sLimitationsHelp">Афіцыйная дапамога</string>
     <string name="sLimitationsHelpDialog">Служба дапамогі горада %s</string>

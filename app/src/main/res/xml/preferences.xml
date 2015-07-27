@@ -67,6 +67,7 @@
             android:defaultValue="false"
             android:key="reports_wifi"
             android:title="@string/sPrefReportWiFi"
+            android:summary="@string/sPrefReportWiFiSummary"
             />
         <CheckBoxPreference
             android:defaultValue="true"
