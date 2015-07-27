@@ -51,6 +51,7 @@ public interface Constants {
     String BUNDLE_IMG_X = "coord_x";
     String BUNDLE_IMG_Y = "coord_y";
     String BUNDLE_ATTACHED_IMAGES = "attached_images";
+    String BUNDLE_TIME_START = "start_time";
 
     int DEPARTURE_RESULT = 1;
     int ARRIVAL_RESULT = 2;

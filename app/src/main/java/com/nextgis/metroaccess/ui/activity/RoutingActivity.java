@@ -48,7 +48,6 @@ import com.nextgis.metroaccess.data.metro.StationItem;
 import com.nextgis.metroaccess.util.Constants;
 import com.nextgis.metroaccess.util.TimeUtil;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,6 +58,7 @@ import java.util.Map;
 import static com.nextgis.metroaccess.util.Constants.BUNDLE_PATHCOUNT_KEY;
 import static com.nextgis.metroaccess.util.Constants.BUNDLE_PATH_KEY;
 import static com.nextgis.metroaccess.util.Constants.BUNDLE_PORTALID_KEY;
+import static com.nextgis.metroaccess.util.Constants.BUNDLE_TIME_START;
 import static com.nextgis.metroaccess.util.Constants.BUNDLE_WEIGHT_KEY;
 import static com.nextgis.metroaccess.util.Constants.STATION_STOP_TIME;
 
@@ -71,7 +71,7 @@ public class RoutingActivity extends AppCompatActivity implements ActionBar.OnNa
 	protected boolean m_bHaveLimits;
 	protected boolean firstLaunch = true;   // fix for GA, first item selected onCreate by default
     protected int mEntry, mExit;
-    protected Calendar mNow = Calendar.getInstance();
+    protected Calendar mTimeStart;
 
 	protected Map<Integer, StationItem> mmoStations;
 	protected Map<String, int[]> mmoCrosses;
@@ -96,6 +96,10 @@ public class RoutingActivity extends AppCompatActivity implements ActionBar.OnNa
         mnMaxWidth = LimitationsActivity.getMaxWidth(this);
         mnWheelWidth = LimitationsActivity.getWheelWidth(this);
 		m_bHaveLimits = LimitationsActivity.hasLimitations(this);
+
+        mTimeStart = Calendar.getInstance();
+        if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_TIME_START))
+            mTimeStart.setTimeInMillis(savedInstanceState.getLong(BUNDLE_TIME_START));
 
 	    Bundle extras = getIntent().getExtras(); 
 	    if(extras != null) {
@@ -152,6 +156,12 @@ public class RoutingActivity extends AppCompatActivity implements ActionBar.OnNa
                 builder.show();
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(BUNDLE_TIME_START, mTimeStart.getTimeInMillis());
     }
 
     private void fillAdapter() {
@@ -489,10 +499,10 @@ public class RoutingActivity extends AppCompatActivity implements ActionBar.OnNa
 
 	    mExpListView.setAdapter(moAdapters[itemPosition]);
         int minutes = moAdapters[itemPosition].getWeight() + mEntry + mExit;
-        Calendar eta = (Calendar) mNow.clone();
+        Calendar eta = (Calendar) mTimeStart.clone();
         eta.add(Calendar.MINUTE, minutes);
         SimpleDateFormat time = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        mTvTime.setText(TimeUtil.formatTime(this, minutes) + " (" + time.format(mNow.getTime()) + " - " + time.format(eta.getTime()) + ")");
+        mTvTime.setText(TimeUtil.formatTime(this, minutes) + " (" + time.format(mTimeStart.getTime()) + " - " + time.format(eta.getTime()) + ")");
 
 		return true;
 	}
