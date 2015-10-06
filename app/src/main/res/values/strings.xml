@@ -159,11 +159,6 @@
     <string name="sReportDefineAreaTooltip">Tap to select reported area</string>
     <string name="sReportTextNotNull">Please enter text message</string>
     <string name="sReportCityNotNull">Please load and select at least one city</string>
-    <string name="sReportPhotoAdd">Add photo</string>
-    <string name="sReportPhotoRemove">Remove</string>
-    <string name="sReportPhotoTake">Take new photo</string>
-    <string name="sReportPhotoPick">Pick existing one</string>
-    <string name="sReportPhotoPickFail">Can\'t attach photo</string>
     <string name="sReportSending">Sending report…</string>
     <string name="sReportSent">Report sent. Thank you!</string>
     <string name="sReportSentFail">Can\'t send report now, it\'ll be sent later</string>

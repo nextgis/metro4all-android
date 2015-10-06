@@ -57,8 +57,4 @@
         <item>3</item>
     </integer-array>
 
-    <string-array name="report_add_photos">
-        <item>@string/sReportPhotoTake</item>
-        <item>@string/sReportPhotoPick</item>
-    </string-array>
 </resources>

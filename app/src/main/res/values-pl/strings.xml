@@ -158,11 +158,6 @@
     <string name="sReportDefineAreaTooltip">Kliknij, aby zaznaczyć problematyczny obszar</string>
     <string name="sReportTextNotNull">Wpisz treść wiadomości</string>
     <string name="sReportCityNotNull">Wybierz przynajmniej jedno miasto</string>
-    <string name="sReportPhotoAdd">Dodaj zdjęcie</string>
-    <string name="sReportPhotoRemove">Usuń</string>
-    <string name="sReportPhotoTake">Zrób zdjęcie</string>
-    <string name="sReportPhotoPick">Wybierz istniejące</string>
-    <string name="sReportPhotoPickFail">Błąd dołączania zdjęcia</string>
     <string name="sReportSending">Wysyłanie raportu…</string>
     <string name="sReportSent">Raport został wysłany. Dziękuję!</string>
     <string name="sReportSentFail">Nie można w tej chwili wysłać raportu, zostanie automatycznie wysłany później</string>

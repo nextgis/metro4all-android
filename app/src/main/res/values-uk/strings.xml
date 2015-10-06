@@ -158,11 +158,6 @@
 	<string name="sReportDefineAreaTooltip">Натисніть в потрібному місці</string>
 	<string name="sReportTextNotNull">Введіть текст повідомлення</string>
 	<string name="sReportCityNotNull">Спочатку необхідно завантажити та вибрати місто</string>
-	<string name="sReportPhotoAdd">Додати фото</string>
-	<string name="sReportPhotoRemove">Видалити</string>
-	<string name="sReportPhotoTake">Нове фото</string>
-	<string name="sReportPhotoPick">Обрати фото</string>
-	<string name="sReportPhotoPickFail">Неможливо прикріпити фото</string>
 	<string name="sReportSending">Відправка повідомлення…</string>
 	<string name="sReportSent">Повідомлення надіслано. Спасибі!</string>
 	<string name="sReportSentFail">Не вдалося відправити, повідомлення буде надіслано пізніше</string>
