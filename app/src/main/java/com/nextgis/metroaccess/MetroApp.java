@@ -42,15 +42,15 @@ import com.nextgis.metroaccess.ui.activity.PreferencesActivity;
 import com.nextgis.metroaccess.util.ConstantsSecured;
 import com.nextgis.metroaccess.util.FileUtil;
 
-import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Locale;
+
+import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import cz.msebera.android.httpclient.protocol.HTTP;
 
 import static com.nextgis.metroaccess.util.Constants.APP_VERSION;
 import static com.nextgis.metroaccess.util.Constants.KEY_PREF_RECENT_ARR_STATIONS;
@@ -123,13 +123,9 @@ public class MetroApp extends Application {
 
     @SuppressWarnings("deprecation")
     public static void postJSON(Context context, String json, AsyncHttpResponseHandler handler) {
-        StringEntity se = null;
-        try {
-            se = new StringEntity(json, "UTF-8");
-            se.setContentType("application/json;charset=UTF-8");
-            se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json;charset=UTF-8"));
-        } catch (UnsupportedEncodingException ignored) {
-        }
+        StringEntity se = new StringEntity(json, "UTF-8");
+        se.setContentType("application/json;charset=UTF-8");
+        se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json;charset=UTF-8"));
 
         mClient.post(context, ConstantsSecured.REPORT_SERVER, se, "application/json", handler);
     }

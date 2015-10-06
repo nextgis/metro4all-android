@@ -32,10 +32,10 @@ import android.preference.PreferenceManager;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nextgis.metroaccess.ui.activity.PreferencesActivity;
 
-import org.apache.http.Header;
-
 import java.io.File;
 import java.io.FileInputStream;
+
+import cz.msebera.android.httpclient.Header;
 
 import static com.nextgis.metroaccess.util.Constants.APP_REPORTS_DIR;
 import static com.nextgis.metroaccess.util.Constants.APP_REPORTS_SCREENSHOT;

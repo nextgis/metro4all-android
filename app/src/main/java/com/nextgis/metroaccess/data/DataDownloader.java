@@ -36,7 +36,6 @@ import com.nextgis.metroaccess.R;
 import com.nextgis.metroaccess.data.metro.GraphDataItem;
 import com.nextgis.metroaccess.util.FileUtil;
 
-import org.apache.http.Header;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -50,6 +49,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import cz.msebera.android.httpclient.Header;
 
 import static com.nextgis.metroaccess.util.Constants.META;
 import static com.nextgis.metroaccess.util.Constants.ROUTE_DATA_DIR;
@@ -158,7 +159,7 @@ public class DataDownloader extends FileAsyncHttpResponseHandler {
 
         @Override
         protected Boolean doInBackground(File... params) {
-            File archive = params[0];;
+            File archive = params[0];
             try {
                 ZipFile zipfile = new ZipFile(archive);
                 if (zipfile.size() > 0) {

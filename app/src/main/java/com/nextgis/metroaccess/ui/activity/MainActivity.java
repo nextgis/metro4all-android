@@ -72,7 +72,6 @@ import com.nextgis.metroaccess.data.metro.StationItem;
 import com.nextgis.metroaccess.util.Constants;
 import com.nextgis.metroaccess.util.FileUtil;
 
-import org.apache.http.Header;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.IMyLocationConsumer;
 import org.osmdroid.views.overlay.mylocation.IMyLocationProvider;
@@ -85,6 +84,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import cz.msebera.android.httpclient.Header;
 import edu.asu.emit.qyan.alg.model.Path;
 import edu.asu.emit.qyan.alg.model.abstracts.BaseVertex;
 

@@ -68,7 +68,6 @@ import com.nextgis.metroaccess.ui.view.PhotoViewHolder;
 import com.nextgis.metroaccess.util.Constants;
 import com.nextgis.metroaccess.util.FileUtil;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -83,6 +82,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import cz.msebera.android.httpclient.Header;
 
 import static com.nextgis.metroaccess.util.Constants.APP_REPORTS_DIR;
 import static com.nextgis.metroaccess.util.Constants.APP_REPORTS_PHOTOS_DIR;
