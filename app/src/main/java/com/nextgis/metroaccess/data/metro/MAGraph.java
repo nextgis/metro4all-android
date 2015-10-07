@@ -667,8 +667,12 @@ public class MAGraph {
         if (item != null)
 			m_sCurrentCityName = item.GetLocaleName();
 		
+		reloadData();
+	}
+
+	public void reloadData() {
 		m_bIsValid = false;
-		
+
 		//load data for current city
 		if(!LoadStations())
 			return;
@@ -680,7 +684,7 @@ public class MAGraph {
 			return;
 		if(!LoadGraph())
 			return;
-		
+
 		m_bIsValid = true;
 	}
 	

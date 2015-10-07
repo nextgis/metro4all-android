@@ -151,7 +151,7 @@ public class MetroApp extends Application {
     }
 
     public static void downloadFinish() {
-        mGraph.FillRouteMetadata();
+        mGraph.reloadData();
 
         if (mListener != null)
             mListener.onDownloadFinished();
