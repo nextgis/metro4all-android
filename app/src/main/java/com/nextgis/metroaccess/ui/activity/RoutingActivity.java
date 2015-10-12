@@ -175,6 +175,7 @@ public class RoutingActivity extends AppCompatActivity implements ActionBar.OnNa
                 list = extras.getIntegerArrayList(BUNDLE_PATH_KEY + i);
                 moAdapters[i] = CreateAndFillAdapter(list);
                 weight = (int) extras.getDouble(BUNDLE_WEIGHT_KEY + i);
+                assert list != null;
                 moAdapters[i].setWeight(roundTime((weight + STATION_STOP_TIME * (list.size() - 1))));
                 mEntry = roundTime(MetroApp.getGraph().GetStation(list.get(0)).GetPortal(mnDeparturePortalId).GetTime());
                 mExit = roundTime(MetroApp.getGraph().GetStation(list.get(list.size() - 1)).GetPortal(mnArrivalPortalId).GetTime());
@@ -507,7 +508,8 @@ public class RoutingActivity extends AppCompatActivity implements ActionBar.OnNa
         Calendar eta = (Calendar) mTimeStart.clone();
         eta.add(Calendar.MINUTE, minutes);
         SimpleDateFormat time = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        mTvTime.setText(TimeUtil.formatTime(this, minutes) + " (" + time.format(mTimeStart.getTime()) + " - " + time.format(eta.getTime()) + ")");
+        String totalTime = TimeUtil.formatTime(this, minutes) + " (" + time.format(mTimeStart.getTime()) + " - " + time.format(eta.getTime()) + ")";
+        mTvTime.setText(totalTime);
 
 		return true;
 	}
