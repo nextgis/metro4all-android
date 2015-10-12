@@ -1,3 +1,13 @@
+## v.2.8.1 (13.10.2015)
++ Android 6.0 support
++ Code refactoring
+
++ Bugfixing:
+    * Routing time not resets at orientation changing
+    * Routing time fits one line in small screens
+    * Routing time smart rounding
+    * Newly downloaded data package applies immediately
+
 ## v.2.8 (08.07.2015)
 + Add time panel to routing screen
 + Add switch departure/arrival stations button
