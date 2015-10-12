@@ -35,10 +35,8 @@ public class StationMapView extends MapView {
     private GeoPoint mMapCenter = null;
     private GeoPoint mRestoredMapCenter = null;
 
-
-    public StationMapView(Context context, int tileSizePixels, ResourceProxy resourceProxy,
-                          GeoPoint center) {
-        super(context, tileSizePixels, resourceProxy);
+    public StationMapView(Context context, ResourceProxy resourceProxy, GeoPoint center) {
+        super(context, resourceProxy);
         mMapCenter = center;
     }
 

@@ -162,9 +162,7 @@ public class StationMapActivity extends AppCompatActivity {
         lat = station == null ? 0 : station.GetLatitude();
         lon = station == null ? 0 : station.GetLongitude();
 
-        mMapView = new StationMapView(mAppContext, 256, mResourceProxy,
-                new GeoPoint(lat, lon));
-
+        mMapView = new StationMapView(mAppContext, mResourceProxy, new GeoPoint(lat, lon));
         InitMap();
 
         setContentView(R.layout.activity_station_map);

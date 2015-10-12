@@ -8,8 +8,7 @@
 -dontpreverify
 
 -dontwarn com.caverock.androidsvg.**
--dontwarn com.osmdroid.contributor.**
--dontwarn org.apache.http.entity.**
+-dontwarn android.test.**
 
 -keep class android.support.v7.widget.** { *; }
 
