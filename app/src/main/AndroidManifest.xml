@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.nextgis.metroaccess"
-    android:versionCode="19"
-    android:versionName="2.8">
+<manifest package="com.nextgis.metroaccess"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <supports-screens
         android:anyDensity="true"
@@ -17,14 +15,14 @@
         android:normalScreens="true"
         android:resizeable="true"
         android:smallScreens="true"
-        android:xlargeScreens="true" />
+        android:xlargeScreens="true"/>
 
     <uses-feature
         android:name="android.hardware.telephony"
-        android:required="false" />
+        android:required="false"/>
     <uses-feature
         android:name="android.hardware.wifi"
-        android:required="false" />
+        android:required="false"/>
 
     <application
         android:name=".MetroApp"
@@ -35,50 +33,50 @@
 
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:value="@integer/google_play_services_version"/>
 
         <activity
             android:name=".ui.activity.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.activity.AboutActivity"
-            android:label="@string/sAbout" />
+            android:label="@string/sAbout"/>
         <activity
             android:name=".ui.activity.RoutingActivity"
-            android:label="@string/sRoute" />
+            android:label="@string/sRoute"/>
         <activity
             android:name=".ui.activity.StationImageActivity"
-            android:label="@string/sLayout" />
+            android:label="@string/sLayout"/>
         <activity
             android:name=".ui.activity.SelectStationActivity"
             android:configChanges="keyboardHidden"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".ui.activity.PreferencesActivity"
             android:label="@string/sPrefTitle"
-            android:theme="@style/Theme.Settings" />
+            android:theme="@style/Theme.Settings"/>
         <activity
             android:name=".ui.activity.LimitationsActivity"
             android:label="@string/sLimits"
-            android:theme="@style/Theme.Settings.Limitations" />
+            android:theme="@style/Theme.Settings.Limitations"/>
         <activity
             android:name=".ui.activity.StationMapActivity"
-            android:label="@string/sMap" />
+            android:label="@string/sMap"/>
         <activity
             android:name=".ui.activity.ReportActivity"
             android:label="@string/sReportMenu"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"/>
 
         <receiver android:name=".NetWatcher">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
     </application>
