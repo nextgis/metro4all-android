@@ -183,7 +183,8 @@ public class RoutingActivity extends AppCompatActivity implements ActionBar.OnNa
     }
 
     private int roundTime(double time) {
-        return (int) Math.ceil(time / 60.0);
+        double result = time % 60.0 > 30 ? Math.ceil(time / 60.0) : Math.floor(time / 60.0);
+        return (int) result;
     }
 
     protected RouteExpandableListAdapter CreateAndFillAdapter(List<Integer> list) {
