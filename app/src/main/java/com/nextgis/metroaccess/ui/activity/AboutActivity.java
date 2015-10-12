@@ -21,12 +21,12 @@
  ****************************************************************************/
 package com.nextgis.metroaccess.ui.activity;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
@@ -53,7 +53,7 @@ public class AboutActivity extends AppCompatActivity {
         btnCredits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog builder = new AlertDialog.Builder(view.getContext()).setTitle(R.string.acknowledgements_caption)
+                AlertDialog builder = new AlertDialog.Builder(view.getContext(), R.style.AppCompatDialog).setTitle(R.string.acknowledgements_caption)
                         .setMessage(R.string.acknowledgements_text)
                         .setPositiveButton(android.R.string.ok, null).create();
                 builder.show();

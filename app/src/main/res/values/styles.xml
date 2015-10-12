@@ -104,4 +104,11 @@
         <item name="textAllCaps">true</item>
         <item name="android:capitalize">characters</item>
     </style>
+
+    <style name="AppCompatDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/metro_material_main</item>
+        <item name="colorPrimaryDark">@color/metro_material_dark</item>
+        <item name="colorAccent">@color/metro_color_main</item>
+    </style>
+
 </resources>

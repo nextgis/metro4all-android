@@ -22,13 +22,13 @@
 
 package com.nextgis.metroaccess.ui.activity;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -146,7 +146,7 @@ public class RoutingActivity extends AppCompatActivity implements ActionBar.OnNa
             @Override
             public void onClick(View v) {
                 ((MetroApp) getApplication()).addEvent(Constants.SCREEN_ROUTING, Constants.EXTENDED_TIME, Constants.SCREEN_ROUTING);
-                AlertDialog builder = new AlertDialog.Builder(context)
+                AlertDialog builder = new AlertDialog.Builder(context, R.style.AppCompatDialog)
                         .setMessage(String.format(getString(R.string.sRoutingInfo), getString(R.string.sEntranceName),
                                 TimeUtil.formatTime(context, mEntry),
                                 TimeUtil.formatTime(context, moAdapters[actionBar.getSelectedNavigationIndex()].getWeight()),

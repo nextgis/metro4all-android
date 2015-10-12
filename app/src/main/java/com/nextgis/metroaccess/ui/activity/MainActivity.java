@@ -21,7 +21,6 @@
  ****************************************************************************/
 package com.nextgis.metroaccess.ui.activity;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,6 +43,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
@@ -437,7 +437,7 @@ public class MainActivity extends AppCompatActivity implements MetroApp.Download
             else
                 info = context.getString(R.string.sLocationInaccuracy) + network + gps;
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AppCompatDialog);
             builder.setTitle(R.string.sLocationAccuracy).setMessage(info)
                     .setPositiveButton(R.string.sSettings,
                             new DialogInterface.OnClickListener() {
@@ -556,7 +556,7 @@ public class MainActivity extends AppCompatActivity implements MetroApp.Download
 	    	checkedItemStrings[i] = items.get(i).GetFullName();
 	    }
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AppCompatDialog);
 		builder.setTitle(isUpdate ? R.string.sUpdateAvaliable : R.string.sSelectDataToDownload)
 		.setMultiChoiceItems(checkedItemStrings, checkedItems,
                 new DialogInterface.OnMultiChoiceClickListener() {

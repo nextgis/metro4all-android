@@ -24,7 +24,6 @@
 package com.nextgis.metroaccess.ui.activity;
 
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,6 +37,7 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -140,7 +140,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         checkUpd.setTitle(R.string.sPrefUpdDataTitle);
         checkUpd.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(PreferencesActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(PreferencesActivity.this, R.style.AppCompatDialog);
                 builder.setMessage(R.string.sAreYouSure)
                         .setTitle(R.string.sQuestion)
                         .setPositiveButton(R.string.sYes, new DialogInterface.OnClickListener() {
@@ -196,7 +196,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
                 for (int i = 0; i < new_items.size(); i++)
                     checkedItemStrings[i + exist_items.size()] = new_items.get(i).GetFullName();
 
-                final AlertDialog.Builder builder = new AlertDialog.Builder(PreferencesActivity.this);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(PreferencesActivity.this, R.style.AppCompatDialog);
                 builder.setTitle(R.string.sPrefChangeCityBasesTitle)
                         .setMultiChoiceItems(checkedItemStrings, checkedItems,
                                 new DialogInterface.OnMultiChoiceClickListener() {

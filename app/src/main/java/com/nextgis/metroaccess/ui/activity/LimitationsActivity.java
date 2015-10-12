@@ -21,13 +21,13 @@
 
 package com.nextgis.metroaccess.ui.activity;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
@@ -122,7 +122,7 @@ public class LimitationsActivity extends PreferenceActivity implements Preferenc
             @Override
             public void onClick(View v) {
                 String title = String.format(getString(R.string.sLimitationsHelpDialog), MetroApp.getGraph().GetCurrentCityName());
-                AlertDialog builder = new AlertDialog.Builder(v.getContext())
+                AlertDialog builder = new AlertDialog.Builder(v.getContext(), R.style.AppCompatDialog)
                         .setTitle(title).setMessage(MetroApp.getGraph().GetOfficialHelp())
                         .setPositiveButton(android.R.string.ok, null).create();
                 builder.show();
